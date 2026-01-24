@@ -1,0 +1,42 @@
+# WordPress
+wp-config.php
+.htaccess
+
+# Database files
+*.sql
+*.sql.gz
+
+# Docker
+docker-compose.override.yml
+
+# Dependencies
+node_modules/
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+error_log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Connection files (may contain sensitive info)
+tableplus-connection*.txt
+
+# Local reminders
+.deployment-reminder
+
+# Development files (scripts and docs)
+.dev-files/
