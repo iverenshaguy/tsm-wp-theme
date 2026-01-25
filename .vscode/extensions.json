@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "IoannisKoukoutsis.phpcs",
+    "esbenp.prettier-vscode",
+    "wordpress.wordpress"
+  ]
+}

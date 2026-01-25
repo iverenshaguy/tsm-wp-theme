@@ -12,9 +12,10 @@ docker-compose.override.yml
 # Dependencies
 node_modules/
 vendor/
+composer.lock
 
 # IDE
-.vscode/
+# .vscode/  # Keep .vscode/ for team settings
 .idea/
 *.swp
 *.swo
@@ -40,3 +41,16 @@ tableplus-connection*.txt
 
 # Development files (scripts and docs)
 .dev-files/
+
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Linter cache
+.eslintcache
+.stylelintcache
+
+# Tailwind build (keep main.css but ignore if you want to rebuild)
+# Uncomment if you want to ignore the built CSS:
+# assets/css/main.css
