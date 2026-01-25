@@ -1,0 +1,26 @@
+{
+  "name": "tsm-theme",
+  "version": "1.0.0",
+  "description": "WordPress theme for TSM",
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --minify",
+    "watch:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --watch",
+    "lint:js": "eslint assets/js/**/*.js",
+    "lint:js:fix": "eslint assets/js/**/*.js --fix",
+    "lint:css": "stylelint 'assets/css/**/*.css' --ignore-path .gitignore",
+    "lint:css:fix": "stylelint 'assets/css/**/*.css' --fix",
+    "lint:php": "./vendor/bin/phpcs --standard=.phpcs.xml",
+    "lint:php:fix": "./vendor/bin/phpcbf --standard=.phpcs.xml",
+    "format": "prettier --write 'assets/js/**/*.js' 'assets/css/**/*.css'",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:php"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "eslint": "^8.57.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "prettier": "^3.2.5"
+  }
+}
