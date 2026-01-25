@@ -28,7 +28,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'footer_name',
 		array(
-			'default'           => 'Terry &amp; Debbie Shaguy',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -45,7 +45,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'footer_description',
 		array(
-			'default'           => 'Empowering the global church through joint missions, biblical literature, and prophetic teaching.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -62,7 +62,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'social_facebook',
 		array(
-			'default'           => '#',
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
@@ -78,7 +78,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'social_instagram',
 		array(
-			'default'           => '#',
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
@@ -94,7 +94,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'social_twitter',
 		array(
-			'default'           => '#',
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
@@ -131,7 +131,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministry_focus',
 		array(
-			'default'           => "Joint Itinerant Ministry\nMarriage Seminars\nGlobal Mission Outreach\nLeadership Development",
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -146,19 +146,12 @@ function tsm_customize_register_footer( $wp_customize ) {
 	);
 
 	// Quick Links
-	$quick_link_defaults = array(
-		1 => array( 'title' => 'Meet Terry & Debbie', 'url' => '/about' ),
-		2 => array( 'title' => 'Books & Resources', 'url' => '/books' ),
-		3 => array( 'title' => 'Mission Itinerary', 'url' => '#itinerary' ),
-		4 => array( 'title' => 'Financial Partnership', 'url' => '/partner' ),
-	);
-
 	for ( $i = 1; $i <= 4; $i++ ) {
 		// Quick Link Title
 		$wp_customize->add_setting(
 			'quick_link_' . $i . '_title',
 			array(
-				'default'           => $quick_link_defaults[ $i ]['title'],
+				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
@@ -175,7 +168,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 		$wp_customize->add_setting(
 			'quick_link_' . $i . '_url',
 			array(
-				'default'           => $quick_link_defaults[ $i ]['url'],
+				'default'           => '',
 				'sanitize_callback' => 'esc_url_raw',
 			)
 		);
@@ -194,7 +187,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'contact_email',
 		array(
-			'default'           => 'terry@terryshaguy.org',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_email',
 		)
 	);
@@ -210,7 +203,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'contact_phone',
 		array(
-			'default'           => '+234 (803) 030-8123',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -226,7 +219,7 @@ function tsm_customize_register_footer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'contact_address',
 		array(
-			'default'           => '2, Kutamiti Street, Basorun. P.O. Box 19824 U.I., Ibadan, Nigeria.',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);

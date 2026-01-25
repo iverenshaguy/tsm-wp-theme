@@ -122,3 +122,49 @@ function tsm_footer_menu_link_attributes( $atts, $item, $args ) {
 	return $atts;
 }
 add_filter( 'nav_menu_link_attributes', 'tsm_footer_menu_link_attributes', 10, 3 );
+
+/**
+ * Mark Books menu item as active on book archive and single book pages
+ */
+function tsm_highlight_books_menu_item( $classes, $item, $args ) {
+	// Check if we're on a book-related page
+	$is_book_page = is_post_type_archive( 'book' ) || is_singular( 'book' ) || is_tax( 'book_category' );
+	
+	if ( ! $is_book_page ) {
+		return $classes;
+	}
+	
+	// Check if this menu item is a page with slug 'books'
+	if ( 'page' === $item->object && ! empty( $item->object_id ) ) {
+		$page = get_post( $item->object_id );
+		if ( $page && 'books' === $page->post_name ) {
+			if ( ! in_array( 'current-menu-item', $classes, true ) ) {
+				$classes[] = 'current-menu-item';
+			}
+			if ( ! in_array( 'current_page_item', $classes, true ) ) {
+				$classes[] = 'current_page_item';
+			}
+			return $classes;
+		}
+	}
+	
+	// Also check URL path for '/books'
+	if ( ! empty( $item->url ) ) {
+		$item_url_parts = parse_url( $item->url );
+		if ( isset( $item_url_parts['path'] ) ) {
+			$item_path = trim( $item_url_parts['path'], '/' );
+			if ( 'books' === $item_path || strpos( $item_path, 'books' ) !== false ) {
+				if ( ! in_array( 'current-menu-item', $classes, true ) ) {
+					$classes[] = 'current-menu-item';
+				}
+				if ( ! in_array( 'current_page_item', $classes, true ) ) {
+					$classes[] = 'current_page_item';
+				}
+				return $classes;
+			}
+		}
+	}
+	
+	return $classes;
+}
+add_filter( 'nav_menu_css_class', 'tsm_highlight_books_menu_item', 10, 3 );

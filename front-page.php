@@ -197,65 +197,191 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 </section>
 
 <!-- Featured Book Section -->
-<section class="bg-primary text-white py-24 overflow-hidden relative">
-	<div class="absolute right-0 top-0 w-1/3 h-full bg-accent/10 -skew-x-12 translate-x-1/2"></div>
-	<div class="max-w-[1280px] mx-auto px-6 relative z-10">
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-			<div class="order-2 lg:order-1">
-				<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
-					<?php
-					$featured_book_badge = get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
-					echo esc_html( $featured_book_badge );
-					?>
-				</span>
-				<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
-					<?php
-					$featured_book_title = get_theme_mod( 'featured_book_title', 'Walking the Narrow Road' );
-					echo esc_html( $featured_book_title );
-					?>
-				</h2>
-				<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
-					<?php
-					$featured_book_description = get_theme_mod(
-						'featured_book_description',
-						'Discover the transformative power of surrendered living. In his latest book, Terry Shaguy shares profound lessons from two decades on the mission field, teaching us how to find God\'s voice in the midst of global noise.'
-					);
-					echo esc_html( $featured_book_description );
-					?>
-				</p>
-				<div class="flex flex-wrap gap-4">
-					<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
-						Buy Now <span class="material-symbols-outlined">shopping_cart</span>
-					</a>
-					<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
-						Read Excerpt
-					</a>
+<?php
+// Get featured book - check front page customizer first, then books archive customizer, then meta field
+$featured_book_id = get_theme_mod( 'front_page_featured_book', 0 );
+if ( ! $featured_book_id || $featured_book_id === 0 ) {
+	$featured_book_id = get_theme_mod( 'books_featured_book', 0 );
+}
+$featured_book_id = absint( $featured_book_id );
+
+$featured_query = null;
+
+if ( $featured_book_id > 0 ) {
+	// Use customizer setting - verify post exists and is published
+	$featured_post = get_post( $featured_book_id );
+	if ( $featured_post && $featured_post->post_type === 'book' && $featured_post->post_status === 'publish' ) {
+		// Use post__in for better reliability
+		$featured_args = array(
+			'post_type'      => 'book',
+			'post__in'       => array( $featured_book_id ),
+			'posts_per_page' => 1,
+			'post_status'    => 'publish',
+			'orderby'        => 'post__in',
+		);
+		$featured_query = new WP_Query( $featured_args );
+	}
+}
+
+// If no featured book from customizer, fall back to meta field
+if ( ! $featured_query || ! $featured_query->have_posts() ) {
+	if ( $featured_query ) {
+		wp_reset_postdata();
+	}
+	$featured_args = array(
+		'post_type'      => 'book',
+		'posts_per_page' => 1,
+		'post_status'    => 'publish',
+		'meta_query'     => array(
+			array(
+				'key'   => 'book_featured',
+				'value' => '1',
+			),
+		),
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	);
+	$featured_query = new WP_Query( $featured_args );
+}
+
+if ( $featured_query && $featured_query->have_posts() ) :
+	$featured_query->the_post();
+	$featured_price = get_post_meta( get_the_ID(), 'book_price', true );
+	$featured_price_original = get_post_meta( get_the_ID(), 'book_price_original', true );
+	$featured_buy_url = get_post_meta( get_the_ID(), 'book_buy_url', true );
+	$featured_excerpt_url = get_post_meta( get_the_ID(), 'book_excerpt_url', true );
+	$featured_summary = get_post_meta( get_the_ID(), 'book_summary', true );
+	$featured_image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
+	$featured_author = get_post_meta( get_the_ID(), 'book_author', true );
+	$featured_badge = get_post_meta( get_the_ID(), 'book_badge', true );
+	
+	// Use summary if available, otherwise use excerpt, otherwise fallback text
+	$featured_description = ! empty( $featured_summary ) 
+		? $featured_summary 
+		: ( get_the_excerpt() ? get_the_excerpt() : 'Discover the latest insights from Terry Shaguy in this transformative guide to spiritual growth and enduring faith. A cornerstone for every believer\'s library.' );
+	
+	// Use badge from book or fallback to customizer
+	$display_badge = $featured_badge ? $featured_badge : get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
+	$display_author = $featured_author ? $featured_author : get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
+	?>
+	<section class="bg-primary text-white py-24 overflow-hidden relative">
+		<div class="absolute right-0 top-0 w-1/3 h-full bg-accent/10 -skew-x-12 translate-x-1/2"></div>
+		<div class="max-w-[1280px] mx-auto px-6 relative z-10">
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+				<div class="order-2 lg:order-1">
+					<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
+						<?php echo esc_html( $display_badge ); ?>
+					</span>
+					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+						<?php the_title(); ?>
+					</h2>
+					<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
+						<?php echo esc_html( $featured_description ); ?>
+					</p>
+					<div class="flex flex-wrap gap-4">
+						<?php if ( $featured_buy_url ) : ?>
+							<a href="<?php echo esc_url( $featured_buy_url ); ?>" target="_blank" rel="noopener" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+								Buy Now <span class="material-symbols-outlined">shopping_cart</span>
+							</a>
+						<?php else : ?>
+							<a href="<?php the_permalink(); ?>" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+								View Details <span class="material-symbols-outlined">arrow_forward</span>
+							</a>
+						<?php endif; ?>
+						<?php if ( $featured_excerpt_url ) : ?>
+							<a href="<?php echo esc_url( $featured_excerpt_url ); ?>" target="_blank" rel="noopener" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+								Read Excerpt
+							</a>
+						<?php else : ?>
+							<a href="<?php the_permalink(); ?>" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+								Learn More
+							</a>
+						<?php endif; ?>
+					</div>
 				</div>
-			</div>
-			<div class="order-1 lg:order-2 flex justify-center">
-				<div class="relative w-full max-w-md aspect-[3/4] rounded-lg shadow-2xl overflow-hidden transform lg:rotate-6 hover:rotate-0 transition-transform duration-500">
-					<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( get_theme_mod( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
-						<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-10">
-							<div>
-								<p class="text-xs font-bold tracking-widest text-accent uppercase mb-2">
-									<?php
-									$featured_book_author = get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
-									echo esc_html( $featured_book_author );
-									?>
-								</p>
-								<p class="text-3xl font-black leading-tight">
-									<?php
-									echo esc_html( $featured_book_title );
-									?>
-								</p>
+				<div class="order-1 lg:order-2 flex justify-center">
+					<div class="relative w-full max-w-md aspect-[3/4] rounded-lg shadow-2xl overflow-hidden transform lg:rotate-6 hover:rotate-0 transition-transform duration-500 group">
+						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( $featured_image ? $featured_image : get_theme_mod( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
+							<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-10 group-hover:opacity-0 transition-opacity duration-500">
+								<div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
+	<?php
+	// Store featured book ID before resetting postdata
+	$featured_book_id_for_exclusion = get_the_ID();
+	wp_reset_postdata();
+else :
+	// Fallback to customizer settings if no featured book found
+	$featured_book_id_for_exclusion = 0;
+	?>
+	<section class="bg-primary text-white py-24 overflow-hidden relative">
+		<div class="absolute right-0 top-0 w-1/3 h-full bg-accent/10 -skew-x-12 translate-x-1/2"></div>
+		<div class="max-w-[1280px] mx-auto px-6 relative z-10">
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+				<div class="order-2 lg:order-1">
+					<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
+						<?php
+						$featured_book_badge = get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
+						echo esc_html( $featured_book_badge );
+						?>
+					</span>
+					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+						<?php
+						$featured_book_title = get_theme_mod( 'featured_book_title', 'Walking the Narrow Road' );
+						echo esc_html( $featured_book_title );
+						?>
+					</h2>
+					<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
+						<?php
+						$featured_book_description = get_theme_mod(
+							'featured_book_description',
+							'Discover the transformative power of surrendered living. In his latest book, Terry Shaguy shares profound lessons from two decades on the mission field, teaching us how to find God\'s voice in the midst of global noise.'
+						);
+						echo esc_html( $featured_book_description );
+						?>
+					</p>
+					<div class="flex flex-wrap gap-4">
+						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+							Buy Now <span class="material-symbols-outlined">shopping_cart</span>
+						</a>
+						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+							Read Excerpt
+						</a>
+					</div>
+				</div>
+				<div class="order-1 lg:order-2 flex justify-center">
+					<div class="relative w-full max-w-md aspect-[3/4] rounded-lg shadow-2xl overflow-hidden transform lg:rotate-6 hover:rotate-0 transition-transform duration-500">
+						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( get_theme_mod( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
+							<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-10">
+								<div>
+									<p class="text-xs font-bold tracking-widest text-accent uppercase mb-2">
+										<?php
+										$featured_book_author = get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
+										echo esc_html( $featured_book_author );
+										?>
+									</p>
+									<p class="text-3xl font-black leading-tight">
+										<?php
+										echo esc_html( $featured_book_title );
+										?>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<?php
+endif;
+?>
 
 <!-- Books Collection Section -->
 <section class="bg-[#f3f7f4] dark:bg-[#0c1a11] py-24">
@@ -267,16 +393,21 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 			<?php
-			// Query books - try custom post type 'book' first, fallback to posts with 'books' category
-			$books_query = new WP_Query(
-				array(
-					'post_type'      => 'book',
-					'posts_per_page' => 4,
-					'post_status'    => 'publish',
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-				)
+			// Query books - exclude featured book
+			$books_args = array(
+				'post_type'      => 'book',
+				'posts_per_page' => 4,
+				'post_status'    => 'publish',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
 			);
+			
+			// Exclude featured book if one was found
+			if ( isset( $featured_book_id_for_exclusion ) && $featured_book_id_for_exclusion > 0 ) {
+				$books_args['post__not_in'] = array( $featured_book_id_for_exclusion );
+			}
+			
+			$books_query = new WP_Query( $books_args );
 
 			// Fallback: If no books found, try regular posts with 'books' category
 			if ( ! $books_query->have_posts() ) {
@@ -319,7 +450,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 
 				foreach ( $placeholder_books as $book ) :
 					?>
-					<div class="group">
+					<div class="group cursor-pointer">
 						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<img alt="<?php echo esc_attr( $book['title'] ); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/' . $book['image'] ); ?>"/>
 						</div>
@@ -335,7 +466,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 				while ( $books_query->have_posts() ) :
 					$books_query->the_post();
 					?>
-					<div class="group">
+					<div class="group cursor-pointer">
 						<a href="<?php the_permalink(); ?>" class="block aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<?php if ( has_post_thumbnail() ) : ?>
 								<?php

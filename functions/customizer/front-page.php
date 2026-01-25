@@ -28,7 +28,7 @@ function tsm_customize_register_front_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'hero_badge',
 		array(
-			'default'           => 'Global Itinerant Ministry',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -46,7 +46,7 @@ function tsm_customize_register_front_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'hero_heading',
 		array(
-			'default'           => 'Welcome to<br/>Terry Shaguy Ministries',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -64,7 +64,7 @@ function tsm_customize_register_front_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'hero_description',
 		array(
-			'default'           => 'United in heart and mission, we travel the world to share the transformative power of the Gospel through speaking, writing, and global outreach.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -138,9 +138,7 @@ function tsm_customize_register_front_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_content',
 		array(
-			'default'           => 'With over 25 combined years in ministry, we have dedicated our lives to training leaders and reaching the unreached. Together, we bring a balanced perspective on faith, family, and global service. 
-
-Our journey has taken us from rural villages in the Amazon to bustling metropolises in Asia, always with the singular focus of equipping the body of Christ for the harvest. David\'s theological depth and Debbie\'s compassionate heart for families create a unique synergy in their shared calling.',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -158,7 +156,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'about_quote',
 		array(
-			'default'           => '"Dedicated to sharing hope across the nations."',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -176,7 +174,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'villages_count',
 		array(
-			'default'           => '40',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -194,7 +192,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'books_count',
 		array(
-			'default'           => '12',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -212,7 +210,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'services_badge',
 		array(
-			'default'           => 'Our Services',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -230,7 +228,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'services_heading',
 		array(
-			'default'           => 'How We Serve',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -248,7 +246,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'services_description',
 		array(
-			'default'           => 'We are committed to serving the body of Christ through various ministries and outreach efforts.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -266,7 +264,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_1_title',
 		array(
-			'default'           => 'Itinerant Teaching',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -283,7 +281,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_1_description',
 		array(
-			'default'           => 'Available for conferences, revivals, and church gatherings globally.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -300,7 +298,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_2_title',
 		array(
-			'default'           => 'Authorship',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -317,7 +315,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_2_description',
 		array(
-			'default'           => 'Writing together and individually to equip the body of Christ.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -334,7 +332,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_3_title',
 		array(
-			'default'           => 'Global Outreach',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -351,7 +349,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'service_3_description',
 		array(
-			'default'           => 'Leading mission teams and humanitarian efforts across the globe.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -364,20 +362,57 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 		)
 	);
 
+	// Featured Book Selection
+	$wp_customize->add_setting(
+		'front_page_featured_book',
+		array(
+			'default'           => 0,
+			'sanitize_callback' => 'absint',
+		)
+	);
+
+	// Get all published books for dropdown
+	$books = get_posts(
+		array(
+			'post_type'      => 'book',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+
+	$book_choices = array( 0 => __( 'None (use manual settings below)', 'tsm-theme' ) );
+	foreach ( $books as $book ) {
+		$book_choices[ $book->ID ] = $book->post_title;
+	}
+
+	$wp_customize->add_control(
+		'front_page_featured_book',
+		array(
+			'label'       => __( 'Featured Book', 'tsm-theme' ),
+			'description' => __( 'Select a book to feature in the "New Release" section. If "None" is selected, the manual settings below will be used.', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'select',
+			'choices'     => $book_choices,
+		)
+	);
+
 	// Featured Book Badge
 	$wp_customize->add_setting(
 		'featured_book_badge',
 		array(
-			'default'           => 'NEW RELEASE',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
 	$wp_customize->add_control(
 		'featured_book_badge',
 		array(
-			'label'   => __( 'Featured Book Badge', 'tsm-theme' ),
-			'section' => 'tsm_front_page',
-			'type'    => 'text',
+			'label'       => __( 'Featured Book Badge', 'tsm-theme' ),
+			'description' => __( 'Badge text (only used if no book is selected above).', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'text',
 		)
 	);
 
@@ -385,7 +420,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'featured_book_title',
 		array(
-			'default'           => 'Walking the Narrow Road',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -402,7 +437,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'featured_book_author',
 		array(
-			'default'           => 'Terry Shaguy',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -419,7 +454,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'featured_book_description',
 		array(
-			'default'           => 'Discover the transformative power of surrendered living. In his latest book, Terry Shaguy shares profound lessons from two decades on the mission field, teaching us how to find God\'s voice in the midst of global noise.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -455,7 +490,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'featured_book_buy_url',
 		array(
-			'default'           => home_url( '/books/walking-the-narrow-road' ),
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
@@ -473,7 +508,7 @@ Our journey has taken us from rural villages in the Amazon to bustling metropoli
 	$wp_customize->add_setting(
 		'featured_book_excerpt_url',
 		array(
-			'default'           => home_url( '/books/walking-the-narrow-road#excerpt' ),
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
