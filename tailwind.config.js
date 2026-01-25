@@ -12,6 +12,7 @@ module.exports = {
       },
       fontFamily: {
         display: ['Work Sans', 'sans-serif'],
+        serif: ['Lora', 'serif'],
       },
       borderRadius: {
         DEFAULT: '0.25rem',

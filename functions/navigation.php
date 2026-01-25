@@ -97,7 +97,7 @@ class TSM_Nav_Walker extends Walker_Nav_Menu {
 			$item_output .= '</a>';
 		} else {
 			// Regular menu items
-			$item_output .= '<a' . $attributes . ' class="' . esc_attr( $text_color_class ) . ' hover:text-primary transition-colors text-sm font-semibold py-2">';
+			$item_output .= '<a' . $attributes . ' class="flex items-center ' . esc_attr( $text_color_class ) . ' hover:text-primary transition-colors text-sm font-semibold py-2">';
 			$item_output .= ( isset( $args->link_before ) ? $args->link_before : '' ) . apply_filters( 'the_title', $item->title, $item->ID ) . ( isset( $args->link_after ) ? $args->link_after : '' );
 			$item_output .= '</a>';
 		}

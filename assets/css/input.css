@@ -14,7 +14,22 @@ body {
     font-family: "Work Sans", sans-serif;
 }
 
+/* Serif text utility class */
+.serif-text {
+    font-family: "Lora", serif;
+}
+
 /* Custom styles can go here */
+
+/* Global link hover styles */
+a:hover {
+    color: rgb(26 77 46); /* accent color */
+    transition: color 0.2s ease;
+}
+
+.dark a:hover {
+    color: rgb(76 154 95); /* primary color for dark mode */
+}
 
 /* WPForms Newsletter Styling */
 .wpforms-container {
