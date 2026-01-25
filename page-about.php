@@ -81,7 +81,7 @@ get_header();
 					echo esc_html( $about_subtitle );
 					?>
 				</h2>
-				<h1 class="text-accent dark:text-white text-5xl md:text-6xl font-black leading-tight mb-6">
+				<h1 class="text-accent dark:text-white text-5xl md:text-6xl font-bold leading-tight mb-6">
 					<?php
 					$about_name = get_theme_mod( 'about_page_name', 'Terry Shaguy' );
 					echo esc_html( $about_name );
@@ -184,7 +184,7 @@ get_header();
 					echo esc_html( $about_books_badge );
 					?>
 				</h2>
-				<h3 class="text-primary dark:text-white text-4xl font-black mb-4">
+				<h3 class="text-primary dark:text-white text-4xl font-bold mb-4">
 					<?php
 					$about_books_title = get_theme_mod( 'about_books_title', 'Books by Terry' );
 					echo esc_html( $about_books_title );
@@ -330,7 +330,7 @@ get_header();
 		}
 		?>
 		<div class="relative z-10 max-w-2xl mx-auto">
-			<h2 class="text-3xl md:text-5xl font-black mb-8 leading-tight">
+			<h2 class="text-3xl md:text-5xl font-bold mb-8 leading-tight">
 				<?php
 				$about_cta_title = get_theme_mod( 'about_cta_title', 'Invite Terry to Your Event' );
 				echo esc_html( $about_cta_title );

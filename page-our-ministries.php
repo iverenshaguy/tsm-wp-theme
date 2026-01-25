@@ -165,13 +165,13 @@ get_header();
 								<h4 class="text-xl font-bold text-primary dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
 								<p class="text-sm text-gray-500 dark:text-gray-400"><?php echo esc_html( $description ); ?></p>
 							</div>
-							<div class="w-16 h-16 rounded-xl <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
+							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
 								<span class="material-symbols-outlined"><?php echo esc_html( $icon ); ?></span>
 							</div>
 							<div class="flex-1 hidden md:block order-3"></div>
 						<?php else : ?>
 							<div class="flex-1 hidden md:block order-1"></div>
-							<div class="w-16 h-16 rounded-xl <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
+							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
 								<span class="material-symbols-outlined"><?php echo esc_html( $icon ); ?></span>
 							</div>
 							<div class="flex-1 md:pl-12 order-2 md:order-3">
