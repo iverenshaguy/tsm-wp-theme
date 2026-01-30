@@ -152,24 +152,6 @@ function tsm_customize_register_front_page( $wp_customize ) {
 		)
 	);
 
-	// About Quote
-	$wp_customize->add_setting(
-		'about_quote',
-		array(
-			'default'           => '',
-			'sanitize_callback' => 'sanitize_text_field',
-		)
-	);
-	$wp_customize->add_control(
-		'about_quote',
-		array(
-			'label'       => __( 'About Quote', 'tsm-theme' ),
-			'description' => __( 'Quote text displayed in the overlay box on the about image.', 'tsm-theme' ),
-			'section'     => 'tsm_front_page',
-			'type'        => 'text',
-		)
-	);
-
 	// Villages Count
 	$wp_customize->add_setting(
 		'villages_count',

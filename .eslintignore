@@ -1,0 +1,21 @@
+# Node.js config files (use CommonJS, not ES modules)
+*.config.js
+postcss.config.js
+tailwind.config.js
+
+# Build scripts (Node.js CommonJS)
+scripts/
+build-dist.js
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+assets/css/main.css
+assets/js/*.min.js
+
+# Other
+*.min.js
+*.min.css

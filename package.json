@@ -3,28 +3,61 @@
   "version": "1.0.0",
   "description": "WordPress theme for TSM",
   "scripts": {
-    "build:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --minify",
-    "build:css:dist": "tailwindcss -i ./assets/css/input.css -o ./dist/assets/css/main.css --minify",
-    "build:dist": "node build-dist.js",
-    "build": "npm run build:css && npm run build:dist",
-    "build:production": "npm run build:css:dist && npm run build:dist",
-    "watch:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --watch",
-    "lint:js": "eslint assets/js/**/*.js",
-    "lint:js:fix": "eslint assets/js/**/*.js --fix",
-    "lint:css": "stylelint 'assets/css/**/*.css' --ignore-path .gitignore",
-    "lint:css:fix": "stylelint 'assets/css/**/*.css' --fix",
+    "dev": "concurrently --names \"CSS,JS,PHP\" --prefix-colors \"blue,yellow,green\" \"npm run watch:css\" \"npm run watch:js\" \"npm run watch:php\"",
+    "build:css": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/main.css",
+    "build:css:min": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/main.css --minify",
+    "build:css:dist": "tailwindcss -i ./src/assets/css/input.css -o ./dist/assets/css/main.css --minify",
+    "build:js": "node scripts/minify-js.js",
+    "build:js:dist": "node scripts/minify-js.js --dist",
+    "build:dev": "npm run build:css && npm run build:js && npm run postbuild",
+    "build": "npm run build:css:dist && npm run build:js:dist && npm run postbuild",
+    "postbuild": "node scripts/build-dist.js",
+    "watch:css": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/main.css --watch",
+    "watch:js": "node scripts/watch-js.js",
+    "watch:php": "node scripts/watch-php.js",
+    "lint:js": "eslint src/assets/js/**/*.js",
+    "lint:js:fix": "eslint src/assets/js/**/*.js --fix",
+    "lint:css": "stylelint 'src/assets/css/**/*.css' --ignore-path .gitignore",
+    "lint:css:fix": "stylelint 'src/assets/css/**/*.css' --fix",
     "lint:php": "./vendor/bin/phpcs --standard=.phpcs.xml",
     "lint:php:fix": "./vendor/bin/phpcbf --standard=.phpcs.xml",
-    "format": "prettier --write 'assets/js/**/*.js' 'assets/css/**/*.css'",
-    "lint": "npm run lint:js && npm run lint:css && npm run lint:php"
+    "format": "prettier --write 'src/assets/js/**/*.js' 'src/assets/css/**/*.css'",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+    "prepare": "husky install",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "docker:restart": "docker-compose restart",
+    "docker:logs": "docker-compose logs -f wordpress",
+    "docker:status": "docker-compose ps"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.0",
-    "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "chokidar": "^5.0.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
+    "cssnano": "^7.1.2",
     "eslint": "^8.57.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "postcss": "^8.5.6",
+    "prettier": "^3.2.5",
     "stylelint": "^16.0.0",
     "stylelint-config-standard": "^36.0.0",
-    "prettier": "^3.2.5"
+    "tailwindcss": "^3.4.0",
+    "terser": "^5.46.0"
+  },
+  "lint-staged": {
+    "src/assets/js/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/assets/css/**/*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.php": [
+      "./vendor/bin/phpcbf --standard=.phpcs.xml || true"
+    ]
   }
 }

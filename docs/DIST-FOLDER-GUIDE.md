@@ -53,7 +53,7 @@ npm run build:dist
 #### Using the Deployment Script
 
 ```bash
-./deploy-to-dev.sh [FTP_HOST] [FTP_USER] [REMOTE_PATH]
+./scripts/deploy-to-dev.sh [FTP_HOST] [FTP_USER] [REMOTE_PATH]
 ```
 
 The script automatically builds and deploys from `dist/`.
@@ -82,7 +82,7 @@ The build process automatically excludes:
 - `.vscode/`
 - Configuration files (`.prettierrc.json`, `.eslintrc.json`, etc.)
 - Documentation files (`*.md`)
-- Build scripts (`build-dist.js`, `deploy-to-dev.sh`)
+- Build scripts (`scripts/build-dist.js`, `scripts/deploy-to-dev.sh`)
 - Source CSS (`input.css`) - only compiled `main.css` is included
 
 ## File Structure
@@ -105,7 +105,9 @@ tsm-theme/
 │       ├── input.css       # Source CSS (not deployed)
 │       └── main.css         # Dev build
 ├── package.json             # Not deployed
-├── build-dist.js            # Not deployed
+├── scripts/                 # Not deployed
+│   ├── build-dist.js
+│   └── deploy-to-dev.sh
 └── ...                      # Other source files
 ```
 

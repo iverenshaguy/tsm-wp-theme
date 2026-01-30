@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "jquery": true
+    "jquery": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended"
@@ -20,5 +21,26 @@
     "wp": "readonly",
     "jQuery": "readonly",
     "tailwind": "readonly"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tailwind.config.js", "postcss.config.js", "**/scripts/**/*.js"],
+      "env": {
+        "node": true,
+        "browser": false
+      },
+      "parserOptions": {
+        "sourceType": "script",
+        "ecmaVersion": "latest"
+      },
+      "globals": {
+        "require": "readonly",
+        "module": "readonly",
+        "exports": "readonly",
+        "__dirname": "readonly",
+        "__filename": "readonly",
+        "process": "readonly"
+      }
+    }
+  ]
 }

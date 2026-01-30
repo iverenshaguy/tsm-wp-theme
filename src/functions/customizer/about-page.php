@@ -98,16 +98,17 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_quote',
 		array(
-			'default'           => '',
+			'default'           => '"The Gospel, lived with depth and expressed through love, stewardship, and shared responsibility."',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
 	$wp_customize->add_control(
 		'about_quote',
 		array(
-			'label'   => __( 'Quote', 'tsm-theme' ),
-			'section' => 'tsm_about_page',
-			'type'    => 'textarea',
+			'label'       => __( 'Quote', 'tsm-theme' ),
+			'description' => __( 'Quote text displayed in the overlay box on the about image. This quote appears on both the About page and the front page About section.', 'tsm-theme' ),
+			'section'     => 'tsm_about_page',
+			'type'        => 'textarea',
 		)
 	);
 

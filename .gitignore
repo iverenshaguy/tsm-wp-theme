@@ -63,3 +63,8 @@ yarn.lock
 # Build/dist folder
 dist/
 dist.zip
+
+# Built assets (ignore compiled/minified files, source files in src/ are tracked)
+# Dev compiled files (in src/assets/)
+src/assets/css/main.css
+src/assets/js/main.js
