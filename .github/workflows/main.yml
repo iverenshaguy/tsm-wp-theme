@@ -27,6 +27,36 @@ jobs:
       - name: Build for production
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "Verifying dist folder structure..."
+          ls -la dist/ | head -10
+          echo ""
+          echo "Checking assets folder..."
+          ls -la dist/assets/ || echo "ERROR: assets folder not found!"
+          echo ""
+          echo "Checking CSS file..."
+          if [ -f dist/assets/css/main.css ]; then
+            ls -lh dist/assets/css/main.css
+            echo "CSS file size: $(wc -c < dist/assets/css/main.css) bytes"
+            # Ensure CSS file ends with newline (some FTP servers require this)
+            if [ "$(tail -c 1 dist/assets/css/main.css | od -An -tx1 | tr -d ' ')" != "0a" ]; then
+              echo "" >> dist/assets/css/main.css
+              echo "Added newline to CSS file"
+            fi
+          else
+            echo "ERROR: main.css not found!"
+            exit 1
+          fi
+          echo ""
+          echo "Checking JS file..."
+          ls -lh dist/assets/js/main.js || echo "ERROR: main.js not found!"
+          echo ""
+          echo "Listing all files in dist/assets/css/:"
+          find dist/assets/css -type f
+          echo ""
+          echo "✅ Build verification complete"
+
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
@@ -41,7 +71,12 @@ jobs:
           # Subdomain: /public_html/subdomain/wp-content/themes/tsm-theme/
           # Replace 'username' with your actual cPanel username
           # See docs/FTP-PATHS.md for detailed path configuration guide
-          server-dir: /tsm-theme/
+          # IMPORTANT: Update this path based on your FTP root location
+          # If FTP root is /home/username/: /public_html/wp-content/themes/tsm-theme/
+          # If FTP root is /home/username/public_html/: /wp-content/themes/tsm-theme/
+          server-dir: /public_html/wp-content/themes/tsm-theme/
+          dangerous-clean-slate: false
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**

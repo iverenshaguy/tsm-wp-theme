@@ -62,6 +62,9 @@ node_modules/
 dist/
 dist.zip
 
+# Build script temporary files
+.assets-backup
+
 # Built assets (ignore compiled/minified files, source files in src/ are tracked)
 # Dev compiled files (in src/assets/)
 src/assets/css/main.css

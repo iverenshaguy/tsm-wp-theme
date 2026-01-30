@@ -93,11 +93,37 @@ function copyDirectory(src, dest) {
 }
 
 function buildDist() {
-  console.log('🧹 Cleaning dist folder...');
+  console.log('🧹 Cleaning dist folder (preserving built assets)...');
   if (fs.existsSync(distDir)) {
-    fs.rmSync(distDir, { recursive: true, force: true });
+    // Preserve assets directory if it exists (contains built CSS/JS)
+    const assetsBackup = path.join(__dirname, '../.assets-backup');
+    const distAssets = path.join(distDir, 'assets');
+    if (fs.existsSync(distAssets)) {
+      if (fs.existsSync(assetsBackup)) {
+        fs.rmSync(assetsBackup, { recursive: true, force: true });
+      }
+      fs.renameSync(distAssets, assetsBackup);
+    }
+    
+    // Remove everything except assets
+    const entries = fs.readdirSync(distDir, { withFileTypes: true });
+    for (const entry of entries) {
+      const entryPath = path.join(distDir, entry.name);
+      if (entry.name !== 'assets') {
+        fs.rmSync(entryPath, { recursive: true, force: true });
+      }
+    }
+    
+    // Restore assets backup
+    if (fs.existsSync(assetsBackup)) {
+      if (fs.existsSync(distAssets)) {
+        fs.rmSync(distAssets, { recursive: true, force: true });
+      }
+      fs.renameSync(assetsBackup, distAssets);
+    }
+  } else {
+    fs.mkdirSync(distDir, { recursive: true });
   }
-  fs.mkdirSync(distDir, { recursive: true });
   
   console.log('📦 Copying files to dist/...');
   
@@ -162,17 +188,13 @@ function buildDist() {
       fs.mkdirSync(cssDest, { recursive: true });
     }
     
-    // Only copy CSS from src/ if it doesn't exist in dist/ (fallback for dev builds)
-    const cssSrc = path.join(assetsSrc, 'css');
+    // CSS is already built to dist/assets/css/main.css by build:css:dist
+    // Don't copy from src/ as it would overwrite the minified version
     const distMainCss = path.join(cssDest, 'main.css');
-    if (fs.existsSync(cssSrc) && !fs.existsSync(distMainCss)) {
-      const mainCss = path.join(cssSrc, 'main.css');
-      if (fs.existsSync(mainCss)) {
-        copyFile(mainCss, distMainCss);
-        console.log(`✓ Copied: assets/css/main.css`);
-      }
-    } else if (fs.existsSync(distMainCss)) {
+    if (fs.existsSync(distMainCss)) {
       console.log(`✓ Using: assets/css/main.css (already built to dist/)`);
+    } else {
+      console.warn(`⚠️  Warning: assets/css/main.css not found in dist/ - run 'npm run build:css:dist' first`);
     }
     
     // Ensure JS directory exists (JS is already built to dist/assets/js/main.js by build:js:dist)
@@ -181,17 +203,13 @@ function buildDist() {
       fs.mkdirSync(jsDest, { recursive: true });
     }
     
-    // Only copy JS from src/ if it doesn't exist in dist/ (fallback for dev builds)
-    const jsSrc = path.join(assetsSrc, 'js');
+    // JS is already built to dist/assets/js/main.js by build:js:dist
+    // Don't copy from src/ as it would overwrite the minified version
     const distMainJs = path.join(jsDest, 'main.js');
-    if (fs.existsSync(jsSrc) && !fs.existsSync(distMainJs)) {
-      const mainJs = path.join(jsSrc, 'main.js');
-      if (fs.existsSync(mainJs)) {
-        copyFile(mainJs, distMainJs);
-        console.log(`✓ Copied: assets/js/main.js`);
-      }
-    } else if (fs.existsSync(distMainJs)) {
+    if (fs.existsSync(distMainJs)) {
       console.log(`✓ Using: assets/js/main.js (already built to dist/)`);
+    } else {
+      console.warn(`⚠️  Warning: assets/js/main.js not found in dist/ - run 'npm run build:js:dist' first`);
     }
     
     // Copy images (always needed)
