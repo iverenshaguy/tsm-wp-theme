@@ -49,8 +49,6 @@ tableplus-connection*.txt
 
 # Node modules
 node_modules/
-package-lock.json
-yarn.lock
 
 # Linter cache
 .eslintcache
