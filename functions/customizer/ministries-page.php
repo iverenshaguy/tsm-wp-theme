@@ -28,7 +28,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_badge',
 		array(
-			'default'           => 'The Heart of the Vision',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -45,7 +45,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_vision',
 		array(
-			'default'           => '"Breaking poverty through <span class="text-accent">wise enterprise</span> and <span class="text-accent font-bold not-italic">community spirit</span>."',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -63,7 +63,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_motto_label',
 		array(
-			'default'           => 'Our Daily Motto',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -80,7 +80,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_motto_text',
 		array(
-			'default'           => '"Win and Help Win"',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -97,7 +97,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_mission_title',
 		array(
-			'default'           => 'Our mission is to walk with you as we restore Kingdom wealth.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -114,7 +114,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_mission_description',
 		array(
-			'default'           => 'We believe that financial freedom is not just about individuals, but about equipping the entire body of Christ for the final harvest.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -131,7 +131,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_pillars',
 		array(
-			'default'           => 'hub|Galvanizing the Church|Preparing the global body for the divine transfer of wealth through enterprise.|flare|Re-awakening Purpose|Raising a Joshua Generation focused on achieving Kingdom wealth for His glory.|handshake|Bridging the Gap|Restoring the essential family and community spirit that destroys systemic poverty.|shield|Equipping Every Saint|Providing the financial tools needed for the spiritual battle ahead.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -168,7 +168,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_quote',
 		array(
-			'default'           => '"The church is rising to take her place in the economy of heaven."',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -185,7 +185,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_timeline_title',
 		array(
-			'default'           => 'Our Journey Together',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -202,7 +202,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_timeline_subtitle',
 		array(
-			'default'           => 'How we practically bring the vision to life, step by step.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -219,7 +219,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_timeline_items',
 		array(
-			'default'           => 'payments|Wealth Creation Conferences|Intensive seminars sharing biblical strategies for generating and circulating wealth.|left|account_tree|REGAM Committees|Local support structures helping believers find stable, profitable employment.|right|volunteer_activism|"Helps" Ministry|Building financial foundations for fellow ministers to increase their reach.|left|model_training|Empowerment Workshops|Hands-on practical training specifically tailored for financial stewardship.|right|medical_services|Rural & Medical Outreaches|Healing bodies and sharing the Gospel in hard-to-reach communities.|left|psychology|Life & Career Coaching|One-on-one professional guidance for life development and career paths.|right|edit_note|Publishing Consultants|Mentoring authors and media creators to spread the Kingdom message.|left|support|Missions Supporters|A global network of financiers committed to funding gospel expansion.|right|local_library|Writers & Publishers|A community of storytellers dedicated to Christian media and books.|left|celebration|Soul Winning|The ultimate goal: leading every heart back to the Father.|right',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -237,7 +237,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_resources_title',
 		array(
-			'default'           => 'Equip your mind with truth.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -292,7 +292,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_resource_items',
 		array(
-			'default'           => 'menu_book|Books & Publications|podcasts|Audio, Radio & TV Broadcasts',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -310,7 +310,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_bible_label',
 		array(
-			'default'           => 'Our Foundation',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -327,7 +327,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_bible_title',
 		array(
-			'default'           => 'The Holy Bible',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -344,7 +344,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_bible_description',
 		array(
-			'default'           => 'The primary source of all our wisdom, strategy, and inspiration for the work of the ministry.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -361,7 +361,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_cta_title',
 		array(
-			'default'           => 'Ready to make a difference?',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -378,7 +378,7 @@ function tsm_customize_register_ministries_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'ministries_cta_description',
 		array(
-			'default'           => 'Join the REGAM Global community and help us break the chains of poverty through faith and wise enterprise.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);

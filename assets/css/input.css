@@ -160,3 +160,34 @@ nav ul ul li.group:hover > ul {
     opacity: 1;
     visibility: visible;
 }
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Hide browser default select dropdown arrow */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+select:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+select::-ms-expand {
+    display: none;  /* IE and Edge */
+}

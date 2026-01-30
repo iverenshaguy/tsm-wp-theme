@@ -47,7 +47,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_page_name',
 		array(
-			'default'           => 'Terry Shaguy',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -64,7 +64,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_page_subtitle',
 		array(
-			'default'           => 'The Life & Ministry Of',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -98,7 +98,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_quote',
 		array(
-			'default'           => '"True leadership is the ability to hear God\'s whisper amidst the world\'s roar."',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -115,7 +115,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_fast_facts_title',
 		array(
-			'default'           => 'Fast Facts',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -132,7 +132,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_fast_facts',
 		array(
-			'default'           => "school|Ph.D. in Global Theology\npublic|20+ Years Global Field Experience\nedit_note|Author of 8 Best-selling Titles\nlocation_on|Based in Nashville, Tennessee",
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -150,7 +150,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_1_title',
 		array(
-			'default'           => 'His Calling',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -167,7 +167,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_1_content',
 		array(
-			'default'           => '<p>Dr. Terry Shaguy\'s journey began with a distinct sense of purpose in the small rural communities of the Appalachian foothills. From an early age, Terry felt a profound pull toward the intersection of faith and global humanitarian needs. This wasn\'t merely a vocational choice but a transformative calling that has led him into some of the world\'s most remote corners.</p><p>His ministry is defined by a relentless pursuit of depth. Whether teaching in a crowded urban center or mentoring leaders in a quiet village, Terry\'s approach remains rooted in the belief that spiritual growth is the catalyst for all lasting societal change.</p>',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -185,7 +185,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_highlight_quote',
 		array(
-			'default'           => '"We do not travel to the ends of the earth to bring God there; we travel to discover where He is already working and join Him in that harvest."',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -202,7 +202,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_2_title',
 		array(
-			'default'           => 'Academic Background',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -219,7 +219,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_2_content',
 		array(
-			'default'           => '<p>Recognizing that zeal must be tempered with wisdom, Terry pursued a rigorous academic path. He holds a Master\'s of Divinity and a Ph.D. in Global Theology from the Trinity Evangelical Divinity School. His research focused on the indigenous expressions of faith in the Global South, a subject he continues to write and lecture on extensively.</p><p>Today, he serves as a visiting professor at several seminaries globally, helping to bridge the gap between traditional theological study and practical mission-field application.</p>',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -237,7 +237,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_3_title',
 		array(
-			'default'           => 'Personal Life',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -254,7 +254,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_section_3_content',
 		array(
-			'default'           => '<p>Beyond the pulpit and the lecture hall, Terry is a devoted husband to Debbie and a father of three. He often credits his family as his greatest grounding force. Terry is an avid hiker and can often be found exploring the trails of the Smoky Mountains when he is not on international assignment.</p><p>Terry and Debbie\'s partnership in ministry is a cornerstone of their work, demonstrating a model of shared leadership and mutual respect that they bring to every conference and mission they lead together.</p>',
+			'default'           => '',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);
@@ -272,7 +272,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_books_badge',
 		array(
-			'default'           => 'Resources',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -289,7 +289,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_books_title',
 		array(
-			'default'           => 'Books by Terry',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -306,7 +306,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_books_description',
 		array(
-			'default'           => 'Deepen your study with these selected works focusing on spiritual growth, global missions, and leadership.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
@@ -341,7 +341,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_cta_title',
 		array(
-			'default'           => 'Invite Terry to Your Event',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_text_field',
 		)
 	);
@@ -358,7 +358,7 @@ function tsm_customize_register_about_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'about_cta_description',
 		array(
-			'default'           => 'Dr. Terry Shaguy is available for keynote speaking, leadership seminars, and theological training worldwide.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
