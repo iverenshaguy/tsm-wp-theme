@@ -160,7 +160,7 @@ $books_query = new WP_Query( $books_args );
 					<div class="flex flex-col gap-6 @[480px]:min-w-[400px] @[480px]:gap-8 @[960px]:w-1/2 @[960px]:justify-center">
 						<div class="flex flex-col gap-3 text-left">
 							<span class="text-primary font-bold tracking-widest text-xs uppercase">New Arrival</span>
-							<h1 class="text-[#0d1b11] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl">
+							<h1 class="text-[#0d1b11] dark:text-white text-4xl font-bold leading-tight tracking-[-0.033em] @[480px]:text-5xl">
 								<?php the_title(); ?>
 							</h1>
 							<p class="text-gray-600 dark:text-gray-400 text-base @[480px]:text-lg leading-relaxed">
@@ -202,7 +202,7 @@ $books_query = new WP_Query( $books_args );
 							<?php if ( ! empty( $sort_by ) ) : ?>
 								<input type="hidden" name="sort" value="<?php echo esc_attr( $sort_by ); ?>">
 							<?php endif; ?>
-						</div>
+						</div>git f
 					</label>
 				</form>
 			</div>

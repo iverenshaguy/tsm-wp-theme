@@ -23,7 +23,7 @@ get_header();
 						echo esc_html( $hero_badge );
 						?>
 					</span>
-					<h1 class="text-white text-5xl font-black leading-tight tracking-[-0.033em] md:text-7xl">
+					<h1 class="text-white text-5xl font-bold leading-tight tracking-[-0.033em] md:text-7xl">
 						<?php
 						$hero_heading = get_theme_mod(
 							'hero_heading',
@@ -88,7 +88,7 @@ get_header();
 		</div>
 		<div class="flex flex-col">
 			<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4">Our Heart</h2>
-			<h3 class="text-primary dark:text-white text-4xl md:text-5xl font-black leading-tight mb-8">
+			<h3 class="text-primary dark:text-white text-4xl md:text-5xl font-bold leading-tight mb-8">
 				About Terry and Debbie
 			</h3>
 			<div class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
@@ -272,7 +272,7 @@ if ( $featured_query && $featured_query->have_posts() ) :
 					<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
 						<?php echo esc_html( $display_badge ); ?>
 					</span>
-					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+					<h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
 						<?php the_title(); ?>
 					</h2>
 					<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
@@ -331,7 +331,7 @@ else :
 						echo esc_html( $featured_book_badge );
 						?>
 					</span>
-					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+					<h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
 						<?php
 						$featured_book_title = get_theme_mod( 'featured_book_title', 'Walking the Narrow Road' );
 						echo esc_html( $featured_book_title );
@@ -366,7 +366,7 @@ else :
 										echo esc_html( $featured_book_author );
 										?>
 									</p>
-									<p class="text-3xl font-black leading-tight">
+									<p class="text-3xl font-bold leading-tight">
 										<?php
 										echo esc_html( $featured_book_title );
 										?>
@@ -388,7 +388,7 @@ endif;
 	<div class="max-w-[1280px] mx-auto px-6">
 		<div class="text-center mb-16">
 			<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4">The Collection</h2>
-			<h3 class="text-primary dark:text-white text-4xl font-black">From the Bookshelf</h3>
+			<h3 class="text-primary dark:text-white text-4xl font-bold">From the Bookshelf</h3>
 			<p class="text-gray-500 mt-4 max-w-2xl mx-auto">Explore more resources written to deepen your walk with God and strengthen your ministry leadership.</p>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -510,7 +510,7 @@ endif;
 		<div class="bg-primary text-white p-4 rounded-2xl mb-8">
 			<span class="material-symbols-outlined !text-4xl">favorite</span>
 		</div>
-		<h2 class="text-3xl md:text-5xl font-black mb-6 dark:text-white">Partner in Our Journey</h2>
+		<h2 class="text-3xl md:text-5xl font-bold mb-6 dark:text-white">Partner in Our Journey</h2>
 		<p class="text-gray-600 dark:text-gray-300 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
 			Stay connected with our monthly mission updates, travel reports, and joint ministry resources.
 		</p>

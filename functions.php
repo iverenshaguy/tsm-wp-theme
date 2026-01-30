@@ -19,3 +19,4 @@ require_once get_template_directory() . '/functions/widgets.php';
 require_once get_template_directory() . '/functions/post-types.php';
 require_once get_template_directory() . '/functions/customizer.php';
 require_once get_template_directory() . '/functions/forms.php';
+require_once get_template_directory() . '/functions/lightbox.php';
