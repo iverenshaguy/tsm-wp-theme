@@ -92,8 +92,11 @@ if ( have_posts() ) :
 				<div class="absolute inset-0 bg-gradient-to-br from-accent to-[#102215]"></div>
 			<?php endif; ?>
 			<div class="relative z-10 max-w-[1200px] px-6 text-center text-white">
-				<div class="mb-4 flex items-center justify-center gap-2">
-					<span class="px-3 py-1 bg-primary text-background-dark text-xs font-bold rounded-full uppercase tracking-wider">Mission Overview</span>
+				<div class="mb-6 flex flex-col items-center justify-center gap-3">
+					<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
+						<span class="material-symbols-outlined text-primary text-sm">explore</span>
+						<span class="text-primary text-xs font-bold tracking-widest uppercase">Mission Overview</span>
+					</div>
 					<?php if ( $mission_date ) : ?>
 						<span class="text-sm font-medium opacity-80"><?php echo esc_html( $mission_date ); ?></span>
 					<?php endif; ?>
@@ -110,7 +113,7 @@ if ( have_posts() ) :
 			</div>
 		</section>
 
-		<div class="max-w-[1200px] mx-auto px-4 -mt-16 relative z-20">
+		<div class="max-w-[1200px] mx-auto px-6 -mt-16 relative z-20">
 			<div class="mb-8 flex justify-between items-end">
 				<a class="inline-flex items-center gap-2 text-white hover:text-primary transition-colors font-semibold bg-accent/40 backdrop-blur-sm px-4 py-2 rounded-lg" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
 					<span class="material-symbols-outlined text-sm">arrow_back</span>
@@ -191,7 +194,7 @@ if ( have_posts() ) :
 					<?php if ( ! empty( $gallery_images ) ) : ?>
 						<div>
 							<div class="flex items-center justify-between mb-8">
-								<h2 class="text-3xl font-bold tracking-tight flex items-center gap-3">
+								<h2 class="text-accent text-3xl font-bold tracking-tight flex items-center gap-3">
 									<?php _e( 'Trip Gallery', 'tsm-theme' ); ?>
 									<span class="h-1 w-24 bg-primary rounded-full"></span>
 								</h2>
@@ -294,26 +297,33 @@ if ( have_posts() ) :
 					<div class="sticky top-24">
 						<?php if ( $mission_summary ) : ?>
 							<div class="bg-white dark:bg-[#1a2e1e] rounded-3xl border-2 border-primary shadow-2xl p-8 mb-8">
-								<h3 class="text-2xl font-bold mb-3 flex items-center gap-2">
+								<h3 class="text-accent text-2xl font-semibold mb-3 flex items-center justify-center gap-2">
 									<?php _e( 'Support This Work', 'tsm-theme' ); ?>
 								</h3>
-								<p class="text-gray-600 dark:text-gray-400 mb-8 text-sm leading-relaxed">
+								<p class="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed text-center">
 									<?php echo esc_html( $mission_summary ); ?>
 								</p>
-								<a href="<?php echo esc_url( home_url( '/partner' ) ); ?>" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mb-4 group">
-									<span class="material-symbols-outlined group-hover:scale-110 transition-transform">volunteer_activism</span>
-									<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
-								</a>
+								<div class="flex justify-center">
+									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="w-full flex cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary dark:bg-accent text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 transition-all active:scale-95 gap-2">
+										<span class="material-symbols-outlined">volunteer_activism</span>
+										<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
+									</a>
+								</div>
 							</div>
 						<?php else : ?>
 							<div class="bg-white dark:bg-[#1a2e1e] rounded-3xl border-2 border-primary shadow-2xl p-8 mb-8">
-								<h3 class="text-2xl font-bold mb-3 flex items-center gap-2">
+								<h3 class="text-accent text-2xl font-semibold mb-3 flex items-center justify-center">
 									<?php _e( 'Support This Work', 'tsm-theme' ); ?>
 								</h3>
-								<a href="<?php echo esc_url( home_url( '/partner' ) ); ?>" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mb-4 group">
-									<span class="material-symbols-outlined group-hover:scale-110 transition-transform">volunteer_activism</span>
-									<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
-								</a>
+                <p class="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed text-center">
+                  Your partnership helps bring the Gospel alongside practical care to communities in need.
+								</p>
+								<div class="flex justify-center">
+									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="w-full flex cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary dark:bg-accent text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 transition-all active:scale-95 gap-2">
+										<span class="material-symbols-outlined">volunteer_activism</span>
+										<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
+									</a>
+								</div>
 							</div>
 						<?php endif; ?>
 
@@ -344,7 +354,7 @@ if ( have_posts() ) :
 						<?php endif; ?>
 
 						<div class="mt-8">
-							<a class="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl hover:border-primary hover:text-primary transition-all font-bold text-sm" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
+							<a class="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary hover:text-primary transition-all font-bold text-sm" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
 								<span class="material-symbols-outlined text-base">grid_view</span>
 								<?php _e( 'All Mission Projects', 'tsm-theme' ); ?>
 							</a>
@@ -380,12 +390,12 @@ if ( have_posts() ) :
 		endif;
 else :
 	?>
-	<section class="max-w-[1200px] mx-auto px-4 md:px-10 py-20">
+	<section class="max-w-[1200px] mx-auto px-6 py-20">
 		<div class="text-center">
 			<h1 class="text-4xl font-bold mb-4"><?php _e( 'Mission Not Found', 'tsm-theme' ); ?></h1>
 			<p class="text-lg text-gray-500 dark:text-gray-400 mb-8"><?php _e( 'Sorry, the mission you are looking for could not be found.', 'tsm-theme' ); ?></p>
-			<a href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>" class="inline-flex items-center gap-2 text-primary font-bold hover:underline">
-				<?php _e( 'View All Missions', 'tsm-theme' ); ?> <span class="material-symbols-outlined text-xs">arrow_forward</span>
+			<a href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>" class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+				<?php _e( 'View All Missions', 'tsm-theme' ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 			</a>
 		</div>
 	</section>

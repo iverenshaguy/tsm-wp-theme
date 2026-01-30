@@ -160,7 +160,7 @@ $books_query = new WP_Query( $books_args );
 					<div class="flex flex-col gap-6 @[480px]:min-w-[400px] @[480px]:gap-8 @[960px]:w-1/2 @[960px]:justify-center">
 						<div class="flex flex-col gap-3 text-left">
 							<span class="text-primary font-bold tracking-widest text-xs uppercase">New Arrival</span>
-							<h1 class="text-[#0d1b11] dark:text-white text-4xl font-bold leading-tight tracking-[-0.033em] @[480px]:text-5xl">
+							<h1 class="text-accent dark:text-white text-4xl font-bold leading-tight tracking-[-0.033em] @[480px]:text-5xl">
 								<?php the_title(); ?>
 							</h1>
 							<p class="text-gray-600 dark:text-gray-400 text-base @[480px]:text-lg leading-relaxed">
@@ -169,11 +169,11 @@ $books_query = new WP_Query( $books_args );
 						</div>
 						<div class="flex flex-wrap gap-4">
 							<?php if ( ! empty( $featured_purchase_url ) ) : ?>
-								<a href="<?php echo esc_url( $featured_purchase_url ); ?>" target="_blank" rel="noopener" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:text-accent transition-all">
+								<a href="<?php echo esc_url( $featured_purchase_url ); ?>" target="_blank" rel="noopener" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg px-6 py-3 bg-primary text-white hover:text-white text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
 									<span class="truncate">Purchase Now</span>
 								</a>
 							<?php endif; ?>
-							<a href="<?php the_permalink(); ?>" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-transparent border-2 border-primary text-primary text-base font-bold hover:bg-primary/5 transition-all">
+							<a href="<?php the_permalink(); ?>" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg px-6 py-3 bg-transparent border-2 border-primary text-primary text-base font-bold hover:bg-primary/5 transition-all">
 								<span class="truncate">Learn More</span>
 							</a>
 						</div>
@@ -191,31 +191,31 @@ $books_query = new WP_Query( $books_args );
 			<div class="flex-1 max-w-xl">
 				<form method="get" action="<?php echo esc_url( get_post_type_archive_link( 'book' ) ); ?>">
 					<label class="flex flex-col h-12 w-full">
-						<div class="flex w-full flex-1 items-stretch rounded-full h-full shadow-sm">
-							<div class="text-primary flex border-none bg-white dark:bg-[#162b1b] items-center justify-center pl-4 rounded-l-full" data-icon="search">
+						<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+							<div class="text-primary flex border-none bg-white dark:bg-[#162b1b] items-center justify-center pl-4 rounded-l-xl" data-icon="search">
 								<span class="material-symbols-outlined">search</span>
 							</div>
-							<input type="search" name="s" value="<?php echo esc_attr( $search_query ); ?>" class="form-input flex w-full min-w-0 flex-1 border-none bg-white dark:bg-[#162b1b] text-[#0d1b11] dark:text-white focus:ring-0 h-full placeholder:text-gray-400 px-4 rounded-r-full pl-2 text-base font-normal leading-normal" placeholder="Search titles, topics, or keywords..." id="book-search-input"/>
+							<input type="search" name="s" value="<?php echo esc_attr( $search_query ); ?>" class="form-input flex w-full min-w-0 flex-1 border-none bg-white dark:bg-[#162b1b] text-accent dark:text-white focus:ring-0 h-full placeholder:text-gray-400 px-4 rounded-r-xl pl-2 text-base font-normal leading-normal" placeholder="Search titles, topics, or keywords..." id="book-search-input"/>
 							<?php if ( ! empty( $category_filter ) ) : ?>
 								<input type="hidden" name="category" value="<?php echo esc_attr( $category_filter ); ?>">
 							<?php endif; ?>
 							<?php if ( ! empty( $sort_by ) ) : ?>
 								<input type="hidden" name="sort" value="<?php echo esc_attr( $sort_by ); ?>">
 							<?php endif; ?>
-						</div>git f
+						</div>
 					</label>
 				</form>
 			</div>
 			<!-- Chips / Categories -->
-			<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-				<a href="<?php echo esc_url( remove_query_arg( array( 'category', 's', 'sort' ) ) ); ?>" id="clear-filters-link" class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 cursor-pointer transition-colors <?php echo ( empty( $category_filter ) || $category_filter === 'all' ) ? 'bg-primary' : 'bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30'; ?>">
+			<div class="flex gap-2 overflow-x-auto no-scrollbar">
+				<a href="<?php echo esc_url( remove_query_arg( array( 'category', 's', 'sort' ) ) ); ?>" id="clear-filters-link" class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors <?php echo ( empty( $category_filter ) || $category_filter === 'all' ) ? 'bg-primary' : 'bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30'; ?>">
 					<p class="<?php echo ( empty( $category_filter ) || $category_filter === 'all' ) ? 'text-white text-sm font-semibold' : 'text-gray-700 dark:text-gray-300 text-sm font-medium'; ?>">All Resources</p>
 				</a>
 				<?php 
 				// Show only first 4 categories
 				$display_categories = array_slice( $categories, 0, 4 );
 				foreach ( $display_categories as $category ) : ?>
-					<a href="<?php echo esc_url( add_query_arg( 'category', $category->slug, remove_query_arg( array( 's', 'sort' ) ) ) ); ?>" class="category-filter-link flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 cursor-pointer transition-colors <?php echo ( $category_filter === $category->slug ) ? 'bg-primary border-primary' : 'bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30'; ?>">
+					<a href="<?php echo esc_url( add_query_arg( 'category', $category->slug, remove_query_arg( array( 's', 'sort' ) ) ) ); ?>" class="category-filter-link flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors <?php echo ( $category_filter === $category->slug ) ? 'bg-primary border-primary' : 'bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30'; ?>">
 						<p class="<?php echo ( $category_filter === $category->slug ) ? 'text-white text-sm font-semibold' : 'text-gray-700 dark:text-gray-300 text-sm font-medium'; ?>"><?php echo esc_html( $category->name ); ?></p>
 					</a>
 				<?php endforeach; ?>
@@ -224,7 +224,7 @@ $books_query = new WP_Query( $books_args );
 
 		<!-- SectionHeader -->
 		<div class="flex items-center justify-between px-4 pb-6 pt-2">
-			<h2 class="text-[#0d1b11] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">All Publications</h2>
+			<h2 class="text-accent dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">All Publications</h2>
 		</div>
 
 		<!-- Books Grid -->
@@ -256,7 +256,7 @@ $books_query = new WP_Query( $books_args );
 							<?php if ( $book_categories && ! is_wp_error( $book_categories ) && ! empty( $book_categories ) ) : ?>
 								<span class="text-[10px] text-primary font-bold uppercase tracking-wider mb-1"><?php echo esc_html( $book_categories[0]->name ); ?></span>
 							<?php endif; ?>
-							<h3 class="text-[#0d1b11] dark:text-white font-bold text-lg leading-snug mb-2 group-hover:text-primary transition-colors"><?php echo esc_html( $book_title ); ?></h3>
+							<h3 class="text-accent dark:text-white font-bold text-lg leading-snug mb-2 transition-colors"><?php echo esc_html( $book_title ); ?></h3>
 						</div>
 					</a>
 					<?php

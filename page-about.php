@@ -30,7 +30,7 @@ get_header();
 						<?php
 						$about_quote = get_theme_mod(
 							'about_quote',
-							'"True leadership is the ability to hear God\'s whisper amidst the world\'s roar."'
+							'"The Gospel, lived with depth and expressed through love, stewardship, and shared responsibility."'
 						);
 						echo esc_html( $about_quote );
 						?>
@@ -174,42 +174,39 @@ get_header();
 </section>
 
 <!-- Books Section -->
-<section class="bg-[#f3f7f4] dark:bg-[#0c1a11] py-24 border-y border-gray-100 dark:border-[#1d3a24]">
+<section class="bg-[#f3f7f4] dark:bg-[#0c1a11] py-24">
 	<div class="max-w-[1280px] mx-auto px-6">
-		<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-			<div class="max-w-xl">
-				<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4">
+		<div class="text-center mb-16">
+			<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
+				<span class="material-symbols-outlined text-primary text-sm">menu_book</span>
+				<span class="text-primary text-xs font-bold tracking-widest uppercase">
 					<?php
 					$about_books_badge = get_theme_mod( 'about_books_badge', 'Resources' );
 					echo esc_html( $about_books_badge );
 					?>
-				</h2>
-				<h3 class="text-primary dark:text-white text-4xl font-bold mb-4">
-					<?php
-					$about_books_title = get_theme_mod( 'about_books_title', 'Books by Terry' );
-					echo esc_html( $about_books_title );
-					?>
-				</h3>
-				<p class="text-gray-500 serif-text">
-					<?php
-					$about_books_description = get_theme_mod(
-						'about_books_description',
-						'Deepen your study with these selected works focusing on spiritual growth, global missions, and leadership.'
-					);
-					echo esc_html( $about_books_description );
-					?>
-				</p>
+				</span>
 			</div>
-			<?php
-			$books_page_id = get_theme_mod( 'books_page_id', 0 );
-			$books_url = $books_page_id ? get_permalink( $books_page_id ) : home_url( '/books' );
-			?>
-			<a href="<?php echo esc_url( $books_url ); ?>" class="text-primary dark:text-accent font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
-				View Entire Catalog <span class="material-symbols-outlined">arrow_right_alt</span>
-			</a>
+			<h3 class="text-accent dark:text-white text-4xl font-black">
+				<?php
+				$about_books_title = get_theme_mod( 'about_books_title', 'Books by Terry' );
+				echo esc_html( $about_books_title );
+				?>
+			</h3>
+			<p class="text-gray-500 mt-4 max-w-2xl mx-auto">
+				<?php
+				$about_books_description = get_theme_mod(
+					'about_books_description',
+					'Deepen your study with these selected works focusing on spiritual growth, global missions, and leadership.'
+				);
+				echo esc_html( $about_books_description );
+				?>
+			</p>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 			<?php
+			$books_page_id = get_theme_mod( 'books_page_id', 0 );
+			$books_url = $books_page_id ? get_permalink( $books_page_id ) : home_url( '/books' );
+			
 			// Query books - try custom post type 'book' first, fallback to posts with 'books' category
 			$books_query = new WP_Query(
 				array(
@@ -262,24 +259,25 @@ get_header();
 
 				foreach ( $placeholder_books as $book ) :
 					?>
-					<div class="group bg-white dark:bg-background-dark p-4 rounded-2xl shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-accent/20">
-						<div class="aspect-[3/4] rounded-xl overflow-hidden mb-6 shadow-md">
-							<img alt="<?php echo esc_attr( $book['title'] ); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="<?php echo esc_url( $book['image'] ); ?>"/>
+					<a href="<?php echo esc_url( $books_url ); ?>" class="group cursor-pointer block">
+						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
+							<img alt="<?php echo esc_attr( $book['title'] ); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( $book['image'] ); ?>"/>
 						</div>
-						<h4 class="text-primary dark:text-white text-lg font-bold mb-1 leading-tight"><?php echo esc_html( $book['title'] ); ?></h4>
-						<p class="text-gray-400 text-xs uppercase tracking-widest mb-4"><?php echo esc_html( $book['badge'] ); ?></p>
-						<a class="text-accent font-bold text-sm flex items-center gap-2 group/link" href="<?php echo esc_url( $books_url ); ?>">
-							Learn More <span class="material-symbols-outlined !text-base group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
-						</a>
-					</div>
+						<h4 class="text-accent dark:text-white text-xl font-bold mb-2 group-hover:text-primary transition-colors"><?php echo esc_html( $book['title'] ); ?></h4>
+						<p class="text-gray-500 text-sm mb-4"><?php echo esc_html( $book['badge'] ); ?></p>
+						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
+						</span>
+					</a>
 					<?php
 				endforeach;
 			} else {
 				while ( $books_query->have_posts() ) :
 					$books_query->the_post();
+					$author = get_post_meta( get_the_ID(), 'book_author', true );
 					?>
-					<div class="group bg-white dark:bg-background-dark p-4 rounded-2xl shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-accent/20">
-						<a href="<?php the_permalink(); ?>" class="block aspect-[3/4] rounded-xl overflow-hidden mb-6 shadow-md transition-transform duration-500 group-hover:scale-105">
+					<a href="<?php the_permalink(); ?>" class="group cursor-pointer block">
+						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<?php if ( has_post_thumbnail() ) : ?>
 								<?php
 								the_post_thumbnail(
@@ -293,22 +291,17 @@ get_header();
 							<?php else : ?>
 								<img alt="<?php the_title_attribute(); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>"/>
 							<?php endif; ?>
-						</a>
-						<h4 class="text-primary dark:text-white text-lg font-bold mb-1 leading-tight">
-							<a href="<?php the_permalink(); ?>" class="hover:text-accent transition-colors"><?php the_title(); ?></a>
+						</div>
+						<h4 class="text-accent dark:text-white text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+							<?php the_title(); ?>
 						</h4>
-						<?php
-						$book_badge = get_post_meta( get_the_ID(), 'book_badge', true );
-						if ( $book_badge ) {
-							?>
-							<p class="text-gray-400 text-xs uppercase tracking-widest mb-4"><?php echo esc_html( $book_badge ); ?></p>
-							<?php
-						}
-						?>
-						<a class="text-accent font-bold text-sm flex items-center gap-2 group/link" href="<?php the_permalink(); ?>">
-							Learn More <span class="material-symbols-outlined !text-base group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
-						</a>
-					</div>
+						<p class="text-gray-500 text-sm mb-4">
+							<?php echo $author ? esc_html( 'By ' . $author ) : 'By Terry Shaguy'; ?>
+						</p>
+						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
+						</span>
+					</a>
 					<?php
 				endwhile;
 				wp_reset_postdata();
@@ -330,13 +323,16 @@ get_header();
 		}
 		?>
 		<div class="relative z-10 max-w-2xl mx-auto">
-			<h2 class="text-3xl md:text-5xl font-bold mb-8 leading-tight">
+			<div class="bg-white text-primary p-4 rounded-2xl mb-8 shadow-lg shadow-white/30 w-fit mx-auto">
+				<span class="material-symbols-outlined !text-4xl">campaign</span>
+			</div>
+			<h2 class="text-3xl md:text-5xl font-black mb-6">
 				<?php
 				$about_cta_title = get_theme_mod( 'about_cta_title', 'Invite Terry to Your Event' );
 				echo esc_html( $about_cta_title );
 				?>
 			</h2>
-			<p class="text-white/80 text-lg mb-12 serif-text">
+			<p class="text-white/80 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
 				<?php
 				$about_cta_description = get_theme_mod(
 					'about_cta_description',
@@ -351,11 +347,11 @@ get_header();
 				$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
 				$speakers_kit_url = get_theme_mod( 'speakers_kit_url', '' );
 				?>
-				<a href="<?php echo esc_url( $contact_url ); ?>" class="bg-accent text-white hover:text-white font-bold px-10 py-5 rounded-xl transition-transform hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
+				<a href="<?php echo esc_url( $contact_url ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold px-10 py-5 rounded-lg shadow-xl transition-all hover:scale-105 active:scale-95">
 					Check Availability
 				</a>
 				<?php if ( $speakers_kit_url ) : ?>
-					<a href="<?php echo esc_url( $speakers_kit_url ); ?>" class="border border-white/30 hover:bg-white/10 text-white font-bold px-10 py-5 rounded-xl transition-all">
+					<a href="<?php echo esc_url( $speakers_kit_url ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold px-10 py-5 rounded-lg hover:bg-white/10 transition-all">
 						Speaker's Kit (PDF)
 					</a>
 				<?php endif; ?>

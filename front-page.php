@@ -9,39 +9,28 @@ get_header();
 ?>
 
 <!-- Hero Section -->
-<section class="max-w-[1280px] mx-auto px-6 py-8">
-	<div class="@container">
-		<div class="relative overflow-hidden rounded-2xl">
-			<div class="flex min-h-[660px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-8 text-center" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(26, 77, 46, 0.9) 100%), url("<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/hero-bg.png");'>
-				<div class="max-w-4xl flex flex-col gap-6">
-					<span class="text-accent font-bold tracking-[0.2em] uppercase text-sm bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full w-fit mx-auto">
-						<?php
-						$hero_badge = get_theme_mod(
-							'hero_badge',
-							'Global Itinerant Ministry'
-						);
-						echo esc_html( $hero_badge );
-						?>
-					</span>
-					<h1 class="text-white text-5xl font-bold leading-tight tracking-[-0.033em] md:text-7xl">
-						<?php
-						$hero_heading = get_theme_mod(
-							'hero_heading',
-							'Welcome to<br/>Terry Shaguy Ministries'
-						);
-						echo wp_kses_post( $hero_heading );
-						?>
-					</h1>
-					<p class="text-white/90 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-						<?php
-						$hero_description = get_theme_mod(
-							'hero_description',
-							'Besides teaching, Terry and Debbie Shaguy consider it a calling and an urgent priority to help less fortunate people, especially in Africa, rise above the darkness and horrors of poverty.'
-						);
-						echo esc_html( $hero_description );
-						?>
-					</p>
-				</div>
+<section class="w-full">
+	<div class="relative min-h-[600px] flex items-center justify-center bg-cover bg-center bg-no-repeat" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(51, 154, 70, 0.7) 100%), url("<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/hero-bg.png");'>
+		<div class="max-w-[1280px] mx-auto px-6 py-12 w-full">
+			<div class="max-w-2xl flex flex-col gap-6 items-start text-left">
+				<h1 class="text-white text-4xl font-bold leading-tight tracking-[-0.033em] md:text-6xl">
+					<?php
+					$hero_heading = get_theme_mod(
+						'hero_heading',
+						'Teaching the Word. Transforming Lives.'
+					);
+					echo wp_kses_post( $hero_heading );
+					?>
+				</h1>
+				<p class="text-white/90 text-lg md:text-xl font-normal max-w-2xl leading-relaxed">
+					<?php
+					$hero_description = get_theme_mod(
+						'hero_description',
+						'Besides teaching, Terry and Debbie Shaguy consider it a calling and an urgent priority to help less fortunate people, especially in Africa, rise above the darkness and horrors of poverty.'
+					);
+					echo esc_html( $hero_description );
+					?>
+				</p>
 				<div class="flex flex-col sm:flex-row gap-4 mt-6">
 					<?php
 					// Get contact page URL from Customizer setting
@@ -75,7 +64,7 @@ get_header();
 				<img alt="Terry and Debbie Shaguy Professional Portrait" class="w-full h-full object-cover" src="<?php echo esc_url( $about_image ); ?>"/>
 			</div>
 			<div class="absolute -bottom-6 -right-6 bg-primary text-white p-8 rounded-2xl shadow-xl hidden md:block max-w-[240px]">
-				<p class="text-lg font-bold italic leading-tight">
+				<p class="serif-text italic text-lg leading-relaxed">
 					<?php
 					$about_quote = get_theme_mod(
 						'about_quote',
@@ -87,8 +76,8 @@ get_header();
 			</div>
 		</div>
 		<div class="flex flex-col">
-			<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4">Our Heart</h2>
-			<h3 class="text-primary dark:text-white text-4xl md:text-5xl font-bold leading-tight mb-8">
+			<h2 class="text-primary uppercase tracking-widest text-sm font-bold mb-4">Our Heart</h2>
+			<h3 class="text-accent dark:text-white text-4xl md:text-5xl font-black leading-tight mb-8">
 				About Terry and Debbie
 			</h3>
 			<div class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
@@ -102,12 +91,12 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 				echo wp_kses_post( wpautop( $about_content ) );
 				?>
 			</div>
-			<div class="h-1 w-20 bg-accent rounded-full mb-12"></div>
+			<div class="h-1.5 w-24 bg-primary rounded-full mb-8"></div>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-[#1d3a24] bg-white dark:bg-[#0a140d]">
-					<span class="material-symbols-outlined text-accent !text-3xl">public</span>
+				<div class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-primary/20 bg-white dark:bg-[#0a140d]">
+					<span class="material-symbols-outlined text-primary !text-3xl">public</span>
 					<div>
-						<h4 class="font-bold text-primary dark:text-white">
+						<h4 class="font-bold text-accent dark:text-white">
 							<?php
 							$villages_count = get_theme_mod( 'villages_count', '40' );
 							echo esc_html( $villages_count ) . '+ Villages';
@@ -116,10 +105,10 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 						<p class="text-sm text-gray-500">Reached with the Gospel message.</p>
 					</div>
 				</div>
-				<div class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-[#1d3a24] bg-white dark:bg-[#0a140d]">
-					<span class="material-symbols-outlined text-accent !text-3xl">menu_book</span>
+				<div class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 dark:border-primary/20 bg-white dark:bg-[#0a140d]">
+					<span class="material-symbols-outlined text-primary !text-3xl">menu_book</span>
 					<div>
-						<h4 class="font-bold text-primary dark:text-white">
+						<h4 class="font-bold text-accent dark:text-white">
 							<?php
 							$books_count = get_theme_mod( 'books_count', '12' );
 							echo esc_html( $books_count ) . '+ Books';
@@ -135,9 +124,28 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 
 <!-- Services Section -->
 <section class="max-w-[1280px] mx-auto px-6 py-20">
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-		<div class="flex flex-col gap-5 rounded-2xl border border-[#cfe7d5] dark:border-[#1d3a24] bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
-			<div class="bg-primary/10 text-primary dark:text-accent p-3 rounded-lg w-fit">
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
+			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
+				<span class="material-symbols-outlined !text-3xl">groups</span>
+			</div>
+			<div class="flex flex-col gap-2">
+				<h4 class="text-primary dark:text-white text-xl font-bold">
+					<?php
+					$service_0_title = get_theme_mod( 'service_0_title', 'Couple\'s Ministry' );
+					echo esc_html( $service_0_title );
+					?>
+				</h4>
+				<p class="text-gray-600 dark:text-gray-400 text-base">
+					<?php
+					$service_0_description = get_theme_mod( 'service_0_description', 'Providing biblical guidance and seminars for marriages and families.' );
+					echo esc_html( $service_0_description );
+					?>
+				</p>
+			</div>
+		</div>
+		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
+			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
 				<span class="material-symbols-outlined !text-3xl">campaign</span>
 			</div>
 			<div class="flex flex-col gap-2">
@@ -155,8 +163,8 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 				</p>
 			</div>
 		</div>
-		<div class="flex flex-col gap-5 rounded-2xl border border-[#cfe7d5] dark:border-[#1d3a24] bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
-			<div class="bg-primary/10 text-primary dark:text-accent p-3 rounded-lg w-fit">
+		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
+			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
 				<span class="material-symbols-outlined !text-3xl">menu_book</span>
 			</div>
 			<div class="flex flex-col gap-2">
@@ -174,8 +182,8 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 				</p>
 			</div>
 		</div>
-		<div class="flex flex-col gap-5 rounded-2xl border border-[#cfe7d5] dark:border-[#1d3a24] bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
-			<div class="bg-primary/10 text-primary dark:text-accent p-3 rounded-lg w-fit">
+		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
+			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
 				<span class="material-symbols-outlined !text-3xl">volunteer_activism</span>
 			</div>
 			<div class="flex flex-col gap-2">
@@ -264,15 +272,15 @@ if ( $featured_query && $featured_query->have_posts() ) :
 	$display_badge = $featured_badge ? $featured_badge : get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
 	$display_author = $featured_author ? $featured_author : get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
 	?>
-	<section class="bg-primary text-white py-24 overflow-hidden relative">
+	<section class="bg-gradient-to-br from-accent via-primary to-primary text-white py-24 overflow-hidden relative">
 		<div class="absolute right-0 top-0 w-1/3 h-full bg-accent/10 -skew-x-12 translate-x-1/2"></div>
 		<div class="max-w-[1280px] mx-auto px-6 relative z-10">
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 				<div class="order-2 lg:order-1">
-					<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
+					<span class="bg-white/20 text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block border border-white/20">
 						<?php echo esc_html( $display_badge ); ?>
 					</span>
-					<h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
 						<?php the_title(); ?>
 					</h2>
 					<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
@@ -280,20 +288,20 @@ if ( $featured_query && $featured_query->have_posts() ) :
 					</p>
 					<div class="flex flex-wrap gap-4">
 						<?php if ( $featured_buy_url ) : ?>
-							<a href="<?php echo esc_url( $featured_buy_url ); ?>" target="_blank" rel="noopener" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
-								Buy Now <span class="material-symbols-outlined">shopping_cart</span>
+							<a href="<?php echo esc_url( $featured_buy_url ); ?>" target="_blank" rel="noopener" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
+								Get Your Copy
 							</a>
 						<?php else : ?>
-							<a href="<?php the_permalink(); ?>" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+							<a href="<?php the_permalink(); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
 								View Details <span class="material-symbols-outlined">arrow_forward</span>
 							</a>
 						<?php endif; ?>
 						<?php if ( $featured_excerpt_url ) : ?>
-							<a href="<?php echo esc_url( $featured_excerpt_url ); ?>" target="_blank" rel="noopener" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+							<a href="<?php echo esc_url( $featured_excerpt_url ); ?>" target="_blank" rel="noopener" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 								Read Excerpt
 							</a>
 						<?php else : ?>
-							<a href="<?php the_permalink(); ?>" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+							<a href="<?php the_permalink(); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 								Learn More
 							</a>
 						<?php endif; ?>
@@ -325,13 +333,13 @@ else :
 		<div class="max-w-[1280px] mx-auto px-6 relative z-10">
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 				<div class="order-2 lg:order-1">
-					<span class="bg-accent text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block">
+					<span class="bg-white/20 text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block border border-white/20">
 						<?php
 						$featured_book_badge = get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
 						echo esc_html( $featured_book_badge );
 						?>
 					</span>
-					<h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
 						<?php
 						$featured_book_title = get_theme_mod( 'featured_book_title', 'Walking the Narrow Road' );
 						echo esc_html( $featured_book_title );
@@ -347,10 +355,10 @@ else :
 						?>
 					</p>
 					<div class="flex flex-wrap gap-4">
-						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-accent hover:bg-accent/90 text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
 							Buy Now <span class="material-symbols-outlined">shopping_cart</span>
 						</a>
-						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="border border-white/30 hover:bg-white/10 text-white hover:text-white font-bold py-4 px-10 rounded-lg transition-colors">
+						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 							Read Excerpt
 						</a>
 					</div>
@@ -387,8 +395,13 @@ endif;
 <section class="bg-[#f3f7f4] dark:bg-[#0c1a11] py-24">
 	<div class="max-w-[1280px] mx-auto px-6">
 		<div class="text-center mb-16">
-			<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4">The Collection</h2>
-			<h3 class="text-primary dark:text-white text-4xl font-bold">From the Bookshelf</h3>
+			<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
+				<span class="material-symbols-outlined text-primary text-sm">menu_book</span>
+				<span class="text-primary text-xs font-bold tracking-widest uppercase">
+					The Collection
+				</span>
+			</div>
+			<h3 class="text-accent dark:text-white text-4xl font-black">From the Bookshelf</h3>
 			<p class="text-gray-500 mt-4 max-w-2xl mx-auto">Explore more resources written to deepen your walk with God and strengthen your ministry leadership.</p>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -450,24 +463,24 @@ endif;
 
 				foreach ( $placeholder_books as $book ) :
 					?>
-					<div class="group cursor-pointer">
+					<a href="<?php echo esc_url( home_url( '/books' ) ); ?>" class="group cursor-pointer block">
 						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<img alt="<?php echo esc_attr( $book['title'] ); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/' . $book['image'] ); ?>"/>
 						</div>
-						<h4 class="text-primary dark:text-white text-xl font-bold mb-2"><?php echo esc_html( $book['title'] ); ?></h4>
+						<h4 class="text-primary dark:text-white text-xl font-bold mb-2 group-hover:text-accent transition-colors"><?php echo esc_html( $book['title'] ); ?></h4>
 						<p class="text-gray-500 text-sm mb-4"><?php echo esc_html( $book['author'] ); ?></p>
-						<a class="text-accent font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all" href="<?php echo esc_url( home_url( '/books' ) ); ?>">
+						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
 							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
-						</a>
-					</div>
+						</span>
+					</a>
 					<?php
 				endforeach;
 			} else {
 				while ( $books_query->have_posts() ) :
 					$books_query->the_post();
 					?>
-					<div class="group cursor-pointer">
-						<a href="<?php the_permalink(); ?>" class="block aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
+					<a href="<?php the_permalink(); ?>" class="group cursor-pointer block">
+						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<?php if ( has_post_thumbnail() ) : ?>
 								<?php
 								the_post_thumbnail(
@@ -481,9 +494,9 @@ endif;
 							<?php else : ?>
 								<img alt="<?php the_title_attribute(); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>"/>
 							<?php endif; ?>
-						</a>
-						<h4 class="text-primary dark:text-white text-xl font-bold mb-2">
-							<a href="<?php the_permalink(); ?>" class="hover:text-accent transition-colors"><?php the_title(); ?></a>
+						</div>
+						<h4 class="text-accent dark:text-white text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+							<?php the_title(); ?>
 						</h4>
 						<p class="text-gray-500 text-sm mb-4">
 							<?php
@@ -491,10 +504,10 @@ endif;
 							echo $author ? esc_html( 'By ' . $author ) : 'By Terry Shaguy';
 							?>
 						</p>
-						<a class="text-accent font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all" href="<?php the_permalink(); ?>">
+						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
 							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
-						</a>
-					</div>
+						</span>
+					</a>
 					<?php
 				endwhile;
 				wp_reset_postdata();
@@ -506,11 +519,11 @@ endif;
 
 <!-- Newsletter Section -->
 <section class="max-w-[1280px] mx-auto px-6 py-20 border-t border-gray-100 dark:border-[#1d3a24]">
-	<div class="bg-primary/5 dark:bg-primary/20 rounded-[2rem] p-10 md:p-20 flex flex-col items-center text-center">
-		<div class="bg-primary text-white p-4 rounded-2xl mb-8">
+	<div class="bg-primary/5 dark:bg-primary/20 rounded-[2rem] p-10 md:p-20 flex flex-col items-center text-center relative border-2 border-primary/10">
+		<div class="bg-primary text-white p-4 rounded-2xl mb-8 shadow-lg shadow-primary/30">
 			<span class="material-symbols-outlined !text-4xl">favorite</span>
 		</div>
-		<h2 class="text-3xl md:text-5xl font-bold mb-6 dark:text-white">Partner in Our Journey</h2>
+		<h2 class="text-3xl md:text-5xl font-black mb-6 dark:text-white text-accent">Partner in Our Journey</h2>
 		<p class="text-gray-600 dark:text-gray-300 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
 			Stay connected with our monthly mission updates, travel reports, and joint ministry resources.
 		</p>
@@ -539,8 +552,8 @@ endif;
 		<form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 w-full max-w-lg" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="tsm_newsletter_signup">
 			<?php wp_nonce_field( 'tsm_newsletter_signup', 'tsm_newsletter_nonce' ); ?>
-			<input id="newsletter-email" class="newsletter-email flex-grow rounded-xl border-gray-200 dark:border-[#1d3a24] dark:bg-background-dark px-6 py-5 focus:ring-accent focus:border-accent transition-all" placeholder="Enter your email address" type="email" name="email" required/>
-			<button id="newsletter-submit" type="submit" disabled class="bg-primary text-white font-bold px-10 py-5 rounded-xl hover:bg-primary/90 hover:scale-105 transition-all shadow-xl shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">Subscribe</button>
+			<input id="newsletter-email" class="newsletter-email flex-grow rounded-lg border-gray-200 dark:border-[#1d3a24] dark:bg-background-dark px-6 py-5 focus:ring-accent focus:border-accent transition-all" placeholder="Enter your email address" type="email" name="email" required autocomplete="email"/>
+			<button id="newsletter-submit" type="submit" disabled class="bg-primary text-white hover:text-white text-base font-bold px-6 py-5 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed">Subscribe</button>
 		</form>
 	</div>
 </section>

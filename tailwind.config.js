@@ -5,8 +5,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#4c9a5f',
+        // primary: '#4c9a5f',
         accent: '#1a4d2e',
+        primary: '#339a46',
         'background-light': '#fcfdfc',
         'background-dark': '#0a140d',
       },
@@ -19,6 +20,15 @@ module.exports = {
         lg: '0.5rem',
         xl: '0.75rem',
         full: '9999px',
+      },
+      keyframes: {
+        'bounce-subtle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+      },
+      animation: {
+        'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
       },
     },
   },

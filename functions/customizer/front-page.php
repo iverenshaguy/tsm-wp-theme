@@ -46,7 +46,7 @@ function tsm_customize_register_front_page( $wp_customize ) {
 	$wp_customize->add_setting(
 		'hero_heading',
 		array(
-			'default'           => '',
+			'default'           => 'Teaching the Word. Transforming Lives.',
 			'sanitize_callback' => 'wp_kses_post',
 		)
 	);

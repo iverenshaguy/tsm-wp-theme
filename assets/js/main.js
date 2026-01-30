@@ -5,14 +5,19 @@
 (function() {
     'use strict';
 
-    // Restore scroll position immediately if returning from newsletter submission
-    if (window.location.search.includes('newsletter=')) {
-        const savedScrollPosition = sessionStorage.getItem('newsletterScrollPosition');
-        if (savedScrollPosition) {
-            window.scrollTo(0, parseInt(savedScrollPosition, 10));
-            sessionStorage.removeItem('newsletterScrollPosition');
+    // Restore scroll position immediately if returning from form submission
+    const urlParams = new URLSearchParams(window.location.search);
+    const formTypes = ['newsletter', 'contact', 'prayer', 'partner', 'decision'];
+    
+    formTypes.forEach(function(formType) {
+        if (urlParams.has(formType)) {
+            const savedScrollPosition = sessionStorage.getItem(formType + 'ScrollPosition');
+            if (savedScrollPosition) {
+                window.scrollTo(0, parseInt(savedScrollPosition, 10));
+                sessionStorage.removeItem(formType + 'ScrollPosition');
+            }
         }
-    }
+    });
 
     // DOM ready
     document.addEventListener('DOMContentLoaded', function() {
@@ -24,22 +29,22 @@
             return email.trim() !== '' && emailRegex.test(email.trim());
         }
 
-        function updateButtonState(newsletterEmail, newsletterSubmit, emailRegex) {
+        function updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, showErrors) {
             const emailValue = newsletterEmail.value || '';
             const isValid = validateEmail(emailValue, emailRegex);
             
             // Disable button if email is invalid or empty
             newsletterSubmit.disabled = !isValid;
             
-            // Update input border color based on validation
+            // Update input border color based on validation (only show errors if showErrors is true)
             if (emailValue.trim() === '') {
-                newsletterEmail.classList.remove('border-red-500', 'border-green-500');
+                newsletterEmail.classList.remove('border-red-500');
             } else if (isValid) {
                 newsletterEmail.classList.remove('border-red-500');
-                newsletterEmail.classList.add('border-green-500');
-            } else {
-                newsletterEmail.classList.remove('border-green-500');
+            } else if (showErrors) {
                 newsletterEmail.classList.add('border-red-500');
+            } else {
+                newsletterEmail.classList.remove('border-red-500');
             }
         }
 
@@ -96,31 +101,37 @@
             // Ensure button starts disabled
             newsletterSubmit.disabled = true;
 
+            // Track if form has been attempted to submit
+            let formSubmitted = false;
+
             // Validate on input, paste, and change events
             newsletterEmail.addEventListener('input', function() {
                 hideMessage(newsletterMessage);
-                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, formSubmitted);
             });
             newsletterEmail.addEventListener('paste', function() {
                 setTimeout(function() {
                     hideMessage(newsletterMessage);
-                    updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                    updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, formSubmitted);
                 }, 10);
             });
             newsletterEmail.addEventListener('blur', function() {
-                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                // Show errors on blur
+                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, true);
             });
             newsletterEmail.addEventListener('change', function() {
-                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, formSubmitted);
             });
 
             // Initial validation
-            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
 
             // Prevent form submission if email is invalid
             newsletterForm.addEventListener('submit', function(e) {
                 const emailValue = newsletterEmail.value.trim();
                 const isValid = validateEmail(emailValue, emailRegex);
+                
+                formSubmitted = true;
                 
                 if (!isValid) {
                     e.preventDefault();
@@ -134,6 +145,13 @@
                 // Store scroll position in sessionStorage only if valid
                 sessionStorage.setItem('newsletterScrollPosition', window.scrollY.toString());
             });
+            
+            // Clean up URL parameter without reloading
+            if (window.location.search.includes('newsletter=')) {
+                const url = new URL(window.location);
+                url.searchParams.delete('newsletter');
+                window.history.replaceState({}, '', url);
+            }
 
             // Handle success/error message auto-hide
             if (newsletterMessage) {
@@ -149,7 +167,8 @@
                         // Reset form if it was a success message
                         if (newsletterMessage.classList.contains('newsletter-success')) {
                             newsletterForm.reset();
-                            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                            formSubmitted = false;
+                            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
                         }
                     }, 500);
                 }, 30000);
@@ -164,17 +183,532 @@
                         this.remove();
                         if (this.classList.contains('newsletter-success')) {
                             newsletterForm.reset();
-                            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex);
+                            formSubmitted = false;
+                            updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
                         }
                     }, 500);
                 });
             }
+        }
 
+        // Contact form validation and handling
+        const contactForm = document.getElementById('contact-form');
+        
+        if (contactForm) {
+            const contactName = contactForm.querySelector('#name');
+            const contactEmail = contactForm.querySelector('#email');
+            const contactMessage = contactForm.querySelector('#message');
+            const contactSubmit = document.getElementById('contact-submit');
+
+            if (contactName && contactEmail && contactMessage && contactSubmit) {
+            // Email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Ensure button starts disabled
+            contactSubmit.disabled = true;
+
+            // Track if form has been attempted to submit
+            let formSubmitted = false;
+
+            function validateContactForm(showErrors) {
+                const nameValue = contactName.value.trim();
+                const emailValue = contactEmail.value.trim();
+                const messageValue = contactMessage.value.trim();
+                
+                const isNameValid = nameValue.length > 0;
+                const isEmailValid = emailValue.length > 0 && emailRegex.test(emailValue);
+                const isMessageValid = messageValue.length > 0;
+                
+                const isValid = isNameValid && isEmailValid && isMessageValid;
+                
+                // Update button state
+                contactSubmit.disabled = !isValid;
+                
+                // Update input border colors (only show errors if showErrors is true)
+                if (nameValue === '') {
+                    contactName.classList.remove('border-red-500');
+                } else if (!isNameValid && showErrors) {
+                    contactName.classList.add('border-red-500');
+                } else {
+                    contactName.classList.remove('border-red-500');
+                }
+                
+                if (emailValue === '') {
+                    contactEmail.classList.remove('border-red-500');
+                } else if (!isEmailValid && showErrors) {
+                    contactEmail.classList.add('border-red-500');
+                } else {
+                    contactEmail.classList.remove('border-red-500');
+                }
+                
+                if (messageValue === '') {
+                    contactMessage.classList.remove('border-red-500');
+                } else if (!isMessageValid && showErrors) {
+                    contactMessage.classList.add('border-red-500');
+                } else {
+                    contactMessage.classList.remove('border-red-500');
+                }
+                
+                return isValid;
+            }
+
+            // Validate on input, paste, and change events for all fields
+            [contactName, contactEmail, contactMessage].forEach(function(field) {
+                field.addEventListener('input', function() {
+                    validateContactForm(formSubmitted);
+                });
+                field.addEventListener('paste', function() {
+                    setTimeout(function() {
+                        validateContactForm(formSubmitted);
+                    }, 10);
+                });
+                field.addEventListener('blur', function() {
+                    // Show errors on blur
+                    validateContactForm(true);
+                });
+                field.addEventListener('change', function() {
+                    validateContactForm(formSubmitted);
+                });
+            });
+
+            // Initial validation
+            validateContactForm(false);
+
+            // Prevent form submission if form is invalid
+            contactForm.addEventListener('submit', function(e) {
+                formSubmitted = true;
+                
+                if (!validateContactForm(true)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Focus first invalid field
+                    if (!contactName.value.trim()) {
+                        contactName.focus();
+                    } else if (!contactEmail.value.trim() || !emailRegex.test(contactEmail.value.trim())) {
+                        contactEmail.focus();
+                    } else if (!contactMessage.value.trim()) {
+                        contactMessage.focus();
+                    }
+                    
+                    return false;
+                }
+                
+                // Store scroll position before submission
+                sessionStorage.setItem('contactScrollPosition', window.scrollY.toString());
+            });
+            
             // Clean up URL parameter without reloading
-            if (window.location.search.includes('newsletter=')) {
+            if (window.location.search.includes('contact=')) {
                 const url = new URL(window.location);
-                url.searchParams.delete('newsletter');
+                url.searchParams.delete('contact');
                 window.history.replaceState({}, '', url);
+            }
+            }
+        }
+
+        // Prayer request form validation and handling
+        const prayerForm = document.getElementById('prayer-form');
+        
+        if (prayerForm) {
+            const prayerName = prayerForm.querySelector('#name');
+            const prayerEmail = prayerForm.querySelector('#email');
+            const prayerMessage = prayerForm.querySelector('#message');
+            const prayerSubmit = document.getElementById('prayer-submit');
+
+            if (prayerName && prayerEmail && prayerMessage && prayerSubmit) {
+                // Email validation regex
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                // Ensure button starts disabled
+                prayerSubmit.disabled = true;
+
+                // Track if form has been attempted to submit
+                let formSubmitted = false;
+
+                function validatePrayerForm(showErrors) {
+                    const nameValue = prayerName.value.trim();
+                    const emailValue = prayerEmail.value.trim();
+                    const messageValue = prayerMessage.value.trim();
+                    
+                    const isNameValid = nameValue.length > 0;
+                    const isEmailValid = emailValue.length > 0 && emailRegex.test(emailValue);
+                    const isMessageValid = messageValue.length > 0;
+                    
+                    const isValid = isNameValid && isEmailValid && isMessageValid;
+                    
+                    // Update button state
+                    prayerSubmit.disabled = !isValid;
+                    
+                    // Update input border colors (only show errors if showErrors is true)
+                    if (nameValue === '') {
+                        prayerName.classList.remove('border-red-500');
+                    } else if (!isNameValid && showErrors) {
+                        prayerName.classList.add('border-red-500');
+                    } else {
+                        prayerName.classList.remove('border-red-500');
+                    }
+                    
+                    if (emailValue === '') {
+                        prayerEmail.classList.remove('border-red-500');
+                    } else if (!isEmailValid && showErrors) {
+                        prayerEmail.classList.add('border-red-500');
+                    } else {
+                        prayerEmail.classList.remove('border-red-500');
+                    }
+                    
+                    if (messageValue === '') {
+                        prayerMessage.classList.remove('border-red-500');
+                    } else if (!isMessageValid && showErrors) {
+                        prayerMessage.classList.add('border-red-500');
+                    } else {
+                        prayerMessage.classList.remove('border-red-500');
+                    }
+                    
+                    return isValid;
+                }
+
+                // Validate on input, paste, and change events for all fields
+                [prayerName, prayerEmail, prayerMessage].forEach(function(field) {
+                    field.addEventListener('input', function() {
+                        validatePrayerForm(formSubmitted);
+                    });
+                    field.addEventListener('paste', function() {
+                        setTimeout(function() {
+                            validatePrayerForm(formSubmitted);
+                        }, 10);
+                    });
+                    field.addEventListener('blur', function() {
+                        // Show errors on blur
+                        validatePrayerForm(true);
+                    });
+                    field.addEventListener('change', function() {
+                        validatePrayerForm(formSubmitted);
+                    });
+                });
+
+                // Initial validation
+                validatePrayerForm(false);
+
+                // Prevent form submission if form is invalid
+                prayerForm.addEventListener('submit', function(e) {
+                    formSubmitted = true;
+                    
+                    if (!validatePrayerForm(true)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Focus first invalid field
+                        if (!prayerName.value.trim()) {
+                            prayerName.focus();
+                        } else if (!prayerEmail.value.trim() || !emailRegex.test(prayerEmail.value.trim())) {
+                            prayerEmail.focus();
+                        } else if (!prayerMessage.value.trim()) {
+                            prayerMessage.focus();
+                        }
+                        
+                        return false;
+                    }
+                    
+                    // Store scroll position before submission
+                    sessionStorage.setItem('prayerScrollPosition', window.scrollY.toString());
+                });
+                
+                // Clean up URL parameter without reloading
+                if (window.location.search.includes('prayer=')) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('prayer');
+                    window.history.replaceState({}, '', url);
+                }
+            }
+        }
+
+        // Decision form validation and handling (How to Know Jesus page)
+        const decisionForm = document.getElementById('decision-form');
+        
+        if (decisionForm) {
+            const decisionFirstName = decisionForm.querySelector('#first_name');
+            const decisionLastName = decisionForm.querySelector('#last_name');
+            const decisionEmail = decisionForm.querySelector('#email');
+            const decisionSelect = decisionForm.querySelector('#decision');
+            const decisionSubmit = document.getElementById('decision-submit');
+
+            if (decisionFirstName && decisionLastName && decisionEmail && decisionSelect && decisionSubmit) {
+                // Email validation regex
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                // Ensure button starts disabled
+                decisionSubmit.disabled = true;
+
+                // Track if form has been attempted to submit
+                let formSubmitted = false;
+
+                function validateDecisionForm(showErrors) {
+                    const firstNameValue = decisionFirstName.value.trim();
+                    const lastNameValue = decisionLastName.value.trim();
+                    const emailValue = decisionEmail.value.trim();
+                    const decisionValue = decisionSelect.value;
+                    
+                    const isFirstNameValid = firstNameValue.length > 0;
+                    const isLastNameValid = lastNameValue.length > 0;
+                    const isEmailValid = emailValue.length > 0 && emailRegex.test(emailValue);
+                    const isDecisionValid = decisionValue.length > 0;
+                    
+                    const isValid = isFirstNameValid && isLastNameValid && isEmailValid && isDecisionValid;
+                    
+                    // Update button state
+                    decisionSubmit.disabled = !isValid;
+                    
+                    // Update input border colors (only show errors if showErrors is true)
+                    if (firstNameValue === '') {
+                        decisionFirstName.classList.remove('border-red-500');
+                    } else if (!isFirstNameValid && showErrors) {
+                        decisionFirstName.classList.add('border-red-500');
+                    } else {
+                        decisionFirstName.classList.remove('border-red-500');
+                    }
+                    
+                    if (lastNameValue === '') {
+                        decisionLastName.classList.remove('border-red-500');
+                    } else if (!isLastNameValid && showErrors) {
+                        decisionLastName.classList.add('border-red-500');
+                    } else {
+                        decisionLastName.classList.remove('border-red-500');
+                    }
+                    
+                    if (emailValue === '') {
+                        decisionEmail.classList.remove('border-red-500');
+                    } else if (!isEmailValid && showErrors) {
+                        decisionEmail.classList.add('border-red-500');
+                    } else {
+                        decisionEmail.classList.remove('border-red-500');
+                    }
+                    
+                    if (decisionValue === '') {
+                        decisionSelect.classList.remove('border-red-500');
+                    } else if (!isDecisionValid && showErrors) {
+                        decisionSelect.classList.add('border-red-500');
+                    } else {
+                        decisionSelect.classList.remove('border-red-500');
+                    }
+                    
+                    return isValid;
+                }
+
+                // Validate on input, paste, and change events for all fields
+                [decisionFirstName, decisionLastName, decisionEmail].forEach(function(field) {
+                    field.addEventListener('input', function() {
+                        validateDecisionForm(formSubmitted);
+                    });
+                    field.addEventListener('paste', function() {
+                        setTimeout(function() {
+                            validateDecisionForm(formSubmitted);
+                        }, 10);
+                    });
+                    field.addEventListener('blur', function() {
+                        // Show errors on blur
+                        validateDecisionForm(true);
+                    });
+                    field.addEventListener('change', function() {
+                        validateDecisionForm(formSubmitted);
+                    });
+                });
+
+                // Handle select element separately (uses 'change' event, not 'input')
+                decisionSelect.addEventListener('change', function() {
+                    validateDecisionForm(formSubmitted);
+                });
+                decisionSelect.addEventListener('blur', function() {
+                    // Show errors on blur
+                    validateDecisionForm(true);
+                });
+
+                // Initial validation
+                validateDecisionForm(false);
+
+                // Prevent form submission if form is invalid
+                decisionForm.addEventListener('submit', function(e) {
+                    formSubmitted = true;
+                    
+                    if (!validateDecisionForm(true)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Focus first invalid field
+                        if (!decisionFirstName.value.trim()) {
+                            decisionFirstName.focus();
+                        } else if (!decisionLastName.value.trim()) {
+                            decisionLastName.focus();
+                        } else if (!decisionEmail.value.trim() || !emailRegex.test(decisionEmail.value.trim())) {
+                            decisionEmail.focus();
+                        } else if (!decisionSelect.value) {
+                            decisionSelect.focus();
+                        }
+                        
+                        return false;
+                    }
+                    
+                    // Store scroll position before submission
+                    sessionStorage.setItem('decisionScrollPosition', window.scrollY.toString());
+                });
+                
+                // Clean up URL parameter without reloading
+                if (window.location.search.includes('decision=')) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('decision');
+                    window.history.replaceState({}, '', url);
+                }
+            }
+        }
+
+        // Partner form validation and handling
+        const partnerForm = document.getElementById('partner-form');
+        
+        if (partnerForm) {
+            const partnerFullname = partnerForm.querySelector('#fullname');
+            const partnerEmail = partnerForm.querySelector('#email');
+            const partnerPhone = partnerForm.querySelector('#phone');
+            const partnerLocation = partnerForm.querySelector('#location');
+            const partnerInterest = partnerForm.querySelector('#interest');
+            const partnerSubmit = document.getElementById('partner-submit');
+
+            if (partnerFullname && partnerEmail && partnerPhone && partnerLocation && partnerInterest && partnerSubmit) {
+                // Email validation regex
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                // Ensure button starts disabled
+                partnerSubmit.disabled = true;
+
+                // Track if form has been attempted to submit
+                let formSubmitted = false;
+
+                function validatePartnerForm(showErrors) {
+                    const fullnameValue = partnerFullname.value.trim();
+                    const emailValue = partnerEmail.value.trim();
+                    const phoneValue = partnerPhone.value.trim();
+                    const locationValue = partnerLocation.value.trim();
+                    const interestValue = partnerInterest.value;
+                    
+                    const isFullnameValid = fullnameValue.length > 0;
+                    const isEmailValid = emailValue.length > 0 && emailRegex.test(emailValue);
+                    const isPhoneValid = phoneValue.length > 0;
+                    const isLocationValid = locationValue.length > 0;
+                    const isInterestValid = interestValue.length > 0;
+                    
+                    const isValid = isFullnameValid && isEmailValid && isPhoneValid && isLocationValid && isInterestValid;
+                    
+                    // Update button state
+                    partnerSubmit.disabled = !isValid;
+                    
+                    // Update input border colors (only show errors if showErrors is true)
+                    if (fullnameValue === '') {
+                        partnerFullname.classList.remove('border-red-500');
+                    } else if (!isFullnameValid && showErrors) {
+                        partnerFullname.classList.add('border-red-500');
+                    } else {
+                        partnerFullname.classList.remove('border-red-500');
+                    }
+                    
+                    if (emailValue === '') {
+                        partnerEmail.classList.remove('border-red-500');
+                    } else if (!isEmailValid && showErrors) {
+                        partnerEmail.classList.add('border-red-500');
+                    } else {
+                        partnerEmail.classList.remove('border-red-500');
+                    }
+                    
+                    if (phoneValue === '') {
+                        partnerPhone.classList.remove('border-red-500');
+                    } else if (!isPhoneValid && showErrors) {
+                        partnerPhone.classList.add('border-red-500');
+                    } else {
+                        partnerPhone.classList.remove('border-red-500');
+                    }
+                    
+                    if (locationValue === '') {
+                        partnerLocation.classList.remove('border-red-500');
+                    } else if (!isLocationValid && showErrors) {
+                        partnerLocation.classList.add('border-red-500');
+                    } else {
+                        partnerLocation.classList.remove('border-red-500');
+                    }
+                    
+                    if (interestValue === '') {
+                        partnerInterest.classList.remove('border-red-500');
+                    } else if (!isInterestValid && showErrors) {
+                        partnerInterest.classList.add('border-red-500');
+                    } else {
+                        partnerInterest.classList.remove('border-red-500');
+                    }
+                    
+                    return isValid;
+                }
+
+                // Validate on input, paste, and change events for all fields
+                [partnerFullname, partnerEmail, partnerPhone, partnerLocation].forEach(function(field) {
+                    field.addEventListener('input', function() {
+                        validatePartnerForm(formSubmitted);
+                    });
+                    field.addEventListener('paste', function() {
+                        setTimeout(function() {
+                            validatePartnerForm(formSubmitted);
+                        }, 10);
+                    });
+                    field.addEventListener('blur', function() {
+                        // Show errors on blur
+                        validatePartnerForm(true);
+                    });
+                    field.addEventListener('change', function() {
+                        validatePartnerForm(formSubmitted);
+                    });
+                });
+
+                // Handle select element separately (uses 'change' event, not 'input')
+                partnerInterest.addEventListener('change', function() {
+                    validatePartnerForm(formSubmitted);
+                });
+                partnerInterest.addEventListener('blur', function() {
+                    // Show errors on blur
+                    validatePartnerForm(true);
+                });
+
+                // Initial validation
+                validatePartnerForm(false);
+
+                // Prevent form submission if form is invalid
+                partnerForm.addEventListener('submit', function(e) {
+                    formSubmitted = true;
+                    
+                    if (!validatePartnerForm(true)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Focus first invalid field
+                        if (!partnerFullname.value.trim()) {
+                            partnerFullname.focus();
+                        } else if (!partnerEmail.value.trim() || !emailRegex.test(partnerEmail.value.trim())) {
+                            partnerEmail.focus();
+                        } else if (!partnerPhone.value.trim()) {
+                            partnerPhone.focus();
+                        } else if (!partnerLocation.value.trim()) {
+                            partnerLocation.focus();
+                        } else if (!partnerInterest.value) {
+                            partnerInterest.focus();
+                        }
+                        
+                        return false;
+                    }
+                    
+                    // Store scroll position before submission
+                    sessionStorage.setItem('partnerScrollPosition', window.scrollY.toString());
+                });
+                
+                // Clean up URL parameter without reloading
+                if (window.location.search.includes('partner=')) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('partner');
+                    window.history.replaceState({}, '', url);
+                }
             }
         }
 

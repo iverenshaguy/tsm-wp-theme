@@ -2,6 +2,11 @@
 wp-config.php
 .htaccess
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # Database files
 *.sql
 *.sql.gz

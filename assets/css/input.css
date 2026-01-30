@@ -23,12 +23,12 @@ body {
 
 /* Global link hover styles */
 a:hover {
-    color: rgb(26 77 46); /* accent color */
+    color: rgb(51, 154, 70); /* primary color */
     transition: color 0.2s ease;
 }
 
 .dark a:hover {
-    color: rgb(76 154 95); /* primary color for dark mode */
+    color: rgb(51, 154, 70); /* primary color for dark mode */
 }
 
 /* WPForms Newsletter Styling */
@@ -199,4 +199,9 @@ select::-ms-expand {
 .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+/* Step Number Styles */
+.step-number {
+    @apply flex items-center justify-center w-12 h-12 rounded-full bg-accent text-white font-black text-xl mb-6;
 }

@@ -118,14 +118,14 @@ while ( have_posts() ) :
 	?>
 
 	<main class="flex-1">
-		<div class="max-w-[1200px] mx-auto px-6 py-8">
-			<!-- Breadcrumbs -->
-			<div class="flex flex-wrap gap-2 py-4 mb-4">
-				<a class="text-primary text-sm font-medium leading-normal hover:underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a>
-				<span class="text-[#4c9a5f] text-sm font-medium leading-normal">/</span>
-				<a class="text-primary text-sm font-medium leading-normal hover:underline" href="<?php echo esc_url( get_post_type_archive_link( 'book' ) ); ?>">Books</a>
-				<span class="text-[#4c9a5f] text-sm font-medium leading-normal">/</span>
-				<span class="text-[#0d1b11] dark:text-gray-300 text-sm font-medium leading-normal"><?php the_title(); ?></span>
+		<div class="max-w-[1280px] mx-auto px-6 py-8">
+
+      <!-- Back to Books -->
+      <div class="mb-8 flex justify-between items-end">
+				<a class="inline-flex items-center gap-2 text-primary hover:text-accent transition-colors font-semibold bg-accent/20 backdrop-blur-sm px-4 py-2 rounded-lg" href="<?php echo esc_url( get_post_type_archive_link( 'book' ) ); ?>">
+					<span class="material-symbols-outlined text-sm">arrow_back</span>
+					<?php _e( 'Back to Books', 'tsm-theme' ); ?>
+				</a>
 			</div>
 
 			<!-- Book Hero Section -->
@@ -142,17 +142,18 @@ while ( have_posts() ) :
 						<?php if ( $book_badge ) : ?>
               <span class="text-primary font-bold tracking-widest text-xs uppercase"><?php echo esc_html( $book_badge ); ?></span>
 						<?php endif; ?>
-						<h1 class="text-[#0d1b11] dark:text-white text-4xl lg:text-5xl font-bold leading-tight font-display">
+						<h1 class="text-accent dark:text-white text-4xl lg:text-5xl font-bold leading-tight font-display">
 							<?php the_title(); ?>
 						</h1>
-						<p class="text-lg text-gray-500 dark:text-gray-400 mt-1">
-							By <span class="font-semibold text-primary"><?php echo esc_html( $book_author ? $book_author : 'Terry Shaguy' ); ?></span>
+						<p class="text-lg text-gray-500 dark:text-gray-400 mt-1 mb-6">
+							By <span class="font-semibold text-accent/80 uppercase"><?php echo esc_html( $book_author ? $book_author : 'Terry Shaguy' ); ?></span>
 						</p>
+            <div class="h-1.5 w-24 bg-primary rounded-full mb-6"></div>
 					</div>
 
-					<div class="border-t border-b border-[#e7f3ea] dark:border-[#1a3321] py-6">
-						<h2 class="text-xl font-bold mb-3 font-display">About the Book</h2>
-						<div class="text-[#0d1b11] dark:text-gray-300 text-base leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>ul]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ol]:mb-4 [&>ol]:list-decimal [&>ol]:ml-6 [&>ol>li]:mb-2 [&>h1]:mb-4 [&>h2]:mb-4 [&>h3]:mb-4 [&>h4]:mb-4 [&>h5]:mb-4 [&>h6]:mb-4">
+					<div class="border-b border-[#e7f3ea] dark:border-[#1a3321] pb-6">
+						<h2 class="font-medium text-2xl text-accent dark:text-primary mb-4 sans-serif font-sans tracking-tight">About the Book</h2>
+						<div class="text-accent dark:text-gray-300 text-base leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>ul]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ol]:mb-4 [&>ol]:list-decimal [&>ol]:ml-6 [&>ol>li]:mb-2 [&>h1]:mb-4 [&>h2]:mb-4 [&>h3]:mb-4 [&>h4]:mb-4 [&>h5]:mb-4 [&>h6]:mb-4">
 							<?php 
 							the_content();
 							
@@ -171,7 +172,7 @@ while ( have_posts() ) :
 						<div class="flex flex-col gap-2">
             <p class="text-sm text-[#4c9a5f]">Get a sneak peek before you buy</p>
 							<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <a href="<?php echo esc_url( $sample_download_url ); ?>" class="flex items-center justify-center gap-2 border border-primary text-primary hover:bg-primary/10 font-bold py-3 px-6 rounded-lg transition-all">
+                <a href="<?php echo esc_url( $sample_download_url ); ?>" class="flex items-center justify-center gap-2 border-2 border-primary text-primary hover:bg-primary/10 font-bold py-3 px-6 rounded-lg transition-all">
                   <span class="material-symbols-outlined">menu_book</span>
                   Download Free Chapter
                 </a>
@@ -181,7 +182,7 @@ while ( have_posts() ) :
 
 					<!-- Free Download Section -->
 					<?php if ( $download_url && $book_free_download_file_id ) : ?>
-						<a href="<?php echo esc_url( $download_url ); ?>" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-opacity-90 text-white hover:text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md w-auto self-start">
+						<a href="<?php echo esc_url( $download_url ); ?>" class="inline-flex items-center justify-center gap-2 bg-primary text-white hover:text-white text-base font-bold px-6 py-3 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all w-auto self-start">
 							<span class="material-symbols-outlined">download</span>
 							Free Download
 						</a>
@@ -202,7 +203,7 @@ while ( have_posts() ) :
 									</a>
 								<?php endif; ?>
 								<?php if ( $book_selar_url ) : ?>
-									<a href="<?php echo esc_url( $book_selar_url ); ?>" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md">
+									<a href="<?php echo esc_url( $book_selar_url ); ?>" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 bg-primary text-white hover:text-white text-base font-bold px-6 py-3 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
 										<span class="material-symbols-outlined">shopping_cart</span>
 										Selar
 									</a>
@@ -227,7 +228,7 @@ while ( have_posts() ) :
 					?>
 					<section class="mt-20">
 						<div class="flex items-center justify-between mb-8">
-							<h2 class="text-[#0d1b11] dark:text-white text-3xl font-bold font-display">What Readers Are Saying</h2>
+							<h2 class="text-accent dark:text-white text-3xl font-bold font-display">What Readers Are Saying</h2>
 						</div>
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 							<?php
@@ -241,8 +242,8 @@ while ( have_posts() ) :
 											<span class="material-symbols-outlined text-sm">star</span>
 										<?php endfor; ?>
 									</div>
-									<p class="text-sm italic mb-4"><?php echo esc_html( $review['text'] ); ?></p>
-									<p class="font-bold text-sm">— <?php echo esc_html( $review['name'] ); ?><?php if ( ! empty( $review['role'] ) ) : ?>, <span class="font-normal text-gray-500"><?php echo esc_html( $review['role'] ); ?></span><?php endif; ?></p>
+									<p class="text-sm italic mb-4 text-accent"><?php echo esc_html( $review['text'] ); ?></p>
+									<p class="font-bold text-sm text-accent">— <?php echo esc_html( $review['name'] ); ?><?php if ( ! empty( $review['role'] ) ) : ?>, <span class="font-normal text-gray-500"><?php echo esc_html( $review['role'] ); ?></span><?php endif; ?></p>
 								</div>
 								<?php
 							}
@@ -256,29 +257,30 @@ while ( have_posts() ) :
 			<?php if ( $related_books->have_posts() ) : ?>
 				<section class="mt-20 pb-16">
 					<div class="flex items-center gap-4 mb-8">
-						<h2 class="text-[#0d1b11] dark:text-white text-3xl font-bold font-display">More from Terry Shaguy</h2>
+						<h2 class="text-accent dark:text-white text-3xl font-bold font-display">More from Terry Shaguy</h2>
 					</div>
-					<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-20">
 						<?php
 						while ( $related_books->have_posts() ) :
 							$related_books->the_post();
 							$related_image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
 							$related_categories = get_the_terms( get_the_ID(), 'book_category' );
+							$related_badge = get_post_meta( get_the_ID(), 'book_badge', true );
+							$book_title = get_the_title();
 							?>
-							<a href="<?php the_permalink(); ?>" class="flex flex-col gap-3 group cursor-pointer">
-								<div class="w-full bg-center bg-no-repeat aspect-[3/4] bg-cover rounded-lg shadow-md group-hover:shadow-lg transition-all" style='background-image: url("<?php echo esc_url( $related_image ? $related_image : get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>");'>
-								</div>
-								<div>
-									<?php if ( $related_categories && ! is_wp_error( $related_categories ) ) : ?>
-										<div class="flex flex-wrap gap-1.5 mb-2">
-											<?php foreach ( $related_categories as $category ) : ?>
-												<span class="bg-primary/20 text-primary px-3 py-1 rounded text-[10px] font-bold tracking-wide uppercase inline-block">
-													<?php echo esc_html( $category->name ); ?>
-												</span>
-											<?php endforeach; ?>
-										</div>
+							<a href="<?php the_permalink(); ?>" class="book-card group flex flex-col bg-white dark:bg-[#162b1b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-emerald-50 dark:border-emerald-900/20 cursor-pointer">
+								<div class="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
+									<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style='background-image: url("<?php echo esc_url( $related_image ? $related_image : get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>");'>
+									</div>
+									<?php if ( $related_badge ) : ?>
+										<div class="absolute top-3 left-3 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider"><?php echo esc_html( $related_badge ); ?></div>
 									<?php endif; ?>
-									<p class="text-[#0d1b11] dark:text-white text-base font-bold leading-tight"><?php the_title(); ?></p>
+								</div>
+								<div class="p-5 flex flex-col flex-1">
+									<?php if ( $related_categories && ! is_wp_error( $related_categories ) && ! empty( $related_categories ) ) : ?>
+										<span class="text-[10px] text-primary font-bold uppercase tracking-wider mb-1"><?php echo esc_html( $related_categories[0]->name ); ?></span>
+									<?php endif; ?>
+									<h3 class="text-accent dark:text-white font-bold text-lg leading-snug mb-2 transition-colors"><?php echo esc_html( $book_title ); ?></h3>
 								</div>
 							</a>
 							<?php

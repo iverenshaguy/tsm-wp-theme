@@ -31,6 +31,9 @@ function tsm_theme_scripts() {
 	// Enqueue Material Symbols
 	wp_enqueue_style( 'material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap', array(), null );
 
+	// Enqueue Material Design Icons (MDI)
+	wp_enqueue_style( 'mdi-icons', 'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css', array(), null );
+
 	// Enqueue compiled Tailwind CSS (built from input.css)
 	wp_enqueue_style( 'tsm-theme-main', get_template_directory_uri() . '/assets/css/main.css', array( 'tsm-theme-style', 'google-fonts' ), '1.0.0' );
 

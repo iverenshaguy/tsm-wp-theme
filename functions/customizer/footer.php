@@ -92,20 +92,70 @@ function tsm_customize_register_footer( $wp_customize ) {
 	);
 
 	$wp_customize->add_setting(
-		'social_twitter',
+		'social_linkedin',
 		array(
 			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		)
 	);
 	$wp_customize->add_control(
-		'social_twitter',
+		'social_linkedin',
 		array(
-			'label'   => __( 'Twitter URL', 'tsm-theme' ),
+			'label'   => __( 'LinkedIn URL', 'tsm-theme' ),
 			'section' => 'tsm_footer',
 			'type'    => 'url',
 		)
 	);
+
+	$wp_customize->add_setting(
+		'social_website',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'esc_url_raw',
+		)
+	);
+	$wp_customize->add_control(
+		'social_website',
+		array(
+			'label'   => __( 'Website URL', 'tsm-theme' ),
+			'section' => 'tsm_footer',
+			'type'    => 'url',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'social_youtube',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'esc_url_raw',
+		)
+	);
+	$wp_customize->add_control(
+		'social_youtube',
+		array(
+			'label'   => __( 'YouTube URL', 'tsm-theme' ),
+			'section' => 'tsm_footer',
+			'type'    => 'url',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'social_whatsapp',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'esc_url_raw',
+		)
+	);
+	$wp_customize->add_control(
+		'social_whatsapp',
+		array(
+			'label'       => __( 'WhatsApp URL', 'tsm-theme' ),
+			'description' => __( 'WhatsApp link (e.g., https://wa.me/1234567890). If empty, will use first contact phone number.', 'tsm-theme' ),
+			'section'     => 'tsm_footer',
+			'type'        => 'url',
+		)
+	);
+
 
 	// Footer Logo
 	$wp_customize->add_setting(
@@ -211,6 +261,22 @@ function tsm_customize_register_footer( $wp_customize ) {
 		'contact_phone',
 		array(
 			'label'   => __( 'Contact Phone', 'tsm-theme' ),
+			'section' => 'tsm_footer',
+			'type'    => 'text',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'contact_phone_2',
+		array(
+			'default'           => '+234 (708) 143-6641',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'contact_phone_2',
+		array(
+			'label'   => __( 'Contact Phone 2', 'tsm-theme' ),
 			'section' => 'tsm_footer',
 			'type'    => 'text',
 		)
