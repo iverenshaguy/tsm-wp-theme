@@ -59,3 +59,7 @@ yarn.lock
 # Tailwind build (keep main.css but ignore if you want to rebuild)
 # Uncomment if you want to ignore the built CSS:
 # assets/css/main.css
+
+# Build/dist folder
+dist/
+dist.zip

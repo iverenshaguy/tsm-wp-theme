@@ -59,14 +59,132 @@
             }
         }
 
-        // Mobile menu toggle (if needed)
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const mainNavigation = document.querySelector('.main-navigation');
+        // Mobile menu toggle - only active below lg breakpoint
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const mobileNavBackdrop = document.getElementById('mobile-nav-backdrop');
+        const closeMobileMenuBtn = document.querySelector('.close-mobile-menu');
+        const mobileMenuLinks = document.querySelectorAll('#mobile-nav a');
+        const body = document.body;
         
-        if (mobileMenuToggle && mainNavigation) {
-            mobileMenuToggle.addEventListener('click', function() {
-                mainNavigation.classList.toggle('menu-open');
-                this.classList.toggle('active');
+        let scrollPosition = 0;
+        const page = document.getElementById('page');
+        
+        function updateMenuState() {
+            if (mobileMenuToggle && body && page) {
+                if (mobileMenuToggle.checked) {
+                    // Store current scroll position BEFORE locking
+                    scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+                    // Prevent body scroll
+                    body.classList.add('menu-open');
+                    // Lock page position
+                    page.style.top = '-' + scrollPosition + 'px';
+                    // Disable interaction on page content
+                    page.style.pointerEvents = 'none';
+                } else {
+                    // Restore body scroll
+                    body.classList.remove('menu-open');
+                    // Restore page position
+                    page.style.top = '';
+                    page.style.pointerEvents = '';
+                    // Restore scroll position
+                    if (scrollPosition !== undefined && scrollPosition !== null) {
+                        window.scrollTo(0, scrollPosition);
+                        scrollPosition = 0;
+                    }
+                }
+            }
+        }
+        
+        function closeMobileMenu() {
+            if (mobileMenuToggle) {
+                mobileMenuToggle.checked = false;
+                updateMenuState();
+            }
+        }
+        
+        if (mobileMenuToggle && mobileNav) {
+            // Ensure menu is hidden by default
+            mobileMenuToggle.checked = false;
+            updateMenuState();
+            
+            // Watch for checkbox changes
+            mobileMenuToggle.addEventListener('change', updateMenuState);
+            
+            // Close menu when clicking close button (X)
+            if (closeMobileMenuBtn) {
+                closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+            }
+            
+            // Close menu when clicking backdrop
+            if (mobileNavBackdrop) {
+                mobileNavBackdrop.addEventListener('click', closeMobileMenu);
+            }
+            
+            // Expand submenus that should be open by default (when on submenu page)
+            document.querySelectorAll('#mobile-nav .mobile-submenu.expanded').forEach(function(submenu) {
+                const toggle = submenu.closest('li').querySelector('.mobile-menu-toggle');
+                if (toggle) {
+                    toggle.classList.add('active');
+                }
+            });
+            
+            // Handle submenu toggle buttons
+            const submenuToggles = document.querySelectorAll('#mobile-nav .mobile-menu-toggle');
+            submenuToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenuId = this.getAttribute('data-submenu');
+                    const submenu = this.closest('li').querySelector('.mobile-submenu');
+                    
+                    if (submenu) {
+                        const isExpanded = submenu.classList.contains('expanded');
+                        
+                        // Close all other submenus
+                        document.querySelectorAll('#mobile-nav .mobile-submenu.expanded').forEach(function(menu) {
+                            if (menu !== submenu) {
+                                menu.classList.remove('expanded');
+                                const otherToggle = menu.closest('li').querySelector('.mobile-menu-toggle');
+                                if (otherToggle) {
+                                    otherToggle.classList.remove('active');
+                                }
+                            }
+                        });
+                        
+                        // Toggle current submenu
+                        if (isExpanded) {
+                            submenu.classList.remove('expanded');
+                            this.classList.remove('active');
+                        } else {
+                            submenu.classList.add('expanded');
+                            this.classList.add('active');
+                        }
+                    }
+                });
+            });
+            
+            // Close menu when clicking a link
+            mobileMenuLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    // Don't close if clicking a submenu toggle button
+                    if (!this.classList.contains('mobile-menu-toggle')) {
+                        closeMobileMenu();
+                    }
+                });
+            });
+            
+            // Close menu on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenuToggle.checked) {
+                    closeMobileMenu();
+                }
+            });
+            
+            // Close menu when window resizes to lg or above
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024) {
+                    closeMobileMenu();
+                }
             });
         }
 

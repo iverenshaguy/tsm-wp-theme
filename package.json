@@ -4,6 +4,10 @@
   "description": "WordPress theme for TSM",
   "scripts": {
     "build:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --minify",
+    "build:css:dist": "tailwindcss -i ./assets/css/input.css -o ./dist/assets/css/main.css --minify",
+    "build:dist": "node build-dist.js",
+    "build": "npm run build:css && npm run build:dist",
+    "build:production": "npm run build:css:dist && npm run build:dist",
     "watch:css": "tailwindcss -i ./assets/css/input.css -o ./assets/css/main.css --watch",
     "lint:js": "eslint assets/js/**/*.js",
     "lint:js:fix": "eslint assets/js/**/*.js --fix",

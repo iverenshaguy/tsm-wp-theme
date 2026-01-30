@@ -87,8 +87,8 @@ get_header();
 							continue;
 						}
 						?>
-						<div class="group">
-							<div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-accent group-hover:bg-primary group-hover:text-white transition-all mb-4">
+						<div class="group text-center sm:text-left">
+							<div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-accent group-hover:bg-primary group-hover:text-white transition-all mb-4 mx-auto sm:mx-0">
 								<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( $icon ); ?></span>
 							</div>
 							<h4 class="font-bold text-accent dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
@@ -161,9 +161,9 @@ get_header();
 					$is_left = ( $alignment === 'left' );
 					$bg_color = $is_left ? 'bg-primary' : 'bg-accent';
 					?>
-					<div class="flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-0">
+					<div class="flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-0">
 						<?php if ( $is_left ) : ?>
-							<div class="flex-1 md:text-right md:pr-12 order-2 md:order-1">
+							<div class="flex-1 text-center md:text-right md:pr-12 order-2 md:order-1">
 								<h4 class="text-xl font-bold text-primary dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
 								<p class="text-sm text-gray-500 dark:text-gray-400"><?php echo esc_html( $description ); ?></p>
 							</div>
@@ -176,7 +176,7 @@ get_header();
 							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(0,0,0,0)] dark:md:shadow-[0_0_0_8px_rgba(0,0,0,0)]">
 								<span class="material-symbols-outlined"><?php echo esc_html( $icon ); ?></span>
 							</div>
-							<div class="flex-1 md:pl-12 order-2 md:order-3">
+							<div class="flex-1 text-center md:text-left md:pl-12 order-2 md:order-3">
 								<h4 class="text-xl font-bold text-primary dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
 								<p class="text-sm text-gray-500 dark:text-gray-400"><?php echo esc_html( $description ); ?></p>
 							</div>
