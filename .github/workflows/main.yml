@@ -74,7 +74,7 @@ jobs:
           # IMPORTANT: Update this path based on your FTP root location
           # If FTP root is /home/username/: /public_html/wp-content/themes/tsm-theme/
           # If FTP root is /home/username/public_html/: /wp-content/themes/tsm-theme/
-          server-dir: /public_html/wp-content/themes/tsm-theme/
+          server-dir: /tsm-theme/
           dangerous-clean-slate: false
           log-level: verbose
           exclude: |
