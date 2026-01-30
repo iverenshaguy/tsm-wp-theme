@@ -16,7 +16,7 @@ echo "================================"
 
 # Step 1: Build for production (CSS + dist folder)
 echo -e "\n${YELLOW}Step 1: Building production assets...${NC}"
-if ! npm run build:production; then
+if ! npm run build; then
     echo -e "${RED}❌ Build failed!${NC}"
     exit 1
 fi
@@ -64,7 +64,7 @@ else
     echo "2. Use FTP client (FileZilla, Cyberduck, etc.) or cPanel File Manager"
     echo "3. Upload to: wp-content/themes/tsm-theme/"
     echo ""
-    echo "See DEPLOY-CPANEL.md for detailed instructions"
+    echo "See docs/DEPLOY-CPANEL.md for detailed instructions"
 fi
 
 # Step 3: Reminders
@@ -75,4 +75,4 @@ echo "3. Activate 'TSM Theme'"
 echo "4. Verify the site is working correctly"
 echo "5. Update URLs in WordPress if dev preview uses different domain"
 echo ""
-echo -e "${YELLOW}💡 Tip: Check DEPLOY-CPANEL.md for troubleshooting${NC}"
+echo -e "${YELLOW}💡 Tip: Check docs/DEPLOY-CPANEL.md for troubleshooting${NC}"

@@ -2,119 +2,323 @@
 
 A modern, clean WordPress theme template with a solid foundation for customization.
 
-## Installation
+## Documentation
 
-### Option 1: Using Local by Flywheel (Recommended for Beginners)
+For detailed information, see the following documentation files:
 
-1. Download and install [Local by Flywheel](https://localwp.com/)
-2. Create a new site in Local
-3. Copy this theme folder to: `~/Local Sites/[your-site-name]/app/public/wp-content/themes/tsm-theme`
-4. Activate the theme in WordPress admin: Appearance → Themes
+- **[Build Setup Guide](docs/BUILD-SETUP.md)** - Complete guide to the build system, minification, and PostCSS configuration
+- **[Deployment Guide](docs/DEPLOY-CPANEL.md)** - Step-by-step instructions for deploying to cPanel/FTP
+- **[Deployment Plan](docs/DEPLOYMENT-PLAN.md)** - Overview of deployment workflows and URL management
+- **[Dist Folder Guide](docs/DIST-FOLDER-GUIDE.md)** - Understanding the `dist/` folder and deployment process
+- **[FTP Paths Guide](docs/FTP-PATHS.md)** - Understanding FTP path configuration for cPanel deployments
 
-### Option 2: Using Docker (Recommended for Developers)
-
-1. Make sure Docker Desktop is installed and running
-2. Navigate to your WordPress installation directory (or create one)
-3. Copy this theme to `wp-content/themes/tsm-theme`
-4. Use a WordPress Docker setup like:
-   ```bash
-   docker-compose up -d
-   ```
-   (You'll need a `docker-compose.yml` file - see below)
-
-### Option 3: Using MAMP/XAMPP
-
-1. Install [MAMP](https://www.mamp.info/) or [XAMPP](https://www.apachefriends.org/)
-2. Download WordPress from [wordpress.org](https://wordpress.org/download/)
-3. Extract WordPress to MAMP/XAMPP's htdocs directory
-4. Create a database in phpMyAdmin
-5. Run WordPress installation
-6. Copy this theme to `wp-content/themes/tsm-theme`
-7. Activate the theme in WordPress admin
-
-### Option 4: Using Homebrew + PHP Built-in Server
-
-1. Install PHP and MySQL via Homebrew:
-   ```bash
-   brew install php mysql
-   ```
-2. Start MySQL:
-   ```bash
-   brew services start mysql
-   ```
-3. Download WordPress and set it up
-4. Copy theme to `wp-content/themes/tsm-theme`
-5. Run WordPress using PHP built-in server or configure Apache/Nginx
-
-## Quick Start with Docker
-
-If you want a quick Docker setup, create a `docker-compose.yml` in your project root:
-
-```yaml
-version: '3.8'
-
-services:
-  wordpress:
-    image: wordpress:latest
-    ports:
-      - "8080:80"
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-    volumes:
-      - wordpress_data:/var/www/html
-      - ./:/var/www/html/wp-content/themes/tsm-theme
-    depends_on:
-      - db
-
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-      MYSQL_ROOT_PASSWORD: rootpassword
-    volumes:
-      - db_data:/var/lib/mysql
-
-volumes:
-  wordpress_data:
-  db_data:
-```
-
-Then run:
-```bash
-docker-compose up -d
-```
-
-Access WordPress at: http://localhost:8080
-
-## Theme Structure
+## Project Structure
 
 ```
 tsm-theme/
-├── assets/
+├── src/                    # Source files (development)
+│   ├── assets/
+│   │   ├── css/
+│   │   │   └── input.css  # Tailwind CSS source
+│   │   ├── js/
+│   │   │   └── main.js    # JavaScript source
+│   │   └── images/
+│   ├── functions/          # PHP functions
+│   ├── template-parts/    # Template parts
+│   └── *.php              # WordPress template files
+├── assets/                 # Built assets (development)
 │   ├── css/
-│   │   └── main.css
-│   ├── js/
-│   │   └── main.js
-│   └── images/
-├── style.css          # Main stylesheet (required)
-├── index.php          # Main template (required)
-├── functions.php      # Theme functions
-├── header.php         # Header template
-├── footer.php         # Footer template
-├── sidebar.php        # Sidebar template
-├── single.php         # Single post template
-├── page.php           # Page template
-├── archive.php        # Archive template
-├── search.php         # Search results template
-├── 404.php            # 404 error page
-├── comments.php       # Comments template
-└── searchform.php     # Search form template
+│   │   └── main.css       # Compiled CSS (dev)
+│   └── js/
+│       └── main.js        # Minified JS (dev)
+├── dist/                   # Production build (deployment)
+│   ├── assets/
+│   │   ├── css/
+│   │   │   └── main.css   # Minified CSS
+│   │   └── js/
+│   │       └── main.js    # Minified JS
+│   └── *.php              # WordPress template files
+├── scripts/
+│   ├── build-dist.js       # Post-build script
+│   ├── minify-js.js        # JS minification script
+│   └── deploy-to-dev.sh    # Deployment script
+└── package.json
 ```
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Docker Desktop (for local WordPress development)
+- PHP 7.4+ (if not using Docker)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd tsm-theme
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Install PHP dependencies (optional):
+   ```bash
+   composer install
+   ```
+
+### Development Workflow
+
+#### Start Development Server
+
+```bash
+npm run dev
+```
+
+This command runs multiple watchers in parallel:
+- **CSS Watcher**: Watches `src/assets/css/input.css` and automatically rebuilds to `assets/css/main.css`
+- **JavaScript Watcher**: Watches `src/assets/js/**/*.js` and automatically rebuilds/minifies to `assets/js/`
+- **PHP/HTML Watcher**: Watches `src/**/*.php` and `src/**/*.html` files and notifies when changes occur
+
+**Note**: Since your theme files are mounted in Docker, PHP/HTML changes are immediately reflected. Just refresh your browser to see updates.
+
+#### Build for Development
+
+```bash
+npm run build:dev
+```
+
+This command:
+- Compiles CSS from `src/assets/css/input.css` to `assets/css/main.css`
+- Minifies JavaScript from `src/assets/js/` to `assets/js/`
+- Copies files to `dist/` folder
+
+#### Build for Production
+
+```bash
+npm run build
+```
+
+This command:
+- Compiles and minifies CSS from `src/assets/css/input.css` to `dist/assets/css/main.css`
+- Minifies JavaScript from `src/assets/js/` to `dist/assets/js/`
+- Runs `postbuild` script to copy all files to `dist/` folder
+
+**What gets minified:**
+- **CSS**: Tailwind CSS is compiled and minified using Tailwind's built-in minifier
+- **JavaScript**: JavaScript files are minified using Terser with:
+  - Code compression enabled
+  - Debugger statements removed
+  - Comments removed
+  - Console logs preserved (for debugging)
+
+**PostCSS**: PostCSS is configured with:
+- `tailwindcss` plugin for processing Tailwind directives
+- `autoprefixer` for vendor prefixing
+- `cssnano` for additional CSS minification in production mode
+
+## Running WordPress with Docker
+
+### Quick Start
+
+1. Make sure Docker Desktop is installed and running
+
+2. Start the containers:
+   ```bash
+   npm run docker:start
+   # or manually: docker-compose up -d
+   ```
+
+3. Access WordPress:
+   - **WordPress Admin**: http://localhost:8080/wp-admin
+   - **Site**: http://localhost:8080
+
+4. The theme files are automatically mounted, so changes to `src/` files will be reflected immediately
+
+### Docker Commands
+
+Use these npm scripts for easy Docker management:
+
+- **Start Docker**: `npm run docker:start` - Starts WordPress and MySQL containers
+- **Stop Docker**: `npm run docker:stop` - Stops and removes containers
+- **Restart Docker**: `npm run docker:restart` - Restarts containers
+- **View Logs**: `npm run docker:logs` - Shows WordPress container logs (follow mode)
+- **Check Status**: `npm run docker:status` - Shows container status
+
+### Docker Setup Details
+
+The `docker-compose.yml` includes:
+
+- **WordPress Container**: 
+  - Runs WordPress on port 8080
+  - Theme files are mounted from `src/` directory
+  - Automatically connects to MySQL database
+
+- **MySQL Container**:
+  - Database: `wordpress`
+  - User: `wordpress`
+  - Password: `wordpress`
+  - Root Password: `rootpassword`
+  - Exposed on port 3306 for external tools (e.g., TablePlus)
+
+### Working with Docker
+
+**View logs:**
+```bash
+npm run docker:logs
+# or: docker-compose logs -f wordpress
+```
+
+**Stop containers:**
+```bash
+npm run docker:stop
+# or: docker-compose down
+```
+
+**Restart containers:**
+```bash
+npm run docker:restart
+# or: docker-compose restart
+```
+
+**Check container status:**
+```bash
+npm run docker:status
+# or: docker-compose ps
+```
+
+**Access MySQL:**
+```bash
+docker-compose exec db mysql -u wordpress -pwordpress wordpress
+```
+
+**Access WordPress container shell:**
+```bash
+docker-compose exec wordpress bash
+```
+
+### Theme Development with Docker
+
+1. **Edit source files** in `src/` directory
+2. **Run build commands** on your host machine:
+   ```bash
+   npm run dev        # Watch mode
+   npm run build:dev  # One-time build
+   ```
+3. **Changes are live** - WordPress container sees the built files in `assets/` or `dist/`
+
+## Deployment
+
+### Manual Deployment
+
+1. Build for production:
+   ```bash
+   npm run build
+   ```
+
+2. Upload the contents of `dist/` folder to your server:
+   ```bash
+   # Using rsync (example)
+   rsync -avz dist/ user@server:/path/to/wp-content/themes/tsm-theme/
+   ```
+
+### Automatic Deployment via GitHub Actions
+
+The theme includes a GitHub Actions workflow for automatic FTP deployment.
+
+#### Setup
+
+1. Add FTP credentials to GitHub Secrets:
+   - Go to your repository → Settings → Secrets and variables → Actions
+   - Add the following secrets:
+     - `FTP_SERVER`: Your FTP server address (e.g., `ftp.example.com`)
+     - `FTP_USERNAME`: Your FTP username
+     - `FTP_PASSWORD`: Your FTP password
+
+2. Push to `main` branch or manually trigger:
+   - Go to Actions tab → "Deploy to FTP" → Run workflow
+
+#### What Gets Deployed
+
+- Only files in `dist/` folder are deployed
+- Source files (`src/`) are excluded
+- Minified CSS and JavaScript
+- All WordPress template files
+- Configuration files (functions, customizer, etc.)
+
+### Deployment Scripts
+
+**Deploy to Dev Preview:**
+```bash
+./scripts/deploy-to-dev.sh
+```
+
+This script:
+1. Runs `npm run build` to create production build
+2. Uses rsync to sync `dist/` contents to dev server
+3. Excludes development files
+
+For more detailed deployment instructions, see [Deployment Guide](docs/DEPLOY-CPANEL.md).
+
+## Build Process Explained
+
+### Development Build (`npm run build:dev`)
+
+1. **CSS Compilation**: Tailwind processes `src/assets/css/input.css` → `assets/css/main.css`
+2. **JS Minification**: Terser minifies `src/assets/js/*.js` → `assets/js/*.js`
+3. **Post-build**: `scripts/build-dist.js` copies files from `src/` and `assets/` to `dist/`
+
+### Production Build (`npm run build`)
+
+1. **CSS Compilation & Minification**: 
+   - Tailwind compiles and minifies CSS
+   - Output: `dist/assets/css/main.css` (minified)
+   
+2. **JS Minification**: 
+   - Terser minifies JavaScript with production settings
+   - Output: `dist/assets/js/main.js` (minified)
+   
+3. **Post-build**: 
+   - `scripts/build-dist.js` copies all template files and assets to `dist/`
+   - Only production-ready files are included
+
+### PostCSS Configuration
+
+PostCSS is configured in `postcss.config.js`:
+
+- **Development**: Uses `tailwindcss` and `autoprefixer` plugins
+- **Production**: Additionally uses `cssnano` for advanced CSS minification
+
+PostCSS runs automatically as part of Tailwind CSS processing.
+
+## Available Scripts
+
+- `npm run dev` - Start development mode (watches CSS)
+- `npm run build:dev` - Build for development (unminified)
+- `npm run build` - Build for production (minified)
+- `npm run watch:css` - Watch CSS files for changes
+- `npm run lint` - Run all linters (JS, CSS, PHP)
+- `npm run format` - Format code with Prettier
+
+## Theme Structure
+
+### Source Files (`src/`)
+
+All development happens in the `src/` directory:
+- PHP templates: `src/*.php`
+- CSS source: `src/assets/css/input.css`
+- JavaScript source: `src/assets/js/*.js`
+- Functions: `src/functions/`
+- Template parts: `src/template-parts/`
+
+### Built Files (`assets/` and `dist/`)
+
+- `assets/` - Development build output
+- `dist/` - Production build output (for deployment)
 
 ## Features
 
@@ -125,24 +329,9 @@ tsm-theme/
 - Post thumbnails support
 - HTML5 support
 - Translation-ready
-- Clean, modern CSS
-
-## Development
-
-### Customization
-
-- Edit styles in `style.css` or `assets/css/main.css`
-- Add JavaScript functionality in `assets/js/main.js`
-- Modify templates in PHP files
-- Add images to `assets/images/`
-
-### Testing
-
-1. Activate the theme in WordPress admin
-2. Create some test posts and pages
-3. Test navigation menus
-4. Add widgets to sidebar and footer
-5. Test responsive design on different screen sizes
+- Tailwind CSS for styling
+- Dark mode support
+- Mobile-responsive navigation
 
 ## License
 

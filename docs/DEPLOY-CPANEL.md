@@ -60,7 +60,7 @@ The build process automatically excludes:
 - `.prettierrc.json`, `.eslintrc.json`, `.stylelintrc.json`
 - `.phpcs.xml`
 - `DEPLOYMENT-PLAN.md`, `DEPLOY-CPANEL.md`, `README.md`
-- `build-dist.js`, `deploy-to-dev.sh`
+- `scripts/build-dist.js`, `scripts/deploy-to-dev.sh`
 - All other development-only files
 
 ## Deployment Methods
@@ -207,17 +207,17 @@ If your dev preview uses a different domain than production:
 
 ## Quick Deployment Script
 
-Use the included `deploy-to-dev.sh` script:
+Use the included `scripts/deploy-to-dev.sh` script:
 
 ```bash
 # Make sure it's executable
-chmod +x deploy-to-dev.sh
+chmod +x scripts/deploy-to-dev.sh
 
 # Run it (it will prompt for FTP details)
-./deploy-to-dev.sh [FTP_HOST] [FTP_USER] [REMOTE_PATH]
+./scripts/deploy-to-dev.sh [FTP_HOST] [FTP_USER] [REMOTE_PATH]
 
 # Example:
-./deploy-to-dev.sh ftp.yourdomain.com username /home/user/public_html/wp-content/themes/tsm-theme
+./scripts/deploy-to-dev.sh ftp.yourdomain.com username /home/user/public_html/wp-content/themes/tsm-theme
 ```
 
 The script automatically:
