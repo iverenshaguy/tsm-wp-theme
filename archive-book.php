@@ -167,13 +167,13 @@ $books_query = new WP_Query( $books_args );
 								<?php echo wp_kses_post( $featured_description ); ?>
 							</p>
 						</div>
-						<div class="flex flex-wrap gap-4">
+						<div class="flex flex-row flex-nowrap gap-4">
 							<?php if ( ! empty( $featured_purchase_url ) ) : ?>
-								<a href="<?php echo esc_url( $featured_purchase_url ); ?>" target="_blank" rel="noopener" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg px-6 py-3 bg-primary text-white hover:text-white text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
+								<a href="<?php echo esc_url( $featured_purchase_url ); ?>" target="_blank" rel="noopener" class="flex flex-1 min-w-0 cursor-pointer items-center justify-center rounded-lg px-4 py-3 bg-primary text-white hover:text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all whitespace-nowrap">
 									<span class="truncate">Purchase Now</span>
 								</a>
 							<?php endif; ?>
-							<a href="<?php the_permalink(); ?>" class="flex flex-1 min-w-[140px] max-w-[240px] cursor-pointer items-center justify-center rounded-lg px-6 py-3 bg-transparent border-2 border-primary text-primary text-base font-bold hover:bg-primary/5 transition-all">
+							<a href="<?php the_permalink(); ?>" class="flex flex-1 min-w-0 cursor-pointer items-center justify-center rounded-lg px-4 py-3 bg-transparent border-2 border-primary text-primary text-sm sm:text-base font-bold hover:bg-primary/5 transition-all whitespace-nowrap">
 								<span class="truncate">Learn More</span>
 							</a>
 						</div>

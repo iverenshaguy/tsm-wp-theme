@@ -7,7 +7,18 @@ This document outlines the deployment workflow for the TSM Theme, including URL 
 ## Environment URLs
 
 - **Local Development:** `http://localhost:8080`
+- **Dev Preview:** `https://dev.terryshaguy.org` (or your dev preview URL)
 - **Production:** `https://terryshaguy.org` (or `http://terryshaguy.org`)
+
+## Deployment to cPanel
+
+**For detailed cPanel deployment instructions, see [DEPLOY-CPANEL.md](./DEPLOY-CPANEL.md)**
+
+Quick steps:
+1. Build assets: `npm run build:css`
+2. Upload theme files via FTP/SFTP or cPanel File Manager
+3. Activate theme in WordPress admin
+4. Update URLs if needed (dev preview uses different domain)
 
 ## Development Workflow
 
