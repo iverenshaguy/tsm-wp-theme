@@ -16,8 +16,10 @@ const srcDir = path.join(__dirname, '../src');
 const rootDir = path.join(__dirname, '..');
 
 // PHP template files (WordPress requires these at root)
+// Note: style.css is kept at root (minimal) for WordPress theme recognition
+// Full styles are in assets/css/style.css
 const phpTemplates = [
-  'style.css',
+  'style.css', // Minimal version for WordPress theme header
   'index.php',
   'functions.php',
   'header.php',
@@ -172,7 +174,7 @@ function buildDist() {
   
   // Copy built assets from src/assets/ to dist/assets/
   // Note: CSS and JS are already built to dist/ by build:css:dist and build:js:dist
-  // This step ensures images and any other assets are copied, and creates directory structure if needed
+  // This step ensures images, style.css, and any other assets are copied, and creates directory structure if needed
   const assetsSrc = path.join(srcDir, 'assets');
   const assetsDest = path.join(distDir, 'assets');
   
@@ -186,6 +188,14 @@ function buildDist() {
     const cssDest = path.join(assetsDest, 'css');
     if (!fs.existsSync(cssDest)) {
       fs.mkdirSync(cssDest, { recursive: true });
+    }
+    
+    // Copy style.css from src/assets/css/ to dist/assets/css/
+    const styleCssSrc = path.join(assetsSrc, 'css', 'style.css');
+    const styleCssDest = path.join(cssDest, 'style.css');
+    if (fs.existsSync(styleCssSrc)) {
+      copyFile(styleCssSrc, styleCssDest);
+      console.log(`✓ Copied: assets/css/style.css`);
     }
     
     // CSS is already built to dist/assets/css/main.css by build:css:dist
