@@ -10,9 +10,11 @@ const path = require('path');
 const { minify } = require('terser');
 
 const srcDir = path.join(__dirname, '../src/assets/js');
+// For dev: Don't minify - WordPress can load unminified JS
+// For production: Minify to dist/assets/js
 const outputDir = process.argv.includes('--dist') 
   ? path.join(__dirname, '../dist/assets/js')
-  : path.join(__dirname, '../src/assets/js');
+  : null; // Don't output for dev builds - use source directly
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -50,7 +52,14 @@ async function minifyFile(filePath) {
 }
 
 async function buildJs() {
-  console.log('🔨 Minifying JavaScript files...');
+  if (!outputDir) {
+    // Dev build: Don't minify, WordPress will use source directly
+    console.log('📝 Dev build: Using unminified source files');
+    console.log('💡 WordPress will load src/assets/js/*.js directly');
+    return;
+  }
+  
+  console.log('🔨 Minifying JavaScript files for production...');
   
   if (!fs.existsSync(srcDir)) {
     console.warn(`⚠️  Source directory ${srcDir} not found`);

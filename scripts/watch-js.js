@@ -1,20 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Watch JavaScript files and rebuild when they change
- * Watches "src/assets/js/../..".js and rebuilds to assets/js/
+ * Watch JavaScript files for changes
+ * For dev: WordPress loads unminified source directly (no rebuild needed)
+ * Just notifies when files change
  */
 
 const chokidar = require('chokidar');
-const { exec } = require('child_process');
 const path = require('path');
 
 const srcDir = path.join(__dirname, '../src/assets/js');
-const buildCommand = 'node scripts/minify-js.js';
 
 console.log('👀 Watching JavaScript files...');
 console.log(`📁 Watching: ${srcDir}`);
-console.log('🔄 Changes will trigger JS rebuild\n');
+console.log('💡 WordPress loads unminified source directly - just refresh browser\n');
 
 const watcher = chokidar.watch(`${srcDir}/**/*.js`, {
   ignored: /node_modules/,
@@ -24,19 +23,9 @@ const watcher = chokidar.watch(`${srcDir}/**/*.js`, {
 
 watcher
   .on('change', (filePath) => {
-    console.log(`\n📝 File changed: ${path.relative(process.cwd(), filePath)}`);
-    console.log('🔨 Rebuilding JavaScript...');
-
-    exec(buildCommand, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`❌ Error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.error(`⚠️  ${stderr}`);
-      }
-      console.log('✅ JavaScript rebuilt successfully\n');
-    });
+    const relativePath = path.relative(process.cwd(), filePath);
+    console.log(`\n📝 File changed: ${relativePath}`);
+    console.log('💡 Refresh your browser to see changes\n');
   })
   .on('ready', () => {
     console.log('✅ JavaScript watcher ready\n');

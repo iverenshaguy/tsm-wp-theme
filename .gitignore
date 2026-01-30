@@ -65,4 +65,6 @@ dist.zip
 # Built assets (ignore compiled/minified files, source files in src/ are tracked)
 # Dev compiled files (in src/assets/)
 src/assets/css/main.css
-src/assets/js/main.js
+# Note: src/assets/js/main.js is the SOURCE file (unminified) - tracked in git
+# For dev: WordPress loads unminified source directly
+# For production: Minified version goes to dist/assets/js/main.js

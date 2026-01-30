@@ -127,10 +127,11 @@ This command:
 
 1. Make sure Docker Desktop is installed and running
 
-2. Start the containers:
+2. Start the containers (automatically builds assets first):
    ```bash
    npm run docker:start
-   # or manually: docker-compose up -d
+   # This will build CSS/JS assets, then start Docker containers
+   # or manually: npm run build:css && npm run build:js && docker-compose up -d
    ```
 
 3. Access WordPress:
