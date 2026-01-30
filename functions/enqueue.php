@@ -10,6 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Add preconnect for Google Fonts
+ */
+function tsm_theme_fonts_preconnect() {
+	echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
+add_action( 'wp_head', 'tsm_theme_fonts_preconnect', 1 );
+
+/**
  * Enqueue scripts and styles
  */
 function tsm_theme_scripts() {
@@ -17,7 +26,7 @@ function tsm_theme_scripts() {
 	wp_enqueue_style( 'tsm-theme-style', get_stylesheet_uri(), array(), '1.0.0' );
 
 	// Enqueue Google Fonts
-	wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;900&display=swap', array(), null );
+	wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap', array(), null, 'all' );
 
 	// Enqueue Material Symbols
 	wp_enqueue_style( 'material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap', array(), null );

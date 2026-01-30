@@ -147,7 +147,11 @@
 						<span class="material-symbols-outlined text-accent group-hover:scale-110 transition-transform">call</span>
 						<div>
 							<p class="text-xs font-bold text-gray-400 uppercase tracking-tighter mb-1">Phone Number</p>
-							<p class="text-sm font-bold text-gray-600 dark:text-gray-300"><?php echo esc_html( $contact_phone ); ?></p>
+							<?php
+							// Clean phone number for tel: link (remove spaces, parentheses, dashes)
+							$phone_clean = preg_replace( '/[^0-9+]/', '', $contact_phone );
+							?>
+							<a class="text-sm font-bold text-primary dark:text-accent hover:underline transition-colors" href="tel:<?php echo esc_attr( $phone_clean ); ?>"><?php echo esc_html( $contact_phone ); ?></a>
 						</div>
 					</div>
 					<div class="flex items-start gap-4 group">

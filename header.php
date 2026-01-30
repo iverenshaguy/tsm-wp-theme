@@ -53,7 +53,7 @@
 			</nav>
 			
 			<div class="flex items-center gap-4">
-				<a href="<?php echo esc_url( home_url( '/partner' ) ); ?>" class="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-primary text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
+				<a href="<?php echo esc_url( home_url( '/partner' ) ); ?>" class="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-accent text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
 					<span>Partner</span>
 				</a>
 			</div>
