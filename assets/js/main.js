@@ -7,7 +7,7 @@
 
     // Restore scroll position immediately if returning from form submission
     const urlParams = new URLSearchParams(window.location.search);
-    const formTypes = ['newsletter', 'contact', 'prayer', 'partner', 'decision'];
+    const formTypes = ['newsletter', 'contact', 'prayer', 'partner'];
     
     formTypes.forEach(function(formType) {
         if (urlParams.has(formType)) {
@@ -666,12 +666,32 @@
                         return false;
                     }
                     
-                    // Store scroll position before submission
+                    // Store scroll position before form submission so we can restore it after redirect
                     sessionStorage.setItem('decisionScrollPosition', window.scrollY.toString());
                 });
                 
-                // Clean up URL parameter without reloading
-                if (window.location.search.includes('decision=')) {
+                // Handle success state - hide form, restore scroll position, and show download button
+                if (window.location.search.includes('decision=success')) {
+                    // Restore scroll position immediately
+                    const savedScrollPosition = sessionStorage.getItem('decisionScrollPosition');
+                    if (savedScrollPosition) {
+                        // Use requestAnimationFrame to ensure DOM is ready
+                        requestAnimationFrame(function() {
+                            window.scrollTo(0, parseInt(savedScrollPosition, 10));
+                            sessionStorage.removeItem('decisionScrollPosition');
+                        });
+                    }
+                    
+                    const form = document.getElementById('decision-form');
+                    if (form) {
+                        form.classList.add('hidden');
+                    }
+                    // Clean up URL parameter without reloading
+                    const url = new URL(window.location);
+                    url.searchParams.delete('decision');
+                    window.history.replaceState({}, '', url);
+                } else if (window.location.search.includes('decision=')) {
+                    // Clean up URL parameter for error case too
                     const url = new URL(window.location);
                     url.searchParams.delete('decision');
                     window.history.replaceState({}, '', url);

@@ -153,7 +153,7 @@ function tsm_handle_contact_form() {
 	if ( empty( $name ) || empty( $email ) || empty( $subject ) || empty( $message ) || ! is_email( $email ) ) {
 		$redirect_url = wp_get_referer();
 		if ( ! $redirect_url ) {
-			$redirect_url = home_url( '/contact' );
+			$redirect_url = home_url( '/contact-us' );
 		}
 		wp_redirect( add_query_arg( 'contact', 'error', $redirect_url ) );
 		exit;

@@ -32,7 +32,7 @@ const filesToCopy = [
   'single-mission.php',
   'page.php',
   'page-about.php',
-  'page-contact.php',
+  'page-contact-us.php',
   'page-how-to-know-jesus.php',
   'page-our-ministries.php',
   'page-partners.php',

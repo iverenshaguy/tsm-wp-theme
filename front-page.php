@@ -127,25 +127,6 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl">groups</span>
-			</div>
-			<div class="flex flex-col gap-2">
-				<h4 class="text-primary dark:text-white text-xl font-bold">
-					<?php
-					$service_0_title = get_theme_mod( 'service_0_title', 'Couple\'s Ministry' );
-					echo esc_html( $service_0_title );
-					?>
-				</h4>
-				<p class="text-gray-600 dark:text-gray-400 text-base">
-					<?php
-					$service_0_description = get_theme_mod( 'service_0_description', 'Providing biblical guidance and seminars for marriages and families.' );
-					echo esc_html( $service_0_description );
-					?>
-				</p>
-			</div>
-		</div>
-		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
-			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
 				<span class="material-symbols-outlined !text-3xl">campaign</span>
 			</div>
 			<div class="flex flex-col gap-2">
@@ -197,6 +178,25 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 					<?php
 					$service_3_description = get_theme_mod( 'service_3_description', 'Leading mission teams and humanitarian efforts across the globe.' );
 					echo esc_html( $service_3_description );
+					?>
+				</p>
+			</div>
+		</div>
+		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
+			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
+				<span class="material-symbols-outlined !text-3xl">groups</span>
+			</div>
+			<div class="flex flex-col gap-2">
+				<h4 class="text-primary dark:text-white text-xl font-bold">
+					<?php
+					$service_0_title = get_theme_mod( 'service_0_title', 'Couple\'s Ministry' );
+					echo esc_html( $service_0_title );
+					?>
+				</h4>
+				<p class="text-gray-600 dark:text-gray-400 text-base">
+					<?php
+					$service_0_description = get_theme_mod( 'service_0_description', 'Providing biblical guidance and seminars for marriages and families.' );
+					echo esc_html( $service_0_description );
 					?>
 				</p>
 			</div>
@@ -356,7 +356,7 @@ else :
 					</p>
 					<div class="flex flex-wrap gap-4">
 						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
-							Buy Now <span class="material-symbols-outlined">shopping_cart</span>
+							Get Your Copy
 						</a>
 						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 							Read Excerpt
