@@ -11,12 +11,14 @@ get_header();
 <!-- Hero Section -->
 <section class="py-24 px-6 overflow-hidden">
 	<div class="max-w-[1000px] mx-auto text-center">
-		<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-primary/10 text-primary text-xs font-bold tracking-[0.15em] uppercase mb-10">
-			<span class="material-symbols-outlined !text-lg">visibility</span>
-			<?php
-			$ministries_badge = get_theme_mod( 'ministries_badge', 'The Heart of the Vision' );
-			echo esc_html( $ministries_badge );
-			?>
+		<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
+			<span class="material-symbols-outlined text-primary text-sm">visibility</span>
+			<span class="text-primary text-xs font-bold tracking-widest uppercase">
+				<?php
+				$ministries_badge = get_theme_mod( 'ministries_badge', 'The Heart of the Vision' );
+				echo esc_html( $ministries_badge );
+				?>
+			</span>
 		</div>
 		<h1 class="text-4xl md:text-6xl text-primary dark:text-white font-normal italic leading-[1.15] mb-12 serif-text">
 			<?php
@@ -49,11 +51,11 @@ get_header();
 
 <!-- Mission Section -->
 <section class="py-24 px-6 bg-white dark:bg-[#0a140d] border-y border-gray-100 dark:border-[#1d3a24]">
-	<div class="max-w-[1280px] mx-auto">
+	<div class="max-w-[1280px] mx-auto px-6">
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 			<div class="space-y-12">
 				<div>
-					<h2 class="text-3xl text-primary dark:text-white mb-6">
+					<h2 class="text-3xl text-primary serif-text dark:text-white mb-6">
 						<?php
 						$ministries_mission_title = get_theme_mod( 'ministries_mission_title', 'Our mission is to walk with you as we restore Kingdom wealth.' );
 						echo esc_html( $ministries_mission_title );
@@ -89,7 +91,7 @@ get_header();
 							<div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-accent group-hover:bg-primary group-hover:text-white transition-all mb-4">
 								<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( $icon ); ?></span>
 							</div>
-							<h4 class="font-bold text-primary dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
+							<h4 class="font-bold text-accent dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
 							<p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed"><?php echo esc_html( $description ); ?></p>
 						</div>
 						<?php
@@ -125,7 +127,7 @@ get_header();
 <section class="py-32 px-6 overflow-hidden">
 	<div class="max-w-[1000px] mx-auto">
 		<div class="text-center mb-24">
-			<h2 class="text-4xl text-primary dark:text-white mb-4">
+			<h2 class="text-3xl md:text-5xl font-black text-accent dark:text-white mb-4">
 				<?php
 				$timeline_title = get_theme_mod( 'ministries_timeline_title', 'Our Journey Together' );
 				echo esc_html( $timeline_title );
@@ -165,13 +167,13 @@ get_header();
 								<h4 class="text-xl font-bold text-primary dark:text-white mb-2"><?php echo esc_html( $title ); ?></h4>
 								<p class="text-sm text-gray-500 dark:text-gray-400"><?php echo esc_html( $description ); ?></p>
 							</div>
-							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
+							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(0,0,0,0)] dark:md:shadow-[0_0_0_8px_rgba(0,0,0,0)]">
 								<span class="material-symbols-outlined"><?php echo esc_html( $icon ); ?></span>
 							</div>
 							<div class="flex-1 hidden md:block order-3"></div>
 						<?php else : ?>
 							<div class="flex-1 hidden md:block order-1"></div>
-							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(249,251,249,1)] dark:md:shadow-[0_0_0_8px_rgba(10,20,13,1)]">
+							<div class="w-16 h-16 rounded-full <?php echo esc_attr( $bg_color ); ?> text-white flex items-center justify-center z-10 order-1 md:order-2 shrink-0 md:shadow-[0_0_0_8px_rgba(0,0,0,0)] dark:md:shadow-[0_0_0_8px_rgba(0,0,0,0)]">
 								<span class="material-symbols-outlined"><?php echo esc_html( $icon ); ?></span>
 							</div>
 							<div class="flex-1 md:pl-12 order-2 md:order-3">
@@ -190,7 +192,7 @@ get_header();
 
 <!-- Resources Section -->
 <section class="py-24 px-6 bg-[#f3f7f4] dark:bg-[#0c1a11]">
-	<div class="max-w-[1280px] mx-auto">
+	<div class="max-w-[1280px] px-6 mx-auto">
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 			<div class="grid grid-cols-2 gap-4">
 				<?php
@@ -201,7 +203,7 @@ get_header();
 				<img alt="Publication" class="rounded-2xl shadow-lg rotate-3 translate-y-12" src="<?php echo esc_url( $resource_image_2 ); ?>"/>
 			</div>
 			<div>
-				<h2 class="text-4xl text-primary dark:text-white mb-8">
+				<h2 class="text-4xl text-accent serif-text dark:text-white mb-8">
 					<?php
 					$resources_title = get_theme_mod( 'ministries_resources_title', 'Equip your mind with truth.' );
 					echo esc_html( $resources_title );
@@ -226,13 +228,13 @@ get_header();
 						$is_books_link = ( $res_text === 'Books & Publications' );
 						?>
 						<div class="flex items-center gap-4 p-4 bg-white dark:bg-background-dark rounded-xl shadow-sm border border-gray-100 dark:border-[#1d3a24]">
-							<span class="material-symbols-outlined text-accent"><?php echo esc_html( $res_icon ); ?></span>
+							<span class="material-symbols-outlined text-primary"><?php echo esc_html( $res_icon ); ?></span>
 							<?php if ( $is_books_link ) : ?>
-								<a href="<?php echo esc_url( $books_url ); ?>" class="font-medium text-primary dark:text-white hover:text-accent transition-colors">
+								<a href="<?php echo esc_url( $books_url ); ?>" class="font-medium text-accent dark:text-white hover:text-accent transition-colors">
 									<?php echo esc_html( $res_text ); ?>
 								</a>
 							<?php else : ?>
-								<span class="font-medium text-primary dark:text-white"><?php echo esc_html( $res_text ); ?></span>
+								<span class="font-medium text-accent dark:text-white"><?php echo esc_html( $res_text ); ?></span>
 							<?php endif; ?>
 						</div>
 						<?php
@@ -271,16 +273,27 @@ get_header();
 </section>
 
 <!-- CTA Section -->
-<section class="py-24 px-6">
-	<div class="max-w-[1280px] mx-auto bg-primary rounded-[3rem] p-12 md:p-24 text-center text-white relative overflow-hidden">
-		<div class="relative z-10">
-			<h2 class="text-4xl md:text-5xl mb-8">
+<section class="max-w-[1280px] mx-auto py-24 px-6">
+	<div class="bg-primary text-white rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
+		<?php
+		$cta_bg_image = get_theme_mod( 'ministries_cta_bg_image', '' );
+		if ( $cta_bg_image ) {
+			?>
+			<div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('<?php echo esc_url( $cta_bg_image ); ?>')"></div>
+			<?php
+		}
+		?>
+		<div class="relative z-10 max-w-3xl mx-auto">
+			<div class="bg-white text-primary p-4 rounded-2xl mb-8 shadow-lg shadow-white/30 w-fit mx-auto">
+				<span class="material-symbols-outlined !text-4xl">volunteer_activism</span>
+			</div>
+			<h2 class="text-3xl md:text-5xl font-black mb-6">
 				<?php
 				$cta_title = get_theme_mod( 'ministries_cta_title', 'Ready to make a difference?' );
 				echo esc_html( $cta_title );
 				?>
 			</h2>
-			<p class="text-white/70 text-lg mb-12 max-w-2xl mx-auto">
+			<p class="text-white/80 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
 				<?php
 				$cta_description = get_theme_mod(
 					'ministries_cta_description',
@@ -289,16 +302,16 @@ get_header();
 				echo esc_html( $cta_description );
 				?>
 			</p>
-			<div class="flex flex-wrap justify-center gap-6">
+			<div class="flex flex-col sm:flex-row justify-center gap-4">
 				<?php
-				$partner_url = home_url( '/partner' );
+				$partner_url = home_url( '/partners' );
 				$contact_page_id = get_theme_mod( 'contact_page_id', 0 );
 				$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
 				?>
-				<a href="<?php echo esc_url( $partner_url ); ?>" class="bg-white text-primary px-10 py-4 rounded-xl font-bold hover:bg-accent hover:text-white transition-all shadow-xl">
+				 <a href="<?php echo esc_url( $partner_url ); ?>" target="_blank" rel="noopener" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
 					Become a Partner
 				</a>
-				<a href="<?php echo esc_url( $contact_url ); ?>" class="bg-transparent border border-white/30 text-white px-10 py-4 rounded-xl font-bold hover:bg-white/10 transition-all">
+				<a href="<?php echo esc_url( $contact_url ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 					Contact Us
 				</a>
 			</div>

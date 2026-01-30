@@ -74,7 +74,7 @@ class TSM_Nav_Walker extends Walker_Nav_Menu {
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
 
 		// Base text color classes - use primary color for active items
-		$text_color_class = $is_active ? 'text-primary' : 'text-[#0d1b11] dark:text-white';
+		$text_color_class = $is_active ? 'text-primary' : 'text-accent dark:text-white';
 
 		if ( $has_children && 0 === $depth ) {
 			// Dropdown link for parent items (styled like button with expand icon)
@@ -84,7 +84,7 @@ class TSM_Nav_Walker extends Walker_Nav_Menu {
 			$item_output .= '</a>';
 		} elseif ( $depth > 0 ) {
 			// Submenu items (dropdown items)
-			$submenu_text_color = $is_active ? 'text-primary' : 'text-[#0d1b11] dark:text-white';
+			$submenu_text_color = $is_active ? 'text-primary' : 'text-accent dark:text-white';
 			// If submenu item has children, add expand icon, flex layout, and peer class
 			if ( $has_children ) {
 				$item_output .= '<a' . $attributes . ' class="peer flex items-center justify-between px-4 py-2.5 text-sm font-medium ' . esc_attr( $submenu_text_color ) . ' hover:bg-accent/10 hover:text-primary">';
