@@ -10,6 +10,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Clear WordPress cache on theme activation/update
+ * This ensures old cached asset paths are cleared
+ */
+function tsm_theme_clear_cache() {
+	// Clear all transients
+	global $wpdb;
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_%'" );
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_%'" );
+	
+	// Clear object cache
+	if ( function_exists( 'wp_cache_flush' ) ) {
+		wp_cache_flush();
+	}
+	
+	// Clear rewrite rules
+	flush_rewrite_rules();
+}
+add_action( 'after_switch_theme', 'tsm_theme_clear_cache' );
+add_action( 'upgrader_process_complete', 'tsm_theme_clear_cache', 10, 2 );
+
+/**
  * Load theme functionality from modular files
  */
 require_once get_template_directory() . '/functions/setup.php';

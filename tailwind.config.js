@@ -1,11 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: ['./src/**/*.php', './src/assets/js/**/*.js', './**/*.php'],
+  content: ['./src/**/*.{html,js,php}', './**/*.{html,js,php}'],
   theme: {
     extend: {
       colors: {
-        // primary: '#4c9a5f',
         accent: '#1a4d2e',
         primary: '#339a46',
         'background-light': '#fcfdfc',

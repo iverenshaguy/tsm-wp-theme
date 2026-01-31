@@ -81,7 +81,7 @@ class TSM_Mobile_Menu_Walker extends Walker_Nav_Menu {
 
 		if ( $has_children && 0 === $depth ) {
 			// Parent item with children - use button to toggle submenu
-			$active_class = $is_active ? 'text-primary' : 'text-[#0d1b11] dark:text-white';
+			$active_class = $is_active ? 'text-primary' : 'text-accent';
 			// Add 'active' class if submenu should be expanded
 			$has_active_children = isset( $this->parent_items_with_active_children[ $item->ID ] ) && $this->parent_items_with_active_children[ $item->ID ];
 			$toggle_active_class = $has_active_children ? ' active' : '';
@@ -103,7 +103,7 @@ class TSM_Mobile_Menu_Walker extends Walker_Nav_Menu {
 				$output .= '<a' . $attributes . ' class="block w-full pt-2 pb-0 pl-8 pr-0 ' . esc_attr( $active_class ) . ' text-sm hover:text-primary dark:hover:text-white transition-colors">';
 			} else {
 				// Top-level menu item
-				$active_class = $is_active ? 'text-primary' : 'text-[#0d1b11] dark:text-white';
+				$active_class = $is_active ? 'text-primary' : 'text-accent';
 				$output .= '<a' . $attributes . ' class="block w-full pt-3 pb-0 text-base font-medium ' . esc_attr( $active_class ) . ' hover:text-primary transition-colors">';
 			}
 
