@@ -56,6 +56,14 @@ function tsm_theme_scripts() {
 	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : $theme_version;
 	wp_enqueue_script( 'tsm-theme-script', get_template_directory_uri() . '/assets/js/main.js', array(), $main_js_version, true );
 
+	// Localize script for AJAX
+	if ( is_post_type_archive( 'mission' ) || is_page_template( 'archive-mission.php' ) ) {
+		wp_localize_script( 'tsm-theme-script', 'tsmMissions', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'tsm_missions_nonce' ),
+		) );
+	}
+
 	// Enqueue comment reply script on single posts
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );

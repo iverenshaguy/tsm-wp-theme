@@ -122,43 +122,160 @@
             }
             
             // Expand submenus that should be open by default (when on submenu page)
+            // Restore expanded state for all submenus (including nested ones)
             document.querySelectorAll('#mobile-nav .mobile-submenu.expanded').forEach(function(submenu) {
+                // Remove max-h-0 to ensure visibility
+                submenu.classList.remove('max-h-0');
                 const toggle = submenu.closest('li').querySelector('.mobile-menu-toggle');
                 if (toggle) {
                     toggle.classList.add('active');
                 }
             });
             
-            // Handle submenu toggle buttons
+            // Also expand parent menus if they contain active menu items
+            // This handles cases where WordPress doesn't add the 'expanded' class initially
+            const activeItems = document.querySelectorAll('#mobile-nav li.current-menu-item, #mobile-nav li.current-menu-ancestor, #mobile-nav li.current-menu-parent, #mobile-nav li.current_page_item, #mobile-nav li.current_page_ancestor, #mobile-nav li.current_page_parent');
+            
+            activeItems.forEach(function(activeLi) {
+                // Expand all parent submenus by traversing up the DOM tree
+                let currentLi = activeLi;
+                
+                while (currentLi) {
+                    // Find the parent <ul> that contains this <li>
+                    const parentUl = currentLi.parentElement;
+                    
+                    if (parentUl && parentUl.classList.contains('mobile-submenu')) {
+                        // This <li> is inside a submenu, so find the parent <li> that contains this submenu
+                        const grandparentLi = parentUl.closest('li.mobile-menu-item');
+                        
+                        if (grandparentLi) {
+                            // Find the submenu and toggle button in the grandparent
+                            const parentSubmenu = grandparentLi.querySelector('.mobile-submenu');
+                            const parentToggle = grandparentLi.querySelector('.mobile-menu-toggle');
+                            
+                            if (parentSubmenu && parentToggle) {
+                                parentSubmenu.classList.add('expanded');
+                                parentSubmenu.classList.remove('max-h-0');
+                                parentToggle.classList.add('active');
+                            }
+                            
+                            // Continue traversing up
+                            currentLi = grandparentLi;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            });
+            
+            // Handle submenu toggle buttons (supports nested submenus)
             const submenuToggles = document.querySelectorAll('#mobile-nav .mobile-menu-toggle');
             submenuToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const submenuId = this.getAttribute('data-submenu');
-                    const submenu = this.closest('li').querySelector('.mobile-submenu');
+                    const itemId = this.getAttribute('data-item-id') || submenuId.replace('submenu-', '');
+                    const parentLi = this.closest('li');
+                    
+                    // Find submenu - try multiple methods
+                    let submenu = null;
+                    
+                    // Method 1: Find the first .mobile-submenu that's a direct child of this li (most reliable)
+                    const directChildren = Array.from(parentLi.children);
+                    for (let i = 0; i < directChildren.length; i++) {
+                        const child = directChildren[i];
+                        if (child.tagName === 'UL' && child.classList.contains('mobile-submenu')) {
+                            submenu = child;
+                            break;
+                        }
+                    }
+                    
+                    // Method 2: Find by data-parent-id attribute (for nested menus)
+                    if (!submenu) {
+                        submenu = parentLi.querySelector('.mobile-submenu[data-parent-id="' + itemId + '"]');
+                    }
+                    
+                    // Method 3: Find any .mobile-submenu within this li (fallback)
+                    if (!submenu) {
+                        submenu = parentLi.querySelector('.mobile-submenu');
+                    }
+                    
+                    const depth = parseInt(this.getAttribute('data-depth') || '0', 10);
                     
                     if (submenu) {
                         const isExpanded = submenu.classList.contains('expanded');
+                        const parentLi = this.closest('li');
                         
-                        // Close all other submenus
-                        document.querySelectorAll('#mobile-nav .mobile-submenu.expanded').forEach(function(menu) {
-                            if (menu !== submenu) {
-                                menu.classList.remove('expanded');
-                                const otherToggle = menu.closest('li').querySelector('.mobile-menu-toggle');
-                                if (otherToggle) {
-                                    otherToggle.classList.remove('active');
+                        if (isExpanded) {
+                            // Closing: Close this submenu and all nested submenus within it
+                            submenu.classList.remove('expanded');
+                            // Add max-h-0 back for animation
+                            submenu.classList.add('max-h-0');
+                            this.classList.remove('active');
+                            
+                            // Close all nested submenus within this one
+                            const nestedSubmenus = submenu.querySelectorAll('.mobile-submenu.expanded');
+                            nestedSubmenus.forEach(function(nestedSubmenu) {
+                                nestedSubmenu.classList.remove('expanded');
+                                nestedSubmenu.classList.add('max-h-0');
+                                const nestedToggle = nestedSubmenu.closest('li').querySelector('.mobile-menu-toggle');
+                                if (nestedToggle) {
+                                    nestedToggle.classList.remove('active');
+                                }
+                            });
+                        } else {
+                            // Opening: Close sibling submenus at the same depth level
+                            // This allows nested submenus to remain open when parent opens
+                            const parentUl = parentLi.parentElement;
+                            if (parentUl) {
+                                // For top-level menus, parentUl is the main <ul>, not a submenu
+                                // For nested menus, parentUl is a .mobile-submenu
+                                const isNestedMenu = parentUl.classList.contains('mobile-submenu');
+                                
+                                if (isNestedMenu || depth === 0) {
+                                    // Find siblings at the same level
+                                    const siblings = Array.from(parentUl.children);
+                                    siblings.forEach(function(sibling) {
+                                        if (sibling !== parentLi && sibling.tagName === 'LI') {
+                                            const siblingSubmenu = sibling.querySelector('.mobile-submenu');
+                                            const siblingToggle = sibling.querySelector('.mobile-menu-toggle');
+                                            
+                                            // Only close if it's at the same depth level
+                                            if (siblingSubmenu && siblingToggle) {
+                                                const siblingDepth = parseInt(siblingToggle.getAttribute('data-depth') || '0', 10);
+                                                if (siblingDepth === depth) {
+                                                    siblingSubmenu.classList.remove('expanded');
+                                                    siblingSubmenu.classList.add('max-h-0');
+                                                    siblingToggle.classList.remove('active');
+                                                    
+                                                    // Also close any nested submenus within the sibling
+                                                    const nestedSubmenus = siblingSubmenu.querySelectorAll('.mobile-submenu.expanded');
+                                                    nestedSubmenus.forEach(function(nestedSubmenu) {
+                                                        nestedSubmenu.classList.remove('expanded');
+                                                        nestedSubmenu.classList.add('max-h-0');
+                                                        const nestedToggle = nestedSubmenu.closest('li').querySelector('.mobile-menu-toggle');
+                                                        if (nestedToggle) {
+                                                            nestedToggle.classList.remove('active');
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
                             }
-                        });
-                        
-                        // Toggle current submenu
-                        if (isExpanded) {
-                            submenu.classList.remove('expanded');
-                            this.classList.remove('active');
-                        } else {
+                            
+                            // Open current submenu
                             submenu.classList.add('expanded');
+                            // Remove max-h-0 class to ensure visibility (override Tailwind)
+                            submenu.classList.remove('max-h-0');
                             this.classList.add('active');
                         }
+                    } else {
+                        console.warn('Submenu not found for toggle:', this);
                     }
                 });
             });
@@ -852,6 +969,9 @@
 
         // Initialize gallery lightboxes
         initGalleryLightboxes();
+
+        // Initialize missions infinite scroll
+        initMissionsInfiniteScroll();
     });
 
     /**
@@ -1041,6 +1161,268 @@
                 closeLightbox();
             }
         });
+    }
+
+    /**
+     * Initialize missions infinite scroll and filtering
+     */
+    function initMissionsInfiniteScroll() {
+        const missionsFeed = document.getElementById('missions-feed');
+        const loadingIndicator = document.getElementById('missions-loading');
+        const endMessage = document.getElementById('missions-end');
+        const filterPills = document.querySelectorAll('.mission-filter-pill');
+        
+        if (!missionsFeed || !window.tsmMissions) {
+            return;
+        }
+
+        let currentPage = 1;
+        let currentYear = 'all';
+        let isLoading = false;
+        let hasMore = true;
+        let excludeIds = [];
+        let totalMissionsLoaded = 0;
+
+        // Get exclude IDs from data attribute
+        const excludeIdsAttr = missionsFeed.getAttribute('data-exclude-ids');
+        if (excludeIdsAttr) {
+            try {
+                excludeIds = JSON.parse(excludeIdsAttr);
+            } catch (e) {
+                console.error('Failed to parse exclude IDs', e);
+            }
+        }
+
+        /**
+         * Load missions via AJAX
+         */
+        function loadMissions(reset) {
+            if (isLoading || (!hasMore && !reset)) {
+                return;
+            }
+
+            isLoading = true;
+            
+            if (reset) {
+                currentPage = 1;
+                hasMore = true;
+                // Clear content smoothly without causing layout shift
+                requestAnimationFrame(function() {
+                    missionsFeed.innerHTML = '';
+                    loadingIndicator.classList.remove('hidden');
+                    endMessage.classList.add('hidden');
+                });
+            } else {
+                // Show loading indicator without causing jump
+                requestAnimationFrame(function() {
+                    loadingIndicator.classList.remove('hidden');
+                });
+            }
+
+            const formData = new FormData();
+            formData.append('action', 'tsm_load_missions');
+            formData.append('nonce', window.tsmMissions.nonce);
+            formData.append('page', currentPage);
+            formData.append('year', currentYear);
+            if (excludeIds.length > 0) {
+                excludeIds.forEach(function(id) {
+                    formData.append('exclude_ids[]', id);
+                });
+            }
+
+            fetch(window.tsmMissions.ajaxUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success && data.data.missions) {
+                    const missions = data.data.missions;
+                    hasMore = Boolean(data.data.has_more);
+
+                    if (missions.length === 0 && reset) {
+                        missionsFeed.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-8">No missions found.</p>';
+                        totalMissionsLoaded = 0;
+                        isLoading = false;
+                        loadingIndicator.classList.add('hidden');
+                        return;
+                    }
+
+                    if (reset) {
+                        totalMissionsLoaded = 0;
+                    }
+
+                    // Use DocumentFragment to batch DOM updates and prevent layout shifts
+                    const fragment = document.createDocumentFragment();
+                    
+                    missions.forEach(function(mission, index) {
+                        const globalIndex = totalMissionsLoaded + index;
+                        const isLastItem = !hasMore && (index === missions.length - 1);
+                        const missionCard = createMissionCard(mission, isLastItem);
+                        fragment.appendChild(missionCard);
+                    });
+
+                    // Batch append all cards at once using requestAnimationFrame for smooth rendering
+                    requestAnimationFrame(function() {
+                        missionsFeed.appendChild(fragment);
+                        
+                        totalMissionsLoaded += missions.length;
+
+                        // Update end message visibility without causing layout shift
+                        if (!hasMore) {
+                            endMessage.classList.remove('hidden');
+                        } else {
+                            endMessage.classList.add('hidden');
+                        }
+
+                        // Hide loading indicator after content is rendered
+                        isLoading = false;
+                        loadingIndicator.classList.add('hidden');
+
+                        // Only increment page if we successfully loaded missions
+                        if (missions.length > 0) {
+                            currentPage++;
+                        }
+                    });
+                } else {
+                    console.error('Failed to load missions', data);
+                    isLoading = false;
+                    loadingIndicator.classList.add('hidden');
+                    if (reset) {
+                        missionsFeed.innerHTML = '<p class="text-center text-red-500 py-8">Failed to load missions. Please refresh the page.</p>';
+                    }
+                }
+            })
+            .catch(function(error) {
+                isLoading = false;
+                loadingIndicator.classList.add('hidden');
+                console.error('Error loading missions', error);
+                if (reset) {
+                    missionsFeed.innerHTML = '<p class="text-center text-red-500 py-8">Error loading missions. Please refresh the page.</p>';
+                }
+            });
+        }
+
+        /**
+         * Create mission card HTML element (timeline style)
+         */
+        function createMissionCard(mission, isLastItem) {
+            const div = document.createElement('div');
+            div.className = 'relative group';
+            div.style.willChange = 'auto'; // Optimize for smooth rendering
+            
+            // Determine icon
+            const icon = mission.icon || 'public';
+            
+            // Build thumbnail HTML
+            let thumbnailHtml = '';
+            if (mission.thumbnail_url) {
+                thumbnailHtml = '<div class="overflow-hidden rounded-xl mb-6 shadow-lg" style="min-height: 320px;">' +
+                    '<a href="' + mission.permalink + '">' +
+                    '<img src="' + mission.thumbnail_url + '" alt="' + (mission.thumbnail_alt || mission.title) + '" ' +
+                    'loading="lazy" decoding="async" ' +
+                    'class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" ' +
+                    'style="will-change: transform;">' +
+                    '</a>' +
+                    '</div>';
+            }
+            
+            // Build quote HTML
+            const quoteHtml = mission.quote 
+                ? '<p class="text-accent dark:text-[#8bc39d] leading-relaxed mb-4 italic">' + mission.quote + '</p>'
+                : '';
+            
+            // Build summary/content HTML
+            let contentHtml = '';
+            if (mission.summary) {
+                contentHtml = '<p class="text-base leading-relaxed opacity-80 text-accent">' + mission.summary + '</p>';
+            } else if (mission.content) {
+                contentHtml = '<p class="text-base leading-relaxed opacity-80 text-accent">' + mission.content + '</p>';
+            }
+            
+            // Show vertical line if not the last item
+            const lineHtml = !isLastItem 
+                ? '<div class="w-0.5 h-full bg-[#cfe7d5] dark:bg-[#2a4431] mt-4"></div>'
+                : '';
+            
+            div.innerHTML = thumbnailHtml +
+                '<div class="flex gap-6">' +
+                '<div class="flex flex-col items-center">' +
+                '<div class="size-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">' +
+                '<span class="material-symbols-outlined font-bold">' + icon + '</span>' +
+                '</div>' +
+                lineHtml +
+                '</div>' +
+                '<div class="pb-8">' +
+                '<h3 class="text-2xl font-bold mb-3 text-accent">' +
+                '<a href="' + mission.permalink + '" class="text-accent hover:text-accent transition-colors">' +
+                mission.title +
+                '</a>' +
+                '</h3>' +
+                quoteHtml +
+                contentHtml +
+                '<a href="' + mission.permalink + '" class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all mt-4">' +
+                'Read More <span class="material-symbols-outlined !text-base">arrow_forward</span>' +
+                '</a>' +
+                '</div>' +
+                '</div>';
+            
+            return div;
+        }
+
+        /**
+         * Handle filter pill clicks
+         */
+        filterPills.forEach(function(pill) {
+            pill.addEventListener('click', function() {
+                const year = this.getAttribute('data-year');
+                
+                // Update active state
+                filterPills.forEach(function(p) {
+                    p.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+                    p.classList.add('bg-white', 'dark:bg-[#1a2e1e]', 'text-primary', 'border-[#cfe7d5]', 'dark:border-[#2a4431]');
+                });
+                
+                this.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+                this.classList.remove('bg-white', 'dark:bg-[#1a2e1e]', 'text-primary', 'border-[#cfe7d5]', 'dark:border-[#2a4431]');
+                
+                // Update current year and reload
+                currentYear = year;
+                loadMissions(true);
+            });
+        });
+
+        /**
+         * Infinite scroll detection
+         */
+        let scrollTimeout;
+        let lastScrollTop = 0;
+        function handleScroll() {
+            // Use requestAnimationFrame for smoother scroll handling
+            requestAnimationFrame(function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(function() {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const windowHeight = window.innerHeight;
+                    const documentHeight = document.documentElement.scrollHeight;
+                    
+                    // Only check if scrolling down (not up) to prevent unnecessary checks
+                    if (scrollTop > lastScrollTop && scrollTop + windowHeight >= documentHeight - 300 && hasMore && !isLoading) {
+                        loadMissions(false);
+                    }
+                    
+                    lastScrollTop = scrollTop;
+                }, 150);
+            });
+        }
+
+        // Use passive event listener for better performance
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Initial load
+        loadMissions(true);
     }
 
 })();

@@ -103,274 +103,100 @@ get_header();
 				</h2>
 				<div class="h-1.5 w-20 bg-primary rounded-full"></div>
 			</div>
-			<!-- Timeline Stories -->
-			<div class="space-y-16 mb-20">
-				<?php
-				// Query for featured missions: prioritize Ongoing, then Completed (up to 3 total)
-				$ongoing_missions = new WP_Query( array(
-					'post_type'      => 'mission',
-					'posts_per_page' => 3,
-					'post_status'    => 'publish',
-					'meta_query'     => array(
-						array(
-							'key'     => 'mission_status',
-							'value'   => 'ongoing',
-							'compare' => '=',
-						),
-					),
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-				) );
-				
-				$completed_missions = new WP_Query( array(
-					'post_type'      => 'mission',
-					'posts_per_page' => 3,
-					'post_status'    => 'publish',
-					'meta_query'     => array(
-						array(
-							'key'     => 'mission_status',
-							'value'   => 'completed',
-							'compare' => '=',
-						),
-					),
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-				) );
-				
-				// Combine missions: Ongoing first, then Completed (up to 3 total)
-				$featured_missions = array();
-				$ongoing_count = 0;
-				$completed_count = 0;
-				
-				if ( $ongoing_missions->have_posts() ) {
-					while ( $ongoing_missions->have_posts() && $ongoing_count < 3 ) {
-						$ongoing_missions->the_post();
-						$featured_missions[] = get_the_ID();
-						$ongoing_count++;
-					}
-					wp_reset_postdata();
-				}
-				
-				$remaining_slots = 3 - count( $featured_missions );
-				if ( $remaining_slots > 0 && $completed_missions->have_posts() ) {
-					while ( $completed_missions->have_posts() && $completed_count < $remaining_slots ) {
-						$completed_missions->the_post();
-						$featured_missions[] = get_the_ID();
-						$completed_count++;
-					}
-					wp_reset_postdata();
-				}
-				
-				if ( ! empty( $featured_missions ) ) :
-					$final_query = new WP_Query( array(
-						'post_type'      => 'mission',
-						'post__in'       => $featured_missions,
-						'posts_per_page' => 3,
-						'post_status'    => 'publish',
-						'orderby'        => 'post__in',
-					) );
-					
-					if ( $final_query->have_posts() ) :
-						$mission_index = 0;
-						while ( $final_query->have_posts() ) :
-							$final_query->the_post();
-							$mission_location = get_post_meta( get_the_ID(), 'mission_location', true );
-							$mission_year = get_post_meta( get_the_ID(), 'mission_year', true );
-							$mission_date = get_post_meta( get_the_ID(), 'mission_date', true );
-							$mission_status = get_post_meta( get_the_ID(), 'mission_status', true );
-							$mission_subtitle = get_post_meta( get_the_ID(), 'mission_subtitle', true );
-							$mission_quote = get_post_meta( get_the_ID(), 'mission_quote', true );
-							$mission_summary = get_post_meta( get_the_ID(), 'mission_summary', true );
-							
-							// Determine icon based on mission status or use default
-							$icon = 'public';
-							if ( $mission_status === 'completed' ) {
-								$icon = 'check_circle';
-							} elseif ( $mission_status === 'ongoing' ) {
-								$icon = 'radio_button_checked';
-							}
-							
-							// Build location display: first word of location + year
-							$location_display = '';
-							if ( $mission_location ) {
-								$location_words = explode( ' ', trim( $mission_location ) );
-								$first_word = ! empty( $location_words[0] ) ? rtrim( $location_words[0], ',' ) : '';
-								if ( $first_word && $mission_year ) {
-									$location_display = $first_word . ' ' . $mission_year;
-								} elseif ( $first_word ) {
-									$location_display = $first_word;
-								}
-							} elseif ( $mission_year ) {
-								$location_display = $mission_year;
-							}
-							
-							$display_title = $mission_subtitle ? $mission_subtitle : get_the_title();
-							?>
-							<div class="relative group">
-								<?php if ( has_post_thumbnail() ) : ?>
-									<div class="overflow-hidden rounded-xl mb-6 shadow-lg">
-										<a href="<?php echo esc_url( get_permalink() ); ?>">
-											<?php the_post_thumbnail( 'large', array( 'class' => 'w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
-										</a>
-									</div>
-								<?php endif; ?>
-								<div class="flex gap-6">
-									<div class="flex flex-col items-center">
-										<div class="size-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
-											<span class="material-symbols-outlined font-bold"><?php echo esc_html( $icon ); ?></span>
-										</div>
-										<?php if ( $mission_index < 2 ) : ?>
-											<div class="w-0.5 h-full bg-[#cfe7d5] dark:bg-[#2a4431] mt-4"></div>
-										<?php endif; ?>
-									</div>
-									<div class="pb-8">
-										<?php if ( $location_display ) : ?>
-											<span class="text-primary font-bold text-sm uppercase"><?php echo esc_html( $location_display ); ?></span>
-										<?php endif; ?>
-										<h3 class="text-2xl font-bold mt-1 mb-3 text-accent">
-											<a href="<?php echo esc_url( get_permalink() ); ?>" class="text-accent hover:text-accent transition-colors">
-												<?php echo esc_html( $display_title ); ?>
-											</a>
-										</h3>
-										<?php if ( ! empty( $mission_quote ) ) : ?>
-											<p class="text-accent dark:text-[#8bc39d] leading-relaxed mb-4 italic">
-												<?php echo esc_html( $mission_quote ); ?>
-											</p>
-										<?php endif; ?>
-										<?php if ( ! empty( $mission_summary ) ) : ?>
-											<p class="text-base leading-relaxed opacity-80 text-accent">
-												<?php echo esc_html( $mission_summary ); ?>
-											</p>
-										<?php elseif ( has_excerpt() ) : ?>
-											<p class="text-base leading-relaxed opacity-80 text-accent">
-												<?php echo esc_html( get_the_excerpt() ); ?>
-											</p>
-										<?php elseif ( get_the_content() ) : ?>
-											<p class="text-base leading-relaxed opacity-80 text-accent">
-												<?php echo esc_html( wp_trim_words( get_the_content(), 30 ) ); ?>
-											</p>
-										<?php endif; ?>
-										<a href="<?php echo esc_url( get_permalink() ); ?>" class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all mt-4">
-											<?php _e( 'Read More', 'tsm-theme' ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
-										</a>
-									</div>
-								</div>
-							</div>
-							<?php
-							$mission_index++;
-						endwhile;
-						wp_reset_postdata();
-					endif;
-				endif;
-				?>
-			</div>
 			
-			<!-- All Missions Grid -->
+			<!-- Year Filter Pills -->
 			<?php
-			// Get all missions excluding featured ones for the grid
-			$all_missions_args = array(
-				'post_type'      => 'mission',
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-			);
+			$total_missions = tsm_get_total_missions_count();
+			$available_years = tsm_get_mission_years();
 			
-			if ( ! empty( $featured_missions ) ) {
-				$all_missions_args['post__not_in'] = $featured_missions;
+			// Show pills if we have 6+ missions AND there are years to filter by
+			$show_pills = $total_missions >= 6 && ! empty( $available_years ) && is_array( $available_years ) && count( $available_years ) > 0;
+			
+			// Debug output only when explicitly enabled (reduces log file size)
+			// Remove this block if not needed for debugging
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'TSM_DEBUG_MISSIONS' ) && TSM_DEBUG_MISSIONS ) {
+				error_log( 'TSM Missions Debug - Total: ' . $total_missions . ', Years: ' . print_r( $available_years, true ) . ', Show Pills: ' . ( $show_pills ? 'YES' : 'NO' ) );
 			}
 			
-			$all_missions = new WP_Query( $all_missions_args );
-			
-			if ( $all_missions->have_posts() ) :
-				?>
-				<div class="mb-12">
-					<h2 class="text-3xl font-bold tracking-tight mb-4 text-accent"><?php _e( 'All Missions', 'tsm-theme' ); ?></h2>
-					<div class="h-1.5 w-20 bg-primary rounded-full"></div>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-					<?php
-					while ( $all_missions->have_posts() ) :
-						$all_missions->the_post();
-						$mission_location = get_post_meta( get_the_ID(), 'mission_location', true );
-						$mission_year = get_post_meta( get_the_ID(), 'mission_year', true );
-						$mission_date = get_post_meta( get_the_ID(), 'mission_date', true );
-						$mission_status = get_post_meta( get_the_ID(), 'mission_status', true );
-						$mission_subtitle = get_post_meta( get_the_ID(), 'mission_subtitle', true );
-						$mission_summary = get_post_meta( get_the_ID(), 'mission_summary', true );
-						$display_title = $mission_subtitle ? $mission_subtitle : get_the_title();
-						
-						// Build location display: first word of location + year
-						$location_display = '';
-						if ( $mission_location ) {
-							$location_words = explode( ' ', trim( $mission_location ) );
-							$first_word = ! empty( $location_words[0] ) ? rtrim( $location_words[0], ',' ) : '';
-							if ( $first_word && $mission_year ) {
-								$location_display = $first_word . ' ' . $mission_year;
-							} elseif ( $first_word ) {
-								$location_display = $first_word;
-							}
-						} elseif ( $mission_year ) {
-							$location_display = $mission_year;
-						}
-						?>
-						<article class="bg-white dark:bg-[#1a2e1e] rounded-xl border border-[#cfe7d5] dark:border-[#2a4431] overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<a href="<?php echo esc_url( get_permalink() ); ?>">
-									<div class="overflow-hidden">
-										<?php the_post_thumbnail( 'medium', array( 'class' => 'w-full h-48 object-cover hover:scale-105 transition-transform duration-500' ) ); ?>
-									</div>
-								</a>
-							<?php endif; ?>
-							<div class="p-6">
-								<?php if ( $mission_status ) : ?>
-									<span class="inline-block px-2 py-1 text-xs font-bold uppercase rounded mb-3 <?php echo esc_attr( $mission_status === 'upcoming' ? 'bg-primary/20 text-primary' : ( $mission_status === 'ongoing' ? 'bg-primary/20 text-primary' : 'bg-gray-200 text-gray-600' ) ); ?>">
-										<?php echo esc_html( ucfirst( $mission_status ) ); ?>
-									</span>
-								<?php endif; ?>
-								<h2 class="text-xl font-bold mb-2 text-accent">
-									<a href="<?php echo esc_url( get_permalink() ); ?>" class="text-primary dark:text-white hover:text-primary transition-colors">
-										<?php echo esc_html( $display_title ); ?>
-									</a>
-								</h2>
-								<?php if ( $location_display || $mission_date ) : ?>
-									<div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
-										<?php if ( $location_display ) : ?>
-											<span class="flex items-center gap-1">
-												<span class="material-symbols-outlined text-xs">location_on</span>
-												<?php echo esc_html( $location_display ); ?>
-											</span>
-										<?php endif; ?>
-										<?php if ( $mission_date ) : ?>
-											<span class="flex items-center gap-1">
-												<span class="material-symbols-outlined text-xs">event</span>
-												<?php echo esc_html( $mission_date ); ?>
-											</span>
-										<?php endif; ?>
-									</div>
-								<?php endif; ?>
-								<?php if ( ! empty( $mission_summary ) ) : ?>
-									<p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-										<?php echo esc_html( $mission_summary ); ?>
-									</p>
-								<?php elseif ( has_excerpt() ) : ?>
-									<p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-										<?php echo esc_html( get_the_excerpt() ); ?>
-									</p>
-								<?php endif; ?>
-								<a href="<?php echo esc_url( get_permalink() ); ?>" class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all mt-4">
-									<?php _e( 'Learn More', 'tsm-theme' ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
-								</a>
-							</div>
-						</article>
-						<?php
-					endwhile;
-					wp_reset_postdata();
+			if ( $show_pills ) :
+				$current_year = date( 'Y' );
+				$recent_years = array();
+				$older_years = array();
+				
+				// Separate recent years (last 4 years) from older years
+				foreach ( $available_years as $year ) {
+					$year_int = intval( $year );
+					if ( $year_int >= ( $current_year - 3 ) ) {
+						$recent_years[] = $year_int;
+					} else {
+						$older_years[] = $year_int;
+					}
+				}
+				
+				// Sort recent years descending
+				rsort( $recent_years );
+				
+				// Limit to 4 most recent years for display
+				$recent_years = array_slice( $recent_years, 0, 4 );
+				
+				// Check if there are older years (for Archives pill)
+				$has_archives = ! empty( $older_years );
+				
+				// Only show filter pills if there are year categories to filter by
+				$has_year_categories = ! empty( $recent_years ) || $has_archives;
+				
+				if ( $has_year_categories ) :
 					?>
+					<div class="mb-8 flex flex-wrap items-center justify-center gap-3" id="mission-year-filters">
+					<button 
+						class="mission-filter-pill active px-6 py-2 rounded-full font-semibold text-sm transition-all bg-primary text-white border border-primary"
+						data-year="all"
+						type="button"
+					>
+						All
+					</button>
+					<?php foreach ( $recent_years as $year ) : ?>
+						<button 
+							class="mission-filter-pill px-6 py-2 rounded-full font-semibold text-sm transition-all bg-white dark:bg-[#1a2e1e] text-primary border border-[#cfe7d5] dark:border-[#2a4431] hover:border-primary"
+							data-year="<?php echo esc_attr( $year ); ?>"
+							type="button"
+						>
+							<?php echo esc_html( $year ); ?>
+						</button>
+					<?php endforeach; ?>
+					<?php if ( $has_archives ) : ?>
+						<button 
+							class="mission-filter-pill px-6 py-2 rounded-full font-semibold text-sm transition-all bg-white dark:bg-[#1a2e1e] text-primary border border-[#cfe7d5] dark:border-[#2a4431] hover:border-primary"
+							data-year="archives"
+							type="button"
+						>
+							Archives
+						</button>
+					<?php endif; ?>
+					</div>
+				<?php endif; ?>
+			<?php endif; ?>
+			
+			<!-- Infinite Scroll Container -->
+			<div id="missions-feed" class="space-y-16" data-exclude-ids="[]" style="contain: layout style paint;">
+				<!-- Missions will be loaded here via AJAX -->
+			</div>
+			
+			<!-- Loading Indicator -->
+			<div id="missions-loading" class="hidden text-center py-8" style="min-height: 60px;">
+				<div class="inline-flex items-center gap-2 text-primary">
+					<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+					</svg>
+					<span class="text-sm font-medium">Loading missions...</span>
 				</div>
-				<?php
-			endif;
-			?>
+			</div>
+			
+			<!-- End of Feed Message -->
+			<div id="missions-end" class="hidden text-center py-8">
+				<p class="text-gray-500 dark:text-gray-400 text-sm">You've reached the end of the missions feed.</p>
+			</div>
 		</div>
 		
 		<!-- Partner Sidebar -->
@@ -483,18 +309,21 @@ get_header();
 									$mission_year = get_post_meta( get_the_ID(), 'mission_year', true );
 									$mission_date = get_post_meta( get_the_ID(), 'mission_date', true );
 									
-									// Build location display: first word of location + year
+									// Get year: use meta if set, otherwise use post published year
+									$display_year = $mission_year ? $mission_year : get_the_date( 'Y' );
+									
+									// Build location display: first word of location + year (using display_year which falls back to post date)
 									$location_display = '';
 									if ( $mission_location ) {
 										$location_words = explode( ' ', trim( $mission_location ) );
 										$first_word = ! empty( $location_words[0] ) ? $location_words[0] : '';
-										if ( $first_word && $mission_year ) {
-											$location_display = $first_word . ' ' . $mission_year;
+										if ( $first_word && $display_year ) {
+											$location_display = $first_word . ' ' . $display_year;
 										} elseif ( $first_word ) {
 											$location_display = $first_word;
 										}
-									} elseif ( $mission_year ) {
-										$location_display = $mission_year;
+									} elseif ( $display_year ) {
+										$location_display = $display_year;
 									}
 									?>
 									<li class="flex justify-between text-sm">

@@ -13,6 +13,8 @@ if ( have_posts() ) :
 		
 		$mission_location = get_post_meta( get_the_ID(), 'mission_location', true );
 		$mission_year = get_post_meta( get_the_ID(), 'mission_year', true );
+		// Get year: use meta if set, otherwise use post published year
+		$display_year = $mission_year ? $mission_year : get_the_date( 'Y' );
 		$mission_date = get_post_meta( get_the_ID(), 'mission_date', true );
 		$mission_status = get_post_meta( get_the_ID(), 'mission_status', true );
 		$mission_subtitle = get_post_meta( get_the_ID(), 'mission_subtitle', true );
@@ -74,13 +76,13 @@ if ( have_posts() ) :
 		if ( $mission_location ) {
 			$location_words = explode( ' ', trim( $mission_location ) );
 			$first_word = ! empty( $location_words[0] ) ? rtrim( $location_words[0], ',' ) : '';
-			if ( $first_word && $mission_year ) {
-				$location_tagline = $first_word . ' ' . $mission_year;
+			if ( $first_word && $display_year ) {
+				$location_tagline = $first_word . ' ' . $display_year;
 			} elseif ( $first_word ) {
 				$location_tagline = $first_word;
 			}
-		} elseif ( $mission_year ) {
-			$location_tagline = $mission_year;
+		} elseif ( $display_year ) {
+			$location_tagline = $display_year;
 		}
 		?>
 

@@ -31,6 +31,102 @@ add_action( 'after_switch_theme', 'tsm_theme_clear_cache' );
 add_action( 'upgrader_process_complete', 'tsm_theme_clear_cache', 10, 2 );
 
 /**
+ * Optimize WordPress debug log to prevent storage issues
+ * Rotates log file when it exceeds the maximum size
+ * Runs once per day via WordPress cron to minimize overhead
+ */
+function tsm_rotate_debug_log() {
+	if ( ! defined( 'WP_DEBUG_LOG' ) || ! WP_DEBUG_LOG ) {
+		return;
+	}
+
+	$log_file = WP_CONTENT_DIR . '/debug.log';
+	if ( ! file_exists( $log_file ) ) {
+		return;
+	}
+
+	$max_size = defined( 'WP_DEBUG_LOG_MAX_SIZE' ) ? WP_DEBUG_LOG_MAX_SIZE : ( 5 * 1024 * 1024 ); // Default 5MB
+	$file_size = @filesize( $log_file );
+	
+	// Check if file size check failed or file is within limits
+	if ( false === $file_size || $file_size <= $max_size ) {
+		return;
+	}
+
+	// Rotate: keep last 1MB of logs, archive the rest
+	$keep_size = 1 * 1024 * 1024; // Keep last 1MB
+	$archive_size = $file_size - $keep_size;
+
+	// Read the last portion to keep
+	$handle = @fopen( $log_file, 'r' );
+	if ( ! $handle ) {
+		return;
+	}
+
+	@fseek( $handle, $archive_size );
+	$keep_content = @fread( $handle, $keep_size );
+	@fclose( $handle );
+
+	if ( false === $keep_content ) {
+		return;
+	}
+
+	// Archive old logs with timestamp
+	$archive_file = WP_CONTENT_DIR . '/debug-' . date( 'Y-m-d-His' ) . '.log';
+	$archive_handle = @fopen( $archive_file, 'w' );
+	if ( $archive_handle ) {
+		$old_handle = @fopen( $log_file, 'r' );
+		if ( $old_handle ) {
+			@fseek( $old_handle, 0 );
+			$archived = @fread( $old_handle, $archive_size );
+			if ( false !== $archived ) {
+				@fwrite( $archive_handle, $archived );
+			}
+			@fclose( $old_handle );
+		}
+		@fclose( $archive_handle );
+	}
+
+	// Write kept content back
+	$new_handle = @fopen( $log_file, 'w' );
+	if ( $new_handle ) {
+		@fwrite( $new_handle, $keep_content );
+		@fclose( $new_handle );
+	}
+
+	// Clean up old archive files (keep only last 3 archives to save space)
+	$archive_files = @glob( WP_CONTENT_DIR . '/debug-*.log' );
+	if ( is_array( $archive_files ) && count( $archive_files ) > 3 ) {
+		usort( $archive_files, function( $a, $b ) {
+			$time_a = @filemtime( $a );
+			$time_b = @filemtime( $b );
+			return ( false !== $time_a && false !== $time_b ) ? $time_a - $time_b : 0;
+		});
+		$files_to_delete = array_slice( $archive_files, 0, count( $archive_files ) - 3 );
+		foreach ( $files_to_delete as $file ) {
+			if ( $file !== $log_file ) { // Don't delete the main log file
+				@unlink( $file );
+			}
+		}
+	}
+}
+
+// Schedule log rotation to run once daily (more efficient than on every admin page load)
+if ( ! wp_next_scheduled( 'tsm_rotate_debug_log_daily' ) ) {
+	wp_schedule_event( time(), 'daily', 'tsm_rotate_debug_log_daily' );
+}
+add_action( 'tsm_rotate_debug_log_daily', 'tsm_rotate_debug_log' );
+
+// Also run on admin init as a fallback (but only check once per hour via transient)
+add_action( 'admin_init', function() {
+	$last_check = get_transient( 'tsm_log_rotation_last_check' );
+	if ( false === $last_check ) {
+		tsm_rotate_debug_log();
+		set_transient( 'tsm_log_rotation_last_check', time(), HOUR_IN_SECONDS );
+	}
+}, 999 );
+
+/**
  * Load theme functionality from modular files
  */
 require_once get_template_directory() . '/functions/setup.php';
@@ -42,6 +138,244 @@ require_once get_template_directory() . '/functions/post-types.php';
 require_once get_template_directory() . '/functions/customizer.php';
 require_once get_template_directory() . '/functions/forms.php';
 require_once get_template_directory() . '/functions/lightbox.php';
+
+/**
+ * AJAX handler to load missions for infinite scroll
+ */
+function tsm_load_missions_ajax() {
+	check_ajax_referer( 'tsm_missions_nonce', 'nonce' );
+	
+	$page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+	$year = isset( $_POST['year'] ) ? sanitize_text_field( $_POST['year'] ) : '';
+	$exclude_ids = array();
+	
+	// Handle exclude_ids if provided (for future use)
+	if ( isset( $_POST['exclude_ids'] ) && is_array( $_POST['exclude_ids'] ) ) {
+		$exclude_ids = array_map( 'intval', $_POST['exclude_ids'] );
+		$exclude_ids = array_filter( $exclude_ids ); // Remove empty values
+	}
+	
+	$args = array(
+		'post_type'      => 'mission',
+		'posts_per_page' => 9,
+		'post_status'    => 'publish',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+		'paged'          => $page,
+	);
+	
+	// Exclude missions if provided
+	if ( ! empty( $exclude_ids ) ) {
+		$args['post__not_in'] = $exclude_ids;
+	}
+	
+	// Filter by year if provided (using post date)
+	if ( ! empty( $year ) && $year !== 'all' && $year !== 'archives' ) {
+		$args['date_query'] = array(
+			array(
+				'year' => intval( $year ),
+			),
+		);
+	} elseif ( $year === 'archives' ) {
+		// For archives, get missions older than the oldest pill year
+		// Get available years to determine the oldest pill year
+		$available_years = tsm_get_mission_years();
+		$current_year = date( 'Y' );
+		$recent_years = array();
+		
+		// Get recent years (last 4 years)
+		foreach ( $available_years as $available_year ) {
+			if ( $available_year >= ( $current_year - 3 ) ) {
+				$recent_years[] = $available_year;
+			}
+		}
+		
+		// Limit to 4 most recent years
+		$recent_years = array_slice( $recent_years, 0, 4 );
+		
+		// Find the oldest year in the pills (or use current year - 3 if no pills)
+		$oldest_pill_year = ! empty( $recent_years ) ? min( $recent_years ) : ( $current_year - 3 );
+		
+		// Archives = missions older than the oldest pill year (using post date)
+		$args['date_query'] = array(
+			array(
+				'before' => $oldest_pill_year . '-01-01',
+			),
+		);
+	}
+	
+	$missions_query = new WP_Query( $args );
+	
+	$missions = array();
+	// Ensure has_more is calculated correctly - max_num_pages should be > current page
+	$max_pages = (int) $missions_query->max_num_pages;
+	$current_page = (int) $page;
+	$has_more = $max_pages > $current_page;
+	
+	if ( $missions_query->have_posts() ) {
+		while ( $missions_query->have_posts() ) {
+			$missions_query->the_post();
+			
+			$mission_location = get_post_meta( get_the_ID(), 'mission_location', true );
+			$mission_year = get_post_meta( get_the_ID(), 'mission_year', true );
+			$mission_date = get_post_meta( get_the_ID(), 'mission_date', true );
+			$mission_status = get_post_meta( get_the_ID(), 'mission_status', true );
+			$mission_subtitle = get_post_meta( get_the_ID(), 'mission_subtitle', true );
+			$mission_quote = get_post_meta( get_the_ID(), 'mission_quote', true );
+			$mission_summary = get_post_meta( get_the_ID(), 'mission_summary', true );
+			
+			// Get base title
+			$base_title = $mission_subtitle ? $mission_subtitle : get_the_title();
+			
+			// Get year: use meta if set, otherwise use post published year
+			$display_year = $mission_year ? $mission_year : get_the_date( 'Y' );
+			
+			// Append year to title if not already present and year exists
+			$display_title = $base_title;
+			if ( $display_year && strpos( $base_title, $display_year ) === false ) {
+				// Append location and year to title if location exists
+				if ( $mission_location ) {
+					$location_words = explode( ' ', trim( $mission_location ) );
+					$first_word = ! empty( $location_words[0] ) ? rtrim( $location_words[0], ',' ) : '';
+					if ( $first_word ) {
+						$display_title = $base_title . ', ' . $first_word . ' ' . $display_year;
+					} else {
+						$display_title = $base_title . ' ' . $display_year;
+					}
+				} else {
+					$display_title = $base_title . ' ' . $display_year;
+				}
+			}
+			
+			// Determine icon based on mission status
+			$icon = 'public';
+			if ( $mission_status === 'completed' ) {
+				$icon = 'check_circle';
+			} elseif ( $mission_status === 'ongoing' ) {
+				$icon = 'radio_button_checked';
+			}
+			
+			// Don't show location display as separate tag - year is in title now
+			$location_display = '';
+			
+			// Get thumbnail (large size for timeline cards)
+			$thumbnail_url = '';
+			$thumbnail_alt = '';
+			if ( has_post_thumbnail() ) {
+				$thumbnail_id = get_post_thumbnail_id();
+				$thumbnail_url = wp_get_attachment_image_url( $thumbnail_id, 'large' );
+				$thumbnail_alt = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+			}
+			
+			$missions[] = array(
+				'id'              => get_the_ID(),
+				'title'           => $display_title,
+				'permalink'       => get_permalink(),
+				'thumbnail_url'   => $thumbnail_url,
+				'thumbnail_alt'   => $thumbnail_alt,
+				'location'        => $location_display,
+				'date'            => $mission_date,
+				'status'          => $mission_status,
+				'quote'           => $mission_quote,
+				'summary'         => $mission_summary ? $mission_summary : ( has_excerpt() ? get_the_excerpt() : '' ),
+				'content'         => get_the_content() ? wp_trim_words( get_the_content(), 30 ) : '',
+				'icon'            => $icon,
+			);
+		}
+		wp_reset_postdata();
+	}
+	
+	wp_send_json_success( array(
+		'missions' => $missions,
+		'has_more' => $has_more,
+		'page'     => $page,
+	) );
+}
+add_action( 'wp_ajax_tsm_load_missions', 'tsm_load_missions_ajax' );
+add_action( 'wp_ajax_nopriv_tsm_load_missions', 'tsm_load_missions_ajax' );
+
+/**
+ * Get available years for missions filter (from post date)
+ */
+function tsm_get_mission_years() {
+	global $wpdb;
+	
+	// Use WP_Query instead of direct SQL for better compatibility
+	$args = array(
+		'post_type'      => 'mission',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+	);
+	
+	$query = new WP_Query( $args );
+	$years = array();
+	
+	if ( $query->have_posts() ) {
+		foreach ( $query->posts as $post_id ) {
+			$post = get_post( $post_id );
+			if ( $post && ! empty( $post->post_date ) ) {
+				$year = (int) date( 'Y', strtotime( $post->post_date ) );
+				if ( $year > 0 && ! in_array( $year, $years, true ) ) {
+					$years[] = $year;
+				}
+			}
+		}
+		wp_reset_postdata();
+	}
+	
+	// Sort descending
+	rsort( $years );
+	
+	return $years;
+}
+
+/**
+ * Get total count of published missions
+ */
+function tsm_get_total_missions_count() {
+	$count = wp_count_posts( 'mission' );
+	return isset( $count->publish ) ? (int) $count->publish : 0;
+}
+
+/**
+ * Get count of archived missions (missions older than the oldest pill year)
+ */
+function tsm_get_archived_missions_count() {
+	$available_years = tsm_get_mission_years();
+	$current_year = date( 'Y' );
+	$recent_years = array();
+	
+	// Get recent years (last 4 years)
+	foreach ( $available_years as $year ) {
+		if ( $year >= ( $current_year - 3 ) ) {
+			$recent_years[] = $year;
+		}
+	}
+	
+	// Limit to 4 most recent years
+	$recent_years = array_slice( $recent_years, 0, 4 );
+	
+	// Find the oldest year in the pills (or use current year - 3 if no pills)
+	$oldest_pill_year = ! empty( $recent_years ) ? min( $recent_years ) : ( $current_year - 3 );
+	
+	$archived_query = new WP_Query( array(
+		'post_type'      => 'mission',
+		'posts_per_page' => -1,
+		'post_status'    => 'publish',
+		'date_query'     => array(
+			array(
+				'before' => $oldest_pill_year . '-01-01',
+			),
+		),
+		'fields'         => 'ids',
+	) );
+	
+	$count = $archived_query->found_posts;
+	wp_reset_postdata();
+	
+	return $count;
+}
 
 /**
  * Use mission hero image as featured image for missions archive page
