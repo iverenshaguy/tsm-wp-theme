@@ -14,7 +14,11 @@ This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
 */
 
+/* Import additional styles from assets */
+@import url('main.css');
+
 /* Reset and Base Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -29,6 +33,7 @@ body {
 }
 
 /* Typography */
+
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     line-height: 1.2;
@@ -57,6 +62,7 @@ a:hover {
 }
 
 /* Layout */
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -86,6 +92,7 @@ a:hover {
 }
 
 /* Navigation */
+
 .main-navigation {
     margin-top: 1rem;
 }
@@ -107,6 +114,7 @@ a:hover {
 }
 
 /* Content Area */
+
 .site-content {
     display: flex;
     gap: 2rem;
@@ -156,6 +164,7 @@ a:hover {
 }
 
 /* Sidebar */
+
 .widget-area {
     width: 300px;
 }
@@ -183,6 +192,7 @@ a:hover {
 }
 
 /* Footer */
+
 .site-footer {
     background-color: #333;
     color: #fff;
@@ -200,6 +210,7 @@ a:hover {
 }
 
 /* Comments */
+
 .comments-area {
     margin-top: 3rem;
 }
@@ -216,19 +227,18 @@ a:hover {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+
+@media (width <= 768px) {
+
     .site-content {
         flex-direction: column;
     }
-    
+
     .widget-area {
-        width: 100%;
+    width: 100%;
     }
-    
+
     h1 { font-size: 2rem; }
     h2 { font-size: 1.75rem; }
     h3 { font-size: 1.5rem; }
 }
-
-/* Import additional styles from assets */
-@import url('main.css');

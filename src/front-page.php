@@ -61,7 +61,7 @@ get_header();
 				<?php
 				$about_image = get_theme_mod( 'about_image', get_template_directory_uri() . '/assets/images/about.png' );
 				?>
-				<img alt="Terry and Debbie Shaguy Professional Portrait" class="w-full h-full object-cover" src="<?php echo esc_url( $about_image ); ?>"/>
+				<img alt="Terry and Debbie Shaguy Professional Portrait" class="w-full h-full object-cover" src="<?php echo esc_url( $about_image ); ?>" loading="lazy" decoding="async"/>
 			</div>
 			<div class="absolute -bottom-6 -right-6 bg-primary text-white p-8 rounded-2xl shadow-xl hidden md:block max-w-[240px]">
 				<p class="serif-text italic text-lg leading-relaxed">
@@ -127,7 +127,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl">campaign</span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_1_icon', 'campaign' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
@@ -146,7 +146,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl">menu_book</span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_2_icon', 'menu_book' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
@@ -165,7 +165,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl">volunteer_activism</span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_3_icon', 'volunteer_activism' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
@@ -184,19 +184,19 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl">groups</span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_4_icon', 'groups' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
 					<?php
-					$service_0_title = get_theme_mod( 'service_0_title', 'Couple\'s Ministry' );
-					echo esc_html( $service_0_title );
+					$service_4_title = get_theme_mod( 'service_4_title', 'Couple\'s Ministry' );
+					echo esc_html( $service_4_title );
 					?>
 				</h4>
 				<p class="text-gray-600 dark:text-gray-400 text-base">
 					<?php
-					$service_0_description = get_theme_mod( 'service_0_description', 'Providing biblical guidance and seminars for marriages and families.' );
-					echo esc_html( $service_0_description );
+					$service_4_description = get_theme_mod( 'service_4_description', 'Providing biblical guidance and seminars for marriages and families.' );
+					echo esc_html( $service_4_description );
 					?>
 				</p>
 			</div>

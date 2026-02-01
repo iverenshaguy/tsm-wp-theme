@@ -12,7 +12,7 @@
     "build:dev": "npm run build:css && npm run build:js && npm run postbuild",
     "build": "npm run build:css:dist && npm run build:js:dist",
     "postbuild": "node scripts/build-dist.js",
-    "watch:css": "tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/main.css --watch",
+    "watch:css": "node scripts/watch-css.js",
     "watch:js": "node scripts/watch-js.js",
     "watch:php": "node scripts/watch-php.js",
     "lint:js": "eslint src/assets/js/**/*.js",

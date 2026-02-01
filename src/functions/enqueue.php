@@ -56,9 +56,49 @@ function tsm_theme_scripts() {
 	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : $theme_version;
 	wp_enqueue_script( 'tsm-theme-script', get_template_directory_uri() . '/assets/js/main.js', array(), $main_js_version, true );
 
+	// Localize script for AJAX
+	if ( is_post_type_archive( 'mission' ) || is_page_template( 'archive-mission.php' ) ) {
+		wp_localize_script( 'tsm-theme-script', 'tsmMissions', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'tsm_missions_nonce' ),
+		) );
+	}
+	
+	// Localize script for gallery AJAX
+	if ( is_post_type_archive( 'gallery' ) || is_tax( 'gallery_category' ) ) {
+		wp_localize_script( 'tsm-theme-script', 'tsmGalleries', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'tsm_galleries_nonce' ),
+		) );
+	}
+
 	// Enqueue comment reply script on single posts
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'tsm_theme_scripts' );
+
+/**
+ * Register and enqueue service worker for image caching
+ */
+function tsm_register_service_worker() {
+	// Service worker must be accessible from site root for proper scope
+	// It's in the theme root (src/sw.js) and will be copied to dist/ during build
+	?>
+	<script>
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function() {
+			navigator.serviceWorker.register('<?php echo esc_url( get_template_directory_uri() ); ?>/sw.js')
+				.then(function(registration) {
+					console.log('ServiceWorker registration successful');
+				})
+				.catch(function(err) {
+					console.log('ServiceWorker registration failed');
+				});
+		});
+	}
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'tsm_register_service_worker' );

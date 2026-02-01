@@ -4,6 +4,7 @@ services:
     container_name: tsm-theme-wordpress
     ports:
       - "8080:80"
+      - "8443:443"  # SSL port (uncomment and configure after running setup-local-ssl.sh)
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
@@ -12,9 +13,27 @@ services:
     volumes:
       - wordpress_data:/var/www/html
       - ./src:/var/www/html/wp-content/themes/tsm-theme
+      - ./certs/terryshaguy.local.crt:/etc/ssl/certs/wordpress.crt
+      - ./certs/terryshaguy.local.key:/etc/ssl/private/wordpress.key
     depends_on:
       - db
     restart: unless-stopped
+  
+  wp-cli:
+    image: wordpress:cli
+    container_name: tsm-theme-wp-cli
+    user: "33:33"
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./src:/var/www/html/wp-content/themes/tsm-theme
+    depends_on:
+      - wordpress
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
 
   db:
     image: mysql:8.0
@@ -28,6 +47,20 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: tsm-theme-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: rootpassword
+    depends_on:
+      - db
     restart: unless-stopped
 
 volumes:

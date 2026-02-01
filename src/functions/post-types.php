@@ -727,6 +727,31 @@ function tsm_register_mission_post_type() {
 add_action( 'init', 'tsm_register_mission_post_type' );
 
 /**
+ * Set default content template for new mission posts
+ */
+function tsm_mission_default_content( $content, $post ) {
+	// Only apply to new mission posts
+	if ( 'mission' === $post->post_type && empty( $post->post_content ) ) {
+		$template = "<!-- Mission Impact Content -->\n\n";
+		$template .= "<h2>Mission Overview</h2>\n\n";
+		$template .= "<p>Describe the mission trip, its purpose, and key activities here.</p>\n\n";
+		$template .= "<h3>Key Achievements</h3>\n\n";
+		$template .= "<ul>\n";
+		$template .= "<li>First achievement</li>\n";
+		$template .= "<li>Second achievement</li>\n";
+		$template .= "<li>Third achievement</li>\n";
+		$template .= "</ul>\n\n";
+		$template .= "<h3>Impact on the Community</h3>\n\n";
+		$template .= "<p>Describe the lasting impact this mission had on the community.</p>\n";
+		
+		return $template;
+	}
+	
+	return $content;
+}
+add_filter( 'default_content', 'tsm_mission_default_content', 10, 2 );
+
+/**
  * Register Gallery Custom Post Type
  */
 function tsm_register_gallery_post_type() {
@@ -768,6 +793,38 @@ function tsm_register_gallery_post_type() {
 	register_post_type( 'gallery', $args );
 }
 add_action( 'init', 'tsm_register_gallery_post_type' );
+
+/**
+ * Register Gallery Category Taxonomy
+ */
+function tsm_register_gallery_category_taxonomy() {
+	$labels = array(
+		'name'              => _x( 'Gallery Categories', 'taxonomy general name', 'tsm-theme' ),
+		'singular_name'     => _x( 'Gallery Category', 'taxonomy singular name', 'tsm-theme' ),
+		'search_items'      => __( 'Search Categories', 'tsm-theme' ),
+		'all_items'         => __( 'All Categories', 'tsm-theme' ),
+		'parent_item'       => __( 'Parent Category', 'tsm-theme' ),
+		'parent_item_colon' => __( 'Parent Category:', 'tsm-theme' ),
+		'edit_item'         => __( 'Edit Category', 'tsm-theme' ),
+		'update_item'       => __( 'Update Category', 'tsm-theme' ),
+		'add_new_item'      => __( 'Add New Category', 'tsm-theme' ),
+		'new_item_name'     => __( 'New Category Name', 'tsm-theme' ),
+		'menu_name'         => __( 'Categories', 'tsm-theme' ),
+	);
+
+	$args = array(
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'gallery-category' ),
+		'show_in_rest'      => true,
+	);
+
+	register_taxonomy( 'gallery_category', array( 'gallery' ), $args );
+}
+add_action( 'init', 'tsm_register_gallery_category_taxonomy' );
 
 /**
  * Add Gallery Meta Box
@@ -994,6 +1051,43 @@ function tsm_mission_meta_box_callback( $post ) {
 	?>
 	<table class="form-table">
 		<tr>
+			<th><label for="mission_gallery_post"><?php _e( 'Gallery Post', 'tsm-theme' ); ?></label></th>
+			<td>
+				<?php
+				$galleries = get_posts( array(
+					'post_type'      => 'gallery',
+					'posts_per_page' => -1,
+					'post_status'    => 'publish',
+					'orderby'        => 'title',
+					'order'          => 'ASC',
+				) );
+				?>
+				<select id="mission_gallery_post" name="mission_gallery_post" class="regular-text">
+					<option value=""><?php _e( '— None —', 'tsm-theme' ); ?></option>
+					<?php foreach ( $galleries as $gallery ) : ?>
+						<option value="<?php echo esc_attr( $gallery->ID ); ?>" <?php selected( $mission_gallery_post, $gallery->ID ); ?>>
+							<?php echo esc_html( $gallery->post_title ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<p class="description"><?php _e( 'Select a gallery post to use its images for the mission gallery.', 'tsm-theme' ); ?></p>
+				<?php if ( $mission_gallery_post ) : ?>
+					<p style="margin-top: 10px;">
+						<a href="<?php echo esc_url( get_edit_post_link( $mission_gallery_post ) ); ?>" target="_blank" class="button button-small">
+							<?php _e( 'Edit Gallery', 'tsm-theme' ); ?>
+						</a>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="mission_gallery_link"><?php _e( 'Gallery Link', 'tsm-theme' ); ?></label></th>
+			<td>
+				<input type="url" id="mission_gallery_link" name="mission_gallery_link" value="<?php echo esc_url( $mission_gallery_link ); ?>" class="regular-text" placeholder="https://..." />
+				<p class="description"><?php _e( 'URL for the "View all photos" button. If not set, the button will link to the selected gallery post.', 'tsm-theme' ); ?></p>
+			</td>
+		</tr>
+		<tr>
 			<th><label for="mission_location"><?php _e( 'Location', 'tsm-theme' ); ?></label></th>
 			<td>
 				<input type="text" id="mission_location" name="mission_location" value="<?php echo esc_attr( $mission_location ); ?>" class="regular-text" placeholder="e.g., Kenya, Guatemala, South Africa" />
@@ -1017,10 +1111,16 @@ function tsm_mission_meta_box_callback( $post ) {
 		<tr>
 			<th><label for="mission_status"><?php _e( 'Status', 'tsm-theme' ); ?></label></th>
 			<td>
+				<?php
+				// Default to 'completed' if no status is set
+				if ( empty( $mission_status ) ) {
+					$mission_status = 'completed';
+				}
+				?>
 				<select id="mission_status" name="mission_status">
+					<option value="completed" <?php selected( $mission_status, 'completed' ); ?>><?php _e( 'Completed', 'tsm-theme' ); ?></option>
 					<option value="upcoming" <?php selected( $mission_status, 'upcoming' ); ?>><?php _e( 'Upcoming', 'tsm-theme' ); ?></option>
 					<option value="ongoing" <?php selected( $mission_status, 'ongoing' ); ?>><?php _e( 'Ongoing', 'tsm-theme' ); ?></option>
-					<option value="completed" <?php selected( $mission_status, 'completed' ); ?>><?php _e( 'Completed', 'tsm-theme' ); ?></option>
 				</select>
 				<p class="description"><?php _e( 'Current status of the mission.', 'tsm-theme' ); ?></p>
 			</td>
@@ -1126,43 +1226,6 @@ function tsm_mission_meta_box_callback( $post ) {
 			</td>
 		</tr>
 		<tr>
-			<th><label for="mission_gallery_post"><?php _e( 'Gallery Post', 'tsm-theme' ); ?></label></th>
-			<td>
-				<?php
-				$galleries = get_posts( array(
-					'post_type'      => 'gallery',
-					'posts_per_page' => -1,
-					'post_status'    => 'publish',
-					'orderby'        => 'title',
-					'order'          => 'ASC',
-				) );
-				?>
-				<select id="mission_gallery_post" name="mission_gallery_post" class="regular-text">
-					<option value=""><?php _e( '— None —', 'tsm-theme' ); ?></option>
-					<?php foreach ( $galleries as $gallery ) : ?>
-						<option value="<?php echo esc_attr( $gallery->ID ); ?>" <?php selected( $mission_gallery_post, $gallery->ID ); ?>>
-							<?php echo esc_html( $gallery->post_title ); ?>
-						</option>
-					<?php endforeach; ?>
-				</select>
-				<p class="description"><?php _e( 'Select a gallery post to use its images for the mission gallery.', 'tsm-theme' ); ?></p>
-				<?php if ( $mission_gallery_post ) : ?>
-					<p style="margin-top: 10px;">
-						<a href="<?php echo esc_url( get_edit_post_link( $mission_gallery_post ) ); ?>" target="_blank" class="button button-small">
-							<?php _e( 'Edit Gallery', 'tsm-theme' ); ?>
-						</a>
-					</p>
-				<?php endif; ?>
-			</td>
-		</tr>
-		<tr>
-			<th><label for="mission_gallery_link"><?php _e( 'Gallery Link', 'tsm-theme' ); ?></label></th>
-			<td>
-				<input type="url" id="mission_gallery_link" name="mission_gallery_link" value="<?php echo esc_url( $mission_gallery_link ); ?>" class="regular-text" placeholder="https://..." />
-				<p class="description"><?php _e( 'URL for the "View all photos" button. If not set, the button will link to the selected gallery post.', 'tsm-theme' ); ?></p>
-			</td>
-		</tr>
-		<tr>
 			<th><label><?php _e( 'Prayer Needs', 'tsm-theme' ); ?></label></th>
 			<td>
 				<p class="description" style="margin-bottom: 15px;"><?php _e( 'Add up to 3 specific prayer needs for this mission.', 'tsm-theme' ); ?></p>
@@ -1251,6 +1314,9 @@ function tsm_save_mission_meta_box( $post_id ) {
 
 	if ( isset( $_POST['mission_status'] ) ) {
 		update_post_meta( $post_id, 'mission_status', sanitize_text_field( $_POST['mission_status'] ) );
+	} else {
+		// Set default to 'completed' if status is not set
+		update_post_meta( $post_id, 'mission_status', 'completed' );
 	}
 
 	if ( isset( $_POST['mission_subtitle'] ) ) {
