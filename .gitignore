@@ -82,3 +82,5 @@ certs/
 *.pem
 
 files/
+
+*.backup

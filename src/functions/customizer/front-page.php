@@ -344,6 +344,112 @@ function tsm_customize_register_front_page( $wp_customize ) {
 		)
 	);
 
+	// Service 1 Icon
+	$wp_customize->add_setting(
+		'service_1_icon',
+		array(
+			'default'           => 'campaign',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_1_icon',
+		array(
+			'label'       => __( 'Service 1 Icon', 'tsm-theme' ),
+			'description' => __( 'Material Symbols icon name (e.g., campaign, menu_book, groups). See https://fonts.google.com/icons', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'text',
+		)
+	);
+
+	// Service 2 Icon
+	$wp_customize->add_setting(
+		'service_2_icon',
+		array(
+			'default'           => 'menu_book',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_2_icon',
+		array(
+			'label'       => __( 'Service 2 Icon', 'tsm-theme' ),
+			'description' => __( 'Material Symbols icon name (e.g., campaign, menu_book, groups). See https://fonts.google.com/icons', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'text',
+		)
+	);
+
+	// Service 3 Icon
+	$wp_customize->add_setting(
+		'service_3_icon',
+		array(
+			'default'           => 'volunteer_activism',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_3_icon',
+		array(
+			'label'       => __( 'Service 3 Icon', 'tsm-theme' ),
+			'description' => __( 'Material Symbols icon name (e.g., campaign, menu_book, groups). See https://fonts.google.com/icons', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'text',
+		)
+	);
+
+	// Service 4 Title
+	$wp_customize->add_setting(
+		'service_4_title',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_4_title',
+		array(
+			'label'   => __( 'Service 4 Title', 'tsm-theme' ),
+			'section' => 'tsm_front_page',
+			'type'    => 'text',
+		)
+	);
+
+	// Service 4 Description
+	$wp_customize->add_setting(
+		'service_4_description',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'sanitize_textarea_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_4_description',
+		array(
+			'label'   => __( 'Service 4 Description', 'tsm-theme' ),
+			'section' => 'tsm_front_page',
+			'type'    => 'textarea',
+		)
+	);
+
+	// Service 4 Icon
+	$wp_customize->add_setting(
+		'service_4_icon',
+		array(
+			'default'           => 'groups',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'service_4_icon',
+		array(
+			'label'       => __( 'Service 4 Icon', 'tsm-theme' ),
+			'description' => __( 'Material Symbols icon name (e.g., campaign, menu_book, groups). See https://fonts.google.com/icons', 'tsm-theme' ),
+			'section'     => 'tsm_front_page',
+			'type'        => 'text',
+		)
+	);
+
 	// Featured Book Selection
 	$wp_customize->add_setting(
 		'front_page_featured_book',

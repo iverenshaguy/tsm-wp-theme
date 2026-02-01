@@ -113,7 +113,7 @@ if [ -n "$CURRENT_URL" ]; then
 else
     echo "   ⚠ Could not update URLs automatically"
     echo "   Run manually:"
-    echo "   ./scripts/update-wordpress-urls.sh $CURRENT_URL https://$DOMAIN:8443"
+    echo "   ./scripts/update-wordpress-urls-to-prod.sh $CURRENT_URL https://$DOMAIN:8443"
 fi
 
 echo ""

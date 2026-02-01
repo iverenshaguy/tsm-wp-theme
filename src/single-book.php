@@ -10,8 +10,11 @@ get_header();
 while ( have_posts() ) :
 	the_post();
 	
+	// Capture current post ID immediately to ensure it's always available
+	$current_post_id = get_the_ID();
+	
 	// Get book meta fields
-	$book_author = get_post_meta( get_the_ID(), 'book_author', true );
+	$book_author = get_post_meta( $current_post_id, 'book_author', true );
 	$book_buy_url = get_post_meta( get_the_ID(), 'book_buy_url', true );
 	$book_excerpt_url = get_post_meta( get_the_ID(), 'book_excerpt_url', true );
 	$book_amazon_url = get_post_meta( get_the_ID(), 'book_amazon_url', true );
@@ -59,13 +62,13 @@ while ( have_posts() ) :
 	}
 	
 	// Get related books (same category, excluding current)
-	$current_post_id = get_the_ID();
+	// $current_post_id is already set above
 	$excluded_ids = array( $current_post_id );
 	
 	// First, try to get books from same categories
 	$related_args = array(
 		'post_type'      => 'book',
-		'posts_per_page' => 5,
+		'posts_per_page' => 4,
 		'post__not_in'   => $excluded_ids,
 		'post_status'    => 'publish',
 		'orderby'        => 'date',
@@ -84,31 +87,47 @@ while ( have_posts() ) :
 	
 	$related_books = new WP_Query( $related_args );
 	
-	// Collect IDs of fetched books
+	// Collect IDs of fetched books (excluding current post)
 	$fetched_ids = array();
 	if ( $related_books->have_posts() ) {
 		foreach ( $related_books->posts as $post ) {
-			$fetched_ids[] = $post->ID;
+			// Skip current post if it somehow appears in results
+			if ( $post->ID !== $current_post_id ) {
+				$fetched_ids[] = $post->ID;
+			}
 		}
-		$excluded_ids = array_merge( $excluded_ids, $fetched_ids );
+		// Merge fetched IDs while ensuring current post ID is always excluded
+		$excluded_ids = array_unique( array_merge( array( $current_post_id ), $fetched_ids ) );
+		// Remove current post from posts array if it somehow got through and reset array keys
+		$related_books->posts = array_values( array_filter( $related_books->posts, function( $post ) use ( $current_post_id ) {
+			return $post->ID !== $current_post_id;
+		} ) );
+		$related_books->post_count = count( $related_books->posts );
 	}
 	
 	// If not enough related books, get any other books (excluding already fetched ones)
-	if ( $related_books->post_count < 5 ) {
+	if ( $related_books->post_count < 4 ) {
 		$related_args['tax_query'] = '';
-		$related_args['post__not_in'] = $excluded_ids;
-		$related_args['posts_per_page'] = 5 - $related_books->post_count;
+		// Ensure current post ID is always excluded
+		$related_args['post__not_in'] = array_unique( array_merge( array( $current_post_id ), $fetched_ids ) );
+		$related_args['posts_per_page'] = 4 - $related_books->post_count;
 		$related_books_extra = new WP_Query( $related_args );
 		
 		if ( $related_books_extra->have_posts() ) {
-			// Merge posts without duplicates
+			// Merge posts without duplicates and exclude current post
 			$merged_posts = $related_books->posts;
 			foreach ( $related_books_extra->posts as $post ) {
-				if ( ! in_array( $post->ID, $fetched_ids ) ) {
+				// Skip if already fetched or if it's the current post
+				if ( ! in_array( $post->ID, $fetched_ids ) && $post->ID !== $current_post_id ) {
 					$merged_posts[] = $post;
 					$fetched_ids[] = $post->ID;
 				}
 			}
+			
+			// Final filter to ensure current post is never included, reset array keys
+			$merged_posts = array_values( array_filter( $merged_posts, function( $post ) use ( $current_post_id ) {
+				return $post->ID !== $current_post_id;
+			} ) );
 			
 			$related_books->posts = $merged_posts;
 			$related_books->post_count = count( $merged_posts );
@@ -143,17 +162,17 @@ while ( have_posts() ) :
               <span class="text-primary font-bold tracking-widest text-xs uppercase"><?php echo esc_html( $book_badge ); ?></span>
 						<?php endif; ?>
 						<h1 class="text-accent dark:text-white text-4xl lg:text-5xl font-bold leading-tight font-display">
-							<?php the_title(); ?>
+							<?php echo esc_html( get_the_title( $current_post_id ) ); ?>
 						</h1>
 						<p class="text-lg text-gray-500 dark:text-gray-400 mt-1 mb-6">
-							By <span class="font-semibold text-accent/80 uppercase"><?php echo esc_html( $book_author ? $book_author : 'Terry Shaguy' ); ?></span>
+							By <span class="font-semibold text-accent/80 uppercase"><?php echo esc_html( $book_author ? $book_author : 'Dr. Tor Terry Shaguy' ); ?></span>
 						</p>
             <div class="h-1.5 w-24 bg-primary rounded-full mb-6"></div>
 					</div>
 
 					<div class="border-b border-[#e7f3ea] dark:border-[#1a3321] pb-6">
 						<h2 class="font-medium text-2xl text-accent dark:text-primary mb-4 sans-serif font-sans tracking-tight">About the Book</h2>
-						<div class="text-accent dark:text-gray-300 text-base leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>ul]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ol]:mb-4 [&>ol]:list-decimal [&>ol]:ml-6 [&>ol>li]:mb-2 [&>h1]:mb-4 [&>h2]:mb-4 [&>h3]:mb-4 [&>h4]:mb-4 [&>h5]:mb-4 [&>h6]:mb-4">
+						<div class="text-gray-900 dark:text-gray-300 text-base leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>ul]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ol]:mb-4 [&>ol]:list-decimal [&>ol]:ml-6 [&>ol>li]:mb-2 [&>h1]:mb-4 [&>h2]:mb-4 [&>h3]:mb-4 [&>h4]:mb-4 [&>h5]:mb-4 [&>h6]:mb-4">
 							<?php 
 							the_content();
 							
@@ -259,16 +278,34 @@ while ( have_posts() ) :
 					<div class="flex items-center gap-4 mb-8">
 						<h2 class="text-accent dark:text-white text-3xl font-bold font-display">More from Terry Shaguy</h2>
 					</div>
-					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-20">
+					<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-20">
 						<?php
+						$book_index = 0;
 						while ( $related_books->have_posts() ) :
 							$related_books->the_post();
-							$related_image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
-							$related_categories = get_the_terms( get_the_ID(), 'book_category' );
-							$related_badge = get_post_meta( get_the_ID(), 'book_badge', true );
-							$book_title = get_the_title();
+							$related_post_id = get_the_ID();
+							
+							// Skip current book if it somehow appears
+							if ( $related_post_id === $current_post_id ) {
+								continue;
+							}
+							
+							$book_index++;
+							$related_image = get_the_post_thumbnail_url( $related_post_id, 'medium' );
+							$related_categories = get_the_terms( $related_post_id, 'book_category' );
+							$related_badge = get_post_meta( $related_post_id, 'book_badge', true );
+							$related_book_title = get_the_title( $related_post_id );
+							// Hide books based on screen size:
+							// Book 3: hidden on small, visible on medium+ (hidden md:block)
+							// Book 4: hidden on small/medium, visible on large (1024px+)
+							$hide_classes = '';
+							if ( $book_index === 3 ) {
+								$hide_classes = 'hidden md:block'; // Hide on small (<768px), show on medium+ (>=768px)
+							} elseif ( $book_index === 4 ) {
+								$hide_classes = 'hidden lg:block'; // Hide on small/medium (<1024px), show on large (>=1024px)
+							}
 							?>
-							<a href="<?php the_permalink(); ?>" class="book-card group flex flex-col bg-white dark:bg-[#162b1b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-emerald-50 dark:border-emerald-900/20 cursor-pointer">
+							<a href="<?php the_permalink(); ?>" class="book-card group flex flex-col bg-white dark:bg-[#162b1b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-emerald-50 dark:border-emerald-900/20 cursor-pointer <?php echo esc_attr( $hide_classes ); ?>">
 								<div class="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
 									<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style='background-image: url("<?php echo esc_url( $related_image ? $related_image : get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>");'>
 									</div>
@@ -280,7 +317,7 @@ while ( have_posts() ) :
 									<?php if ( $related_categories && ! is_wp_error( $related_categories ) && ! empty( $related_categories ) ) : ?>
 										<span class="text-[10px] text-primary font-bold uppercase tracking-wider mb-1"><?php echo esc_html( $related_categories[0]->name ); ?></span>
 									<?php endif; ?>
-									<h3 class="text-accent dark:text-white font-bold text-lg leading-snug mb-2 transition-colors"><?php echo esc_html( $book_title ); ?></h3>
+									<h3 class="text-accent dark:text-white font-bold text-lg leading-snug mb-2 transition-colors"><?php echo esc_html( $related_book_title ); ?></h3>
 								</div>
 							</a>
 							<?php

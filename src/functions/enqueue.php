@@ -70,3 +70,27 @@ function tsm_theme_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'tsm_theme_scripts' );
+
+/**
+ * Register and enqueue service worker for image caching
+ */
+function tsm_register_service_worker() {
+	// Service worker must be accessible from site root for proper scope
+	// It's in the theme root (src/sw.js) and will be copied to dist/ during build
+	?>
+	<script>
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function() {
+			navigator.serviceWorker.register('<?php echo esc_url( get_template_directory_uri() ); ?>/sw.js')
+				.then(function(registration) {
+					console.log('ServiceWorker registration successful');
+				})
+				.catch(function(err) {
+					console.log('ServiceWorker registration failed');
+				});
+		});
+	}
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'tsm_register_service_worker' );

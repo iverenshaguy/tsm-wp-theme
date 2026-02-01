@@ -29,23 +29,20 @@ function buildCSS() {
   isBuilding = true;
   console.log('🔨 Building CSS...');
 
-  exec(
-    `npx tailwindcss -i "${cssInputFile}" -o "${cssOutputFile}"`,
-    (error, stdout, stderr) => {
-      isBuilding = false;
+  exec(`npx tailwindcss -i "${cssInputFile}" -o "${cssOutputFile}"`, (error, stdout, stderr) => {
+    isBuilding = false;
 
-      if (error) {
-        console.error(`❌ Build error: ${error.message}`);
-        return;
-      }
-
-      if (stderr) {
-        console.error(`⚠️  Build warning: ${stderr}`);
-      }
-
-      console.log('✅ CSS build complete\n');
+    if (error) {
+      console.error(`❌ Build error: ${error.message}`);
+      return;
     }
-  );
+
+    if (stderr) {
+      console.error(`⚠️  Build warning: ${stderr}`);
+    }
+
+    console.log('✅ CSS build complete\n');
+  });
 }
 
 // Watch CSS input file
@@ -56,19 +53,18 @@ const cssWatcher = chokidar.watch(`${srcDir}/assets/css/**/*.css`, {
 });
 
 // Watch content files (PHP, JS, HTML) that Tailwind scans
-const contentWatcher = chokidar.watch([
-  `${srcDir}/**/*.php`,
-  `${srcDir}/**/*.js`,
-  `${srcDir}/**/*.html`,
-], {
-  ignored: [
-    /node_modules/,
-    /\.git/,
-    new RegExp(cssOutputFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), // Ignore output file
-  ],
-  persistent: true,
-  ignoreInitial: false,
-});
+const contentWatcher = chokidar.watch(
+  [`${srcDir}/**/*.php`, `${srcDir}/**/*.js`, `${srcDir}/**/*.html`],
+  {
+    ignored: [
+      /node_modules/,
+      /\.git/,
+      new RegExp(cssOutputFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), // Ignore output file
+    ],
+    persistent: true,
+    ignoreInitial: false,
+  }
+);
 
 function handleChange(filePath) {
   const relativePath = path.relative(process.cwd(), filePath);

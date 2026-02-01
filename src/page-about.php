@@ -10,8 +10,8 @@ get_header();
 
 <!-- About Section -->
 <section class="max-w-[1280px] mx-auto px-6 py-20 lg:py-32">
-	<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-		<div class="lg:col-span-5 flex flex-col gap-10">
+	<div class="grid grid-cols-1 gap-16 items-start lg:grid-cols-12">
+		<div class="flex flex-col gap-10 lg:col-span-5">
 			<div class="relative group">
 				<div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-primary/20">
 					<?php
@@ -20,13 +20,13 @@ get_header();
 					<img alt="<?php echo esc_attr( get_theme_mod( 'about_page_name', 'Terry Shaguy' ) ); ?>" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" src="<?php echo esc_url( $about_image ); ?>"/>
 				</div>
 				<div class="absolute -bottom-6 -left-6 bg-primary text-white p-8 rounded-2xl shadow-xl max-w-[280px]">
-					<h4 class="text-xs font-bold uppercase tracking-widest text-accent mb-2">
+					<h4 class="mb-2 text-xs font-bold tracking-widest uppercase text-accent">
 						<?php
 						$about_quote_label = get_theme_mod( 'about_quote_label', 'Core Philosophy' );
 						echo esc_html( $about_quote_label );
 						?>
 					</h4>
-					<p class="serif-text italic text-lg leading-relaxed">
+					<p class="text-lg italic leading-relaxed serif-text">
 						<?php
 						$about_quote = get_theme_mod(
 							'about_quote',
@@ -39,7 +39,7 @@ get_header();
 			</div>
 			<div class="mt-12 space-y-8 bg-[#f3f7f4] dark:bg-primary/10 p-8 rounded-2xl border border-primary/5">
 				<div>
-					<h5 class="text-accent dark:text-primary font-bold uppercase tracking-wider text-sm mb-4">
+					<h5 class="mb-4 text-sm font-bold tracking-wider uppercase text-accent dark:text-primary">
 						<?php
 						$fast_facts_title = get_theme_mod( 'about_fast_facts_title', 'Fast Facts' );
 						echo esc_html( $fast_facts_title );
@@ -49,7 +49,7 @@ get_header();
 						<?php
 						$fast_facts = get_theme_mod(
 							'about_fast_facts',
-							"school|Ph.D. in Global Theology\npublic|20+ Years Global Field Experience\nedit_note|Author of 8 Best-selling Titles\nlocation_on|Based in Nashville, Tennessee"
+							"school|Ph.D. in Global Theology\npublic|20+ Years Global Field Experience\nedit_note|Author of 8 Best-selling Titles\nlocation_on|Based in Ibadan, Nigeria"
 						);
 						$facts = explode( "\n", $fast_facts );
 						foreach ( $facts as $fact ) {
@@ -61,7 +61,7 @@ get_header();
 							$text = ! empty( $parts[1] ) ? trim( $parts[1] ) : '';
 							if ( ! empty( $text ) ) {
 								?>
-								<li class="flex items-center gap-3">
+								<li class="flex gap-3 items-center">
 									<span class="material-symbols-outlined text-primary !text-base"><?php echo esc_html( $icon ); ?></span>
 									<?php echo esc_html( $text ); ?>
 								</li>
@@ -75,21 +75,21 @@ get_header();
 		</div>
 		<div class="lg:col-span-7">
 			<header class="mb-12">
-				<h2 class="text-primary uppercase tracking-widest text-sm font-bold mb-4">
+				<h2 class="mb-4 text-sm font-bold tracking-widest uppercase text-primary">
 					<?php
 					$about_subtitle = get_theme_mod( 'about_page_subtitle', 'The Life & Ministry Of' );
 					echo esc_html( $about_subtitle );
 					?>
 				</h2>
-				<h1 class="text-accent dark:text-white text-5xl md:text-6xl font-bold leading-tight mb-6">
+				<h1 class="mb-6 text-5xl font-bold leading-tight text-accent dark:text-white md:text-6xl">
 					<?php
 					$about_name = get_theme_mod( 'about_page_name', 'Terry Shaguy' );
 					echo esc_html( $about_name );
 					?>
 				</h1>
-				<div class="h-1.5 w-24 bg-primary rounded-full mb-8"></div>
+				<div class="mb-8 w-24 h-1.5 rounded-full bg-primary"></div>
 			</header>
-			<article class="serif-text text-lg leading-relaxed text-gray-700 dark:text-gray-300 space-y-10">
+			<article class="space-y-10 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 				<?php
 				// Display page content if available, otherwise use customizer settings
 				while ( have_posts() ) :
@@ -100,13 +100,13 @@ get_header();
 						// Fallback to customizer content
 						?>
 							<div>
-								<h3 class="font-medium text-2xl text-accent dark:text-primary mb-4 sans-serif font-sans tracking-tight">
+								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
 									$about_section_1_title = get_theme_mod( 'about_section_1_title', 'His Calling' );
 									echo esc_html( $about_section_1_title );
 									?>
 								</h3>
-								<div class="serif-text text-lg leading-relaxed text-gray-700 dark:text-gray-300 space-y-4">
+								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
 									$about_section_1_content = get_theme_mod(
 										'about_section_1_content',
@@ -116,7 +116,7 @@ get_header();
 									?>
 								</div>
 							</div>
-							<div class="bg-primary/5 dark:bg-white/5 border-l-4 border-primary p-8 rounded-r-xl my-8 italic">
+							<div class="p-8 my-8 italic rounded-r-xl border-l-4 bg-primary/5 dark:bg-white/5 border-primary">
 								<p class="text-xl text-accent dark:text-white">
 									<?php
 									$about_highlight_quote = get_theme_mod(
@@ -126,18 +126,18 @@ get_header();
 									echo esc_html( $about_highlight_quote );
 									?>
 								</p>
-								<cite class="block mt-4 text-sm font-bold uppercase tracking-widest text-primary not-italic">
+								<cite class="block mt-4 text-sm not-italic font-bold tracking-widest uppercase text-primary">
 									— <?php echo esc_html( $about_name ); ?>
 								</cite>
 							</div>
 							<div>
-								<h3 class="font-medium text-2xl text-accent dark:text-primary mb-4 sans-serif font-sans tracking-tight">
+								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
 									$about_section_2_title = get_theme_mod( 'about_section_2_title', 'Academic Background' );
 									echo esc_html( $about_section_2_title );
 									?>
 								</h3>
-								<div class="serif-text text-lg leading-relaxed text-gray-700 dark:text-gray-300 space-y-4">
+								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
 									$about_section_2_content = get_theme_mod(
 										'about_section_2_content',
@@ -148,13 +148,13 @@ get_header();
 								</div>
 							</div>
 							<div>
-								<h3 class="font-medium text-2xl text-accent dark:text-primary mb-4 sans-serif font-sans tracking-tight">
+								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
 									$about_section_3_title = get_theme_mod( 'about_section_3_title', 'Personal Life' );
 									echo esc_html( $about_section_3_title );
 									?>
 								</h3>
-								<div class="serif-text text-lg leading-relaxed text-gray-700 dark:text-gray-300 space-y-4">
+								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
 									$about_section_3_content = get_theme_mod(
 										'about_section_3_content',
@@ -176,23 +176,23 @@ get_header();
 <!-- Books Section -->
 <section class="bg-[#f3f7f4] dark:bg-[#0c1a11] py-24">
 	<div class="max-w-[1280px] mx-auto px-6">
-		<div class="text-center mb-16">
-			<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
-				<span class="material-symbols-outlined text-primary text-sm">menu_book</span>
-				<span class="text-primary text-xs font-bold tracking-widest uppercase">
+		<div class="mb-16 text-center">
+			<div class="inline-flex gap-2 items-center px-3 py-1 mb-6 rounded-full border backdrop-blur-sm bg-primary/20 border-primary/30">
+				<span class="text-sm material-symbols-outlined text-primary">menu_book</span>
+				<span class="text-xs font-bold tracking-widest uppercase text-primary">
 					<?php
 					$about_books_badge = get_theme_mod( 'about_books_badge', 'Resources' );
 					echo esc_html( $about_books_badge );
 					?>
 				</span>
 			</div>
-			<h3 class="text-accent dark:text-white text-4xl font-black">
+			<h3 class="text-4xl font-black text-accent dark:text-white">
 				<?php
 				$about_books_title = get_theme_mod( 'about_books_title', 'Books by Terry' );
 				echo esc_html( $about_books_title );
 				?>
 			</h3>
-			<p class="text-gray-500 mt-4 max-w-2xl mx-auto">
+			<p class="mx-auto mt-4 max-w-2xl text-gray-500">
 				<?php
 				$about_books_description = get_theme_mod(
 					'about_books_description',
@@ -202,7 +202,7 @@ get_header();
 				?>
 			</p>
 		</div>
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 			<?php
 			$books_page_id = get_theme_mod( 'books_page_id', 0 );
 			$books_url = $books_page_id ? get_permalink( $books_page_id ) : home_url( '/books' );
@@ -259,13 +259,13 @@ get_header();
 
 				foreach ( $placeholder_books as $book ) :
 					?>
-					<a href="<?php echo esc_url( $books_url ); ?>" class="group cursor-pointer block">
+					<a href="<?php echo esc_url( $books_url ); ?>" class="block cursor-pointer group">
 						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
-							<img alt="<?php echo esc_attr( $book['title'] ); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( $book['image'] ); ?>"/>
+							<img alt="<?php echo esc_attr( $book['title'] ); ?> Book Cover" class="object-cover w-full h-full" src="<?php echo esc_url( $book['image'] ); ?>"/>
 						</div>
-						<h4 class="text-accent dark:text-white text-xl font-bold mb-2 group-hover:text-primary transition-colors"><?php echo esc_html( $book['title'] ); ?></h4>
-						<p class="text-gray-500 text-sm mb-4"><?php echo esc_html( $book['badge'] ); ?></p>
-						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+						<h4 class="mb-2 text-xl font-bold transition-colors text-accent dark:text-white group-hover:text-primary"><?php echo esc_html( $book['title'] ); ?></h4>
+						<p class="mb-4 text-sm text-gray-500"><?php echo esc_html( $book['badge'] ); ?></p>
+						<span class="flex gap-2 items-center text-sm font-bold transition-all text-primary group-hover:gap-3">
 							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
 						</span>
 					</a>
@@ -276,7 +276,7 @@ get_header();
 					$books_query->the_post();
 					$author = get_post_meta( get_the_ID(), 'book_author', true );
 					?>
-					<a href="<?php the_permalink(); ?>" class="group cursor-pointer block">
+					<a href="<?php the_permalink(); ?>" class="block cursor-pointer group">
 						<div class="aspect-[3/4] rounded-xl overflow-hidden shadow-md mb-6 transition-transform duration-300 group-hover:-translate-y-2">
 							<?php if ( has_post_thumbnail() ) : ?>
 								<?php
@@ -289,16 +289,16 @@ get_header();
 								);
 								?>
 							<?php else : ?>
-								<img alt="<?php the_title_attribute(); ?> Book Cover" class="w-full h-full object-cover" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>"/>
+								<img alt="<?php the_title_attribute(); ?> Book Cover" class="object-cover w-full h-full" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>"/>
 							<?php endif; ?>
 						</div>
-						<h4 class="text-accent dark:text-white text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+						<h4 class="mb-2 text-xl font-bold transition-colors text-accent dark:text-white group-hover:text-primary">
 							<?php the_title(); ?>
 						</h4>
-						<p class="text-gray-500 text-sm mb-4">
+						<p class="mb-4 text-sm text-gray-500">
 							<?php echo $author ? esc_html( 'By ' . $author ) : 'By Terry Shaguy'; ?>
 						</p>
-						<span class="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+						<span class="flex gap-2 items-center text-sm font-bold transition-all text-primary group-hover:gap-3">
 							Learn More <span class="material-symbols-outlined !text-base">arrow_forward</span>
 						</span>
 					</a>
@@ -313,26 +313,26 @@ get_header();
 
 <!-- CTA Section -->
 <section class="max-w-[1280px] mx-auto px-6 py-20">
-	<div class="bg-primary text-white rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
+	<div class="overflow-hidden relative p-12 text-center text-white rounded-3xl bg-primary md:p-20">
 		<?php
 		$cta_bg_image = get_theme_mod( 'about_cta_bg_image', '' );
 		if ( $cta_bg_image ) {
 			?>
-			<div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('<?php echo esc_url( $cta_bg_image ); ?>')"></div>
+			<div class="absolute inset-0 bg-center bg-cover opacity-10" style="background-image: url('<?php echo esc_url( $cta_bg_image ); ?>')"></div>
 			<?php
 		}
 		?>
-		<div class="relative z-10 max-w-2xl mx-auto">
-			<div class="bg-white text-primary p-4 rounded-2xl mb-8 shadow-lg shadow-white/30 w-fit mx-auto">
+		<div class="relative z-10 mx-auto max-w-2xl">
+			<div class="p-4 mx-auto mb-8 bg-white rounded-2xl shadow-lg text-primary shadow-white/30 w-fit">
 				<span class="material-symbols-outlined !text-4xl">campaign</span>
 			</div>
-			<h2 class="text-3xl md:text-5xl font-black mb-6">
+			<h2 class="mb-6 text-3xl font-black md:text-5xl">
 				<?php
 				$about_cta_title = get_theme_mod( 'about_cta_title', 'Invite Terry to Your Event' );
 				echo esc_html( $about_cta_title );
 				?>
 			</h2>
-			<p class="text-white/80 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
+			<p class="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-white/80">
 				<?php
 				$about_cta_description = get_theme_mod(
 					'about_cta_description',
@@ -341,17 +341,17 @@ get_header();
 				echo esc_html( $about_cta_description );
 				?>
 			</p>
-			<div class="flex flex-col sm:flex-row justify-center gap-4">
+			<div class="flex flex-col gap-4 justify-center sm:flex-row">
 				<?php
 				$contact_page_id = get_theme_mod( 'contact_page_id', 0 );
 				$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
 				$speakers_kit_url = get_theme_mod( 'speakers_kit_url', '' );
 				?>
-				<a href="<?php echo esc_url( $contact_url ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold px-10 py-5 rounded-lg shadow-xl transition-all hover:scale-105 active:scale-95">
+				<a href="<?php echo esc_url( $contact_url ); ?>" class="px-10 py-5 font-bold bg-white rounded-lg shadow-xl transition-all text-primary hover:text-accent hover:bg-gray-100 hover:scale-105 active:scale-95">
 					Check Availability
 				</a>
 				<?php if ( $speakers_kit_url ) : ?>
-					<a href="<?php echo esc_url( $speakers_kit_url ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold px-10 py-5 rounded-lg hover:bg-white/10 transition-all">
+					<a href="<?php echo esc_url( $speakers_kit_url ); ?>" class="px-10 py-5 font-bold text-white bg-transparent rounded-lg border-2 backdrop-blur-md transition-all border-white/40 hover:text-white hover:bg-white/10">
 						Speaker's Kit (PDF)
 					</a>
 				<?php endif; ?>

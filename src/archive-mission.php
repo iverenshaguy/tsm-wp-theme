@@ -200,7 +200,7 @@ get_header();
 		</div>
 		
 		<!-- Partner Sidebar -->
-		<div class="lg:w-[360px] space-y-8">
+		<div class="hidden lg:block lg:w-[360px] space-y-8">
 			<div class="sticky top-24">
 				<div class="bg-white dark:bg-[#1a2e1e] rounded-xl border border-[#cfe7d5] dark:border-[#2a4431] overflow-hidden shadow-sm">
 					<div class="bg-primary p-6">

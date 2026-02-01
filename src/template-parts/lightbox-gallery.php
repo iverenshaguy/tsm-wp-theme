@@ -82,7 +82,7 @@ if ( empty( $images ) ) {
 				$img_alt = isset( $img['alt'] ) ? $img['alt'] : '';
 				?>
 				<div class="tsm-lightbox-thumbnail flex-shrink-0 size-16 rounded-sm opacity-40 hover:opacity-100 cursor-pointer overflow-hidden transition-all <?php echo $index === 0 ? 'ring-2 ring-primary ring-offset-2 ring-offset-black scale-105 opacity-100' : ''; ?>" data-index="<?php echo $index; ?>" data-full="<?php echo esc_url( $full_url ); ?>" data-alt="<?php echo esc_attr( $img_alt ); ?>">
-					<img class="w-full h-full object-cover" src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>"/>
+					<img class="w-full h-full object-cover" src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>" loading="lazy" decoding="async"/>
 				</div>
 			<?php endforeach; ?>
 		</div>

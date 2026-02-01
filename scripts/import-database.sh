@@ -37,7 +37,7 @@ if docker exec -i "$CONTAINER_NAME" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAM
     echo ""
     echo "Next steps:"
     echo "1. Check the import: ./scripts/check-database.sh"
-    echo "2. Update URLs: ./scripts/update-wordpress-urls.sh terryshaguy.org localhost:8080"
+    echo "2. Update URLs: ./scripts/update-wordpress-urls-to-dev.sh terryshaguy.org localhost:8080"
     echo ""
     echo "Note: You may need to update wp-config.php in WordPress if table prefix differs."
 else

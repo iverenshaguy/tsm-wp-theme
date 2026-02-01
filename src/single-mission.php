@@ -67,6 +67,9 @@ if ( have_posts() ) :
 			$hero_image_url = wp_get_attachment_image_url( $mission_hero_image, 'full' );
 		} elseif ( has_post_thumbnail() ) {
 			$hero_image_url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+		} elseif ( ! empty( $gallery_images ) && ! empty( $gallery_images[0]['image'] ) ) {
+			// Fallback to first gallery image if no hero image or featured image
+			$hero_image_url = wp_get_attachment_image_url( $gallery_images[0]['image'], 'full' );
 		}
 		
 		$display_title = $mission_subtitle ? $mission_subtitle : get_the_title();
@@ -89,25 +92,33 @@ if ( have_posts() ) :
 		<!-- Hero Section -->
 		<section class="w-full relative h-[450px] md:h-[500px] flex items-center justify-center overflow-hidden">
 			<?php if ( $hero_image_url ) : ?>
-				<div class="absolute inset-0 bg-cover bg-center" style='background-image: linear-gradient(rgba(10, 74, 28, 0.5) 0%, rgba(16, 34, 21, 0.9) 100%), url("<?php echo esc_url( $hero_image_url ); ?>");'></div>
+				<div class="absolute inset-0 bg-center bg-cover" style='background-image: linear-gradient(rgba(10, 74, 28, 0.5) 0%, rgba(16, 34, 21, 0.9) 100%), url("<?php echo esc_url( $hero_image_url ); ?>");'></div>
 			<?php else : ?>
 				<div class="absolute inset-0 bg-gradient-to-br from-accent to-[#102215]"></div>
 			<?php endif; ?>
+			<?php if ( $mission_status === 'upcoming' || $mission_status === 'ongoing' ) : ?>
+				<?php
+				$status_text = $mission_status === 'upcoming' ? 'Upcoming' : 'Ongoing';
+				?>
+				<div class="absolute top-6 right-6 z-20 text-primary text-xs font-bold uppercase tracking-wider">
+					<?php echo esc_html( $status_text ); ?>
+				</div>
+			<?php endif; ?>
 			<div class="relative z-10 max-w-[1200px] px-6 text-center text-white">
-				<div class="mb-6 flex flex-col items-center justify-center gap-3">
-					<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
-						<span class="material-symbols-outlined text-primary text-sm">explore</span>
-						<span class="text-primary text-xs font-bold tracking-widest uppercase">Mission Overview</span>
+				<div class="flex flex-col gap-3 justify-center items-center mb-6">
+					<div class="inline-flex gap-2 items-center px-3 py-1 rounded-full border backdrop-blur-sm bg-primary/20 border-primary/30">
+						<span class="text-sm material-symbols-outlined text-primary-light">explore</span>
+						<span class="text-xs font-bold tracking-widest uppercase text-primary-light">Mission Overview</span>
 					</div>
 					<?php if ( $mission_date ) : ?>
 						<span class="text-sm font-medium opacity-80"><?php echo esc_html( $mission_date ); ?></span>
 					<?php endif; ?>
 				</div>
-				<h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-lg">
+				<h1 class="mb-4 text-4xl font-bold leading-tight drop-shadow-lg md:text-6xl">
 					<?php echo esc_html( $display_title ); ?>
 				</h1>
 				<?php if ( $mission_location ) : ?>
-					<p class="text-lg md:text-xl font-medium opacity-90 max-w-3xl mx-auto flex items-center justify-center gap-2">
+					<p class="flex gap-2 justify-center items-center mx-auto max-w-3xl text-lg font-medium opacity-90 md:text-xl">
 						<span class="material-symbols-outlined text-primary">location_on</span>
 						<?php echo esc_html( $mission_location ); ?>
 					</p>
@@ -116,9 +127,9 @@ if ( have_posts() ) :
 		</section>
 
 		<div class="max-w-[1200px] mx-auto px-6 -mt-16 relative z-20">
-			<div class="mb-8 flex justify-between items-end">
-				<a class="inline-flex items-center gap-2 text-white hover:text-primary transition-colors font-semibold bg-accent/40 backdrop-blur-sm px-4 py-2 rounded-lg" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
-					<span class="material-symbols-outlined text-sm">arrow_back</span>
+			<div class="flex justify-between items-end mb-8">
+				<a class="inline-flex gap-2 items-center px-4 py-2 font-semibold text-white rounded-lg backdrop-blur-sm transition-colors hover:text-primary bg-accent/40" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
+					<span class="text-sm material-symbols-outlined">arrow_back</span>
 					<?php _e( 'Back to Missions', 'tsm-theme' ); ?>
 				</a>
 			</div>
@@ -159,8 +170,8 @@ if ( have_posts() ) :
 					foreach ( $valid_stats as $stat ) :
 						$icon = ! empty( $stat['icon'] ) ? $stat['icon'] : 'check';
 						?>
-						<div class="bg-accent text-white p-8 rounded-2xl shadow-2xl border border-white/10 flex flex-col items-center text-center">
-							<span class="material-symbols-outlined text-primary mb-3 text-4xl"><?php echo esc_html( $icon ); ?></span>
+						<div class="flex flex-col items-center p-8 text-center text-white rounded-2xl border shadow-2xl bg-accent border-white/10">
+							<span class="mb-3 text-4xl material-symbols-outlined text-primary"><?php echo esc_html( $icon ); ?></span>
 							<p class="text-3xl font-bold"><?php echo esc_html( $stat['value'] ); ?></p>
 							<p class="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60 mt-1"><?php echo esc_html( $stat['label'] ); ?></p>
 						</div>
@@ -170,38 +181,50 @@ if ( have_posts() ) :
 				</div>
 			<?php endif; ?>
 
-			<div class="flex flex-col lg:flex-row gap-12 py-8">
+			<div class="flex flex-col gap-12 py-8 lg:flex-row">
 				<div class="flex-1 space-y-16">
-					<?php if ( $mission_impact_title || $mission_impact_description || get_the_content() ) : ?>
-						<div class="max-w-2xl">
-							<h2 class="text-xs font-bold uppercase tracking-widest text-primary mb-3"><?php _e( 'The Impact', 'tsm-theme' ); ?></h2>
-							<?php if ( $mission_impact_title ) : ?>
-								<p class="text-2xl md:text-3xl font-bold leading-tight text-accent dark:text-white mb-4">
-									<?php echo esc_html( $mission_impact_title ); ?>
-								</p>
-							<?php endif; ?>
-							<?php if ( $mission_impact_description ) : ?>
-								<p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-									<?php echo esc_html( $mission_impact_description ); ?>
-								</p>
-							<?php endif; ?>
-							<?php if ( get_the_content() ) : ?>
-								<div class="prose prose-lg dark:prose-invert max-w-none">
-									<?php the_content(); ?>
+					<?php
+					// Get main content
+					$main_content = get_the_content();
+					$main_content = apply_filters( 'the_content', $main_content );
+					$main_content = str_replace( ']]>', ']]&gt;', $main_content );
+					
+					// Determine what to display: content first, then fallback to meta
+					$has_content = ! empty( trim( strip_tags( $main_content ) ) );
+					$has_impact_section = $mission_impact_title || $mission_impact_description || $has_content;
+					?>
+					<?php if ( $has_impact_section ) : ?>
+						<div class="max-w-2xl mission-content">
+							<?php if ( $has_content ) : ?>
+								<!-- Main content from editor -->
+								<div class="max-w-none mission-main-content prose prose-lg dark:prose-invert">
+									<?php echo $main_content; ?>
 								</div>
+							<?php else : ?>
+								<!-- Fallback to meta fields if no content -->
+								<?php if ( $mission_impact_title ) : ?>
+									<p class="mb-4 text-2xl font-bold leading-tight md:text-3xl text-accent dark:text-white">
+										<?php echo esc_html( $mission_impact_title ); ?>
+									</p>
+								<?php endif; ?>
+								<?php if ( $mission_impact_description ) : ?>
+									<p class="mb-4 text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+										<?php echo esc_html( $mission_impact_description ); ?>
+									</p>
+								<?php endif; ?>
 							<?php endif; ?>
 						</div>
 					<?php endif; ?>
 
 					<?php if ( ! empty( $gallery_images ) ) : ?>
 						<div>
-							<div class="flex items-center justify-between mb-8">
-								<h2 class="text-accent text-3xl font-bold tracking-tight flex items-center gap-3">
+							<div class="flex justify-between items-center mb-8">
+								<h2 class="flex gap-3 items-center text-3xl font-bold tracking-tight text-accent">
 									<?php _e( 'Trip Gallery', 'tsm-theme' ); ?>
-									<span class="h-1 w-24 bg-primary rounded-full"></span>
+									<span class="w-24 h-1 rounded-full bg-primary"></span>
 								</h2>
 							</div>
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 								<?php
 								$first_image = ! empty( $gallery_images[0] ) ? $gallery_images[0] : null;
 								$second_image = ! empty( $gallery_images[1] ) ? $gallery_images[1] : null;
@@ -213,9 +236,9 @@ if ( have_posts() ) :
 									$first_image_alt = ! empty( $first_image['alt'] ) ? $first_image['alt'] : get_the_title();
 									?>
 									<div class="group overflow-hidden rounded-2xl h-[400px] relative shadow-lg cursor-pointer gallery-image" data-index="0">
-										<img alt="<?php echo esc_attr( $first_image_alt ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="<?php echo esc_url( $first_image_url ); ?>" data-full="<?php echo esc_url( $first_image_full ); ?>" data-alt="<?php echo esc_attr( $first_image_alt ); ?>"/>
-										<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-											<p class="text-white font-bold"><?php echo esc_html( $first_image_alt ); ?></p>
+										<img alt="<?php echo esc_attr( $first_image_alt ); ?>" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" src="<?php echo esc_url( $first_image_url ); ?>" data-full="<?php echo esc_url( $first_image_full ); ?>" data-alt="<?php echo esc_attr( $first_image_alt ); ?>"/>
+										<div class="flex absolute inset-0 items-end p-6 bg-gradient-to-t via-transparent to-transparent opacity-0 transition-opacity from-black/60 group-hover:opacity-100">
+											<p class="font-bold text-white"><?php echo esc_html( $first_image_alt ); ?></p>
 										</div>
 									</div>
 								<?php endif; ?>
@@ -227,8 +250,8 @@ if ( have_posts() ) :
 										$second_image_alt = ! empty( $second_image['alt'] ) ? $second_image['alt'] : get_the_title();
 										?>
 										<div class="group overflow-hidden rounded-2xl h-[188px] relative shadow-lg cursor-pointer gallery-image" data-index="1">
-											<img alt="<?php echo esc_attr( $second_image_alt ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="<?php echo esc_url( $second_image_url ); ?>" data-full="<?php echo esc_url( $second_image_full ); ?>" data-alt="<?php echo esc_attr( $second_image_alt ); ?>"/>
-											<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+											<img alt="<?php echo esc_attr( $second_image_alt ); ?>" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" src="<?php echo esc_url( $second_image_url ); ?>" data-full="<?php echo esc_url( $second_image_full ); ?>" data-alt="<?php echo esc_attr( $second_image_alt ); ?>"/>
+											<div class="absolute inset-0 transition-colors bg-black/20 group-hover:bg-black/40"></div>
 										</div>
 									<?php endif; ?>
 									
@@ -238,8 +261,8 @@ if ( have_posts() ) :
 										$third_image_alt = ! empty( $third_image['alt'] ) ? $third_image['alt'] : get_the_title();
 										?>
 										<div class="group overflow-hidden rounded-2xl h-[188px] relative shadow-lg cursor-pointer gallery-image" data-index="2">
-											<img alt="<?php echo esc_attr( $third_image_alt ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="<?php echo esc_url( $third_image_url ); ?>" data-full="<?php echo esc_url( $third_image_full ); ?>" data-alt="<?php echo esc_attr( $third_image_alt ); ?>"/>
-											<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+											<img alt="<?php echo esc_attr( $third_image_alt ); ?>" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" src="<?php echo esc_url( $third_image_url ); ?>" data-full="<?php echo esc_url( $third_image_full ); ?>" data-alt="<?php echo esc_attr( $third_image_alt ); ?>"/>
+											<div class="absolute inset-0 transition-colors bg-black/20 group-hover:bg-black/40"></div>
 										</div>
 									<?php endif; ?>
 								</div>
@@ -266,8 +289,8 @@ if ( have_posts() ) :
 										$fourth_image_full = wp_get_attachment_image_url( $fourth_image['image'], 'full' );
 										$fourth_image_alt = ! empty( $fourth_image['alt'] ) ? $fourth_image['alt'] : get_the_title();
 										?>
-										<div class="group overflow-hidden rounded-2xl h-48 relative shadow-md cursor-pointer gallery-image" data-index="3">
-											<img alt="<?php echo esc_attr( $fourth_image_alt ); ?>" class="w-full h-full object-cover" src="<?php echo esc_url( $fourth_image_url ); ?>" data-full="<?php echo esc_url( $fourth_image_full ); ?>" data-alt="<?php echo esc_attr( $fourth_image_alt ); ?>"/>
+										<div class="overflow-hidden relative h-48 rounded-2xl shadow-md cursor-pointer group gallery-image" data-index="3">
+											<img alt="<?php echo esc_attr( $fourth_image_alt ); ?>" class="object-cover w-full h-full" src="<?php echo esc_url( $fourth_image_url ); ?>" data-full="<?php echo esc_url( $fourth_image_full ); ?>" data-alt="<?php echo esc_attr( $fourth_image_alt ); ?>"/>
 										</div>
 									<?php endif; ?>
 									
@@ -276,15 +299,15 @@ if ( have_posts() ) :
 										$fifth_image_full = wp_get_attachment_image_url( $fifth_image['image'], 'full' );
 										$fifth_image_alt = ! empty( $fifth_image['alt'] ) ? $fifth_image['alt'] : get_the_title();
 										?>
-										<div class="group overflow-hidden rounded-2xl h-48 relative shadow-md cursor-pointer gallery-image" data-index="4">
-											<img alt="<?php echo esc_attr( $fifth_image_alt ); ?>" class="w-full h-full object-cover" src="<?php echo esc_url( $fifth_image_url ); ?>" data-full="<?php echo esc_url( $fifth_image_full ); ?>" data-alt="<?php echo esc_attr( $fifth_image_alt ); ?>"/>
+										<div class="overflow-hidden relative h-48 rounded-2xl shadow-md cursor-pointer group gallery-image" data-index="4">
+											<img alt="<?php echo esc_attr( $fifth_image_alt ); ?>" class="object-cover w-full h-full" src="<?php echo esc_url( $fifth_image_url ); ?>" data-full="<?php echo esc_url( $fifth_image_full ); ?>" data-alt="<?php echo esc_attr( $fifth_image_alt ); ?>"/>
 										</div>
 									<?php endif; ?>
 									
 									<?php if ( $show_view_all && $first_image_full ) : ?>
-										<div class="group overflow-hidden rounded-2xl h-48 relative shadow-md bg-accent flex items-center justify-center text-white p-6 text-center hover:bg-accent/90 transition-colors cursor-pointer gallery-image">
+										<div class="flex overflow-hidden relative justify-center items-center p-6 h-48 text-center text-white rounded-2xl shadow-md transition-colors cursor-pointer group bg-accent hover:bg-accent/90 gallery-image">
 											<img class="hidden" src="<?php echo esc_url( $first_image_full ); ?>" data-full="<?php echo esc_url( $first_image_full ); ?>" data-alt=""/>
-											<p class="font-bold text-sm underline underline-offset-4">
+											<p class="text-sm font-bold underline underline-offset-4">
 												<?php printf( __( 'View all %d photos', 'tsm-theme' ), $total_gallery_images ); ?>
 											</p>
 										</div>
@@ -299,14 +322,14 @@ if ( have_posts() ) :
 					<div class="sticky top-24">
 						<?php if ( $mission_summary ) : ?>
 							<div class="bg-white dark:bg-[#1a2e1e] rounded-3xl border-2 border-primary shadow-2xl p-8 mb-8">
-								<h3 class="text-accent text-2xl font-semibold mb-3 flex items-center justify-center gap-2">
+								<h3 class="flex gap-2 justify-center items-center mb-3 text-2xl font-semibold text-accent">
 									<?php _e( 'Support This Work', 'tsm-theme' ); ?>
 								</h3>
-								<p class="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed text-center">
+								<p class="mb-4 text-sm leading-relaxed text-center text-gray-600 dark:text-gray-400">
 									<?php echo esc_html( $mission_summary ); ?>
 								</p>
 								<div class="flex justify-center">
-									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="w-full flex cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary dark:bg-accent text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 transition-all active:scale-95 gap-2">
+									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="flex gap-2 justify-center items-center px-8 w-full h-14 text-sm font-bold text-white rounded-lg shadow-lg transition-all cursor-pointer bg-primary dark:bg-accent hover:text-white shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95">
 										<span class="material-symbols-outlined">volunteer_activism</span>
 										<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
 									</a>
@@ -314,14 +337,14 @@ if ( have_posts() ) :
 							</div>
 						<?php else : ?>
 							<div class="bg-white dark:bg-[#1a2e1e] rounded-3xl border-2 border-primary shadow-2xl p-8 mb-8">
-								<h3 class="text-accent text-2xl font-semibold mb-3 flex items-center justify-center">
+								<h3 class="flex justify-center items-center mb-3 text-2xl font-semibold text-accent">
 									<?php _e( 'Support This Work', 'tsm-theme' ); ?>
 								</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed text-center">
+                <p class="mb-4 text-sm leading-relaxed text-center text-gray-600 dark:text-gray-400">
                   Your partnership helps bring the Gospel alongside practical care to communities in need.
 								</p>
 								<div class="flex justify-center">
-									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="w-full flex cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary dark:bg-accent text-white hover:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 transition-all active:scale-95 gap-2">
+									<a href="<?php echo esc_url( home_url( '/partners' ) ); ?>" class="flex gap-2 justify-center items-center px-8 w-full h-14 text-sm font-bold text-white rounded-lg shadow-lg transition-all cursor-pointer bg-primary dark:bg-accent hover:text-white shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95">
 										<span class="material-symbols-outlined">volunteer_activism</span>
 										<?php _e( 'Give to this Project', 'tsm-theme' ); ?>
 									</a>
@@ -330,8 +353,8 @@ if ( have_posts() ) :
 						<?php endif; ?>
 
 						<?php if ( ! empty( $mission_prayer_needs ) ) : ?>
-							<div class="bg-accent text-white rounded-3xl p-8 shadow-xl">
-								<h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+							<div class="p-8 text-white rounded-3xl shadow-xl bg-accent">
+								<h3 class="flex gap-2 items-center mb-6 text-xl font-semibold">
 									<span class="material-symbols-outlined text-primary">auto_awesome</span>
 									<?php _e( 'Specific Prayer Needs', 'tsm-theme' ); ?>
 								</h3>
@@ -343,10 +366,10 @@ if ( have_posts() ) :
 										}
 										?>
 										<li class="flex gap-4">
-											<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-												<span class="material-symbols-outlined text-primary text-sm font-bold">check</span>
+											<div class="flex justify-center items-center w-6 h-6 rounded-full bg-primary/20 shrink-0">
+												<span class="text-sm font-bold material-symbols-outlined text-primary">check</span>
 											</div>
-											<p class="text-sm opacity-90 leading-relaxed"><?php echo esc_html( $need ); ?></p>
+											<p class="text-sm leading-relaxed opacity-90"><?php echo esc_html( $need ); ?></p>
 										</li>
 										<?php
 									endforeach;
@@ -354,13 +377,6 @@ if ( have_posts() ) :
 								</ul>
 							</div>
 						<?php endif; ?>
-
-						<div class="mt-8">
-							<a class="flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary hover:text-primary transition-all font-bold text-sm" href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>">
-								<span class="material-symbols-outlined text-base">grid_view</span>
-								<?php _e( 'All Mission Projects', 'tsm-theme' ); ?>
-							</a>
-						</div>
 					</div>
 				</aside>
 			</div>
@@ -394,9 +410,9 @@ else :
 	?>
 	<section class="max-w-[1200px] mx-auto px-6 py-20">
 		<div class="text-center">
-			<h1 class="text-4xl font-bold mb-4"><?php _e( 'Mission Not Found', 'tsm-theme' ); ?></h1>
-			<p class="text-lg text-gray-500 dark:text-gray-400 mb-8"><?php _e( 'Sorry, the mission you are looking for could not be found.', 'tsm-theme' ); ?></p>
-			<a href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>" class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+			<h1 class="mb-4 text-4xl font-bold"><?php _e( 'Mission Not Found', 'tsm-theme' ); ?></h1>
+			<p class="mb-8 text-lg text-gray-500 dark:text-gray-400"><?php _e( 'Sorry, the mission you are looking for could not be found.', 'tsm-theme' ); ?></p>
+			<a href="<?php echo esc_url( get_post_type_archive_link( 'mission' ) ); ?>" class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3">
 				<?php _e( 'View All Missions', 'tsm-theme' ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 			</a>
 		</div>

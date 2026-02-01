@@ -138,6 +138,7 @@ require_once get_template_directory() . '/functions/post-types.php';
 require_once get_template_directory() . '/functions/customizer.php';
 require_once get_template_directory() . '/functions/forms.php';
 require_once get_template_directory() . '/functions/lightbox.php';
+require_once get_template_directory() . '/functions/image-optimization.php';
 
 /**
  * AJAX handler to load missions for infinite scroll
@@ -259,10 +260,11 @@ function tsm_load_missions_ajax() {
 			$location_display = '';
 			
 			// Get thumbnail (large size for timeline cards)
+			// Uses featured image, hero image, or first gallery image as fallback
 			$thumbnail_url = '';
 			$thumbnail_alt = '';
-			if ( has_post_thumbnail() ) {
-				$thumbnail_id = get_post_thumbnail_id();
+			$thumbnail_id = get_post_thumbnail_id();
+			if ( $thumbnail_id ) {
 				$thumbnail_url = wp_get_attachment_image_url( $thumbnail_id, 'large' );
 				$thumbnail_alt = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
 			}
@@ -380,12 +382,22 @@ function tsm_get_archived_missions_count() {
 /**
  * Use mission hero image as featured image for missions archive page
  * Filters WordPress thumbnail functions to use mission_hero_image when no featured image is set
+ * Falls back to first gallery image if no hero image is available
  */
 function tsm_mission_has_post_thumbnail( $has_thumbnail, $post ) {
 	if ( 'mission' === get_post_type( $post ) && ! $has_thumbnail ) {
 		$mission_hero_image = get_post_meta( $post->ID, 'mission_hero_image', true );
 		if ( ! empty( $mission_hero_image ) ) {
 			return true;
+		}
+		
+		// Fallback to first gallery image
+		$mission_gallery_post_id = get_post_meta( $post->ID, 'mission_gallery_post', true );
+		if ( $mission_gallery_post_id ) {
+			$gallery_post_images = get_post_meta( $mission_gallery_post_id, 'gallery_images', true );
+			if ( is_array( $gallery_post_images ) && ! empty( $gallery_post_images ) && ! empty( $gallery_post_images[0] ) ) {
+				return true;
+			}
 		}
 	}
 	return $has_thumbnail;
@@ -397,6 +409,15 @@ function tsm_mission_get_post_thumbnail_id( $thumbnail_id, $post ) {
 		$mission_hero_image = get_post_meta( $post->ID, 'mission_hero_image', true );
 		if ( ! empty( $mission_hero_image ) ) {
 			return absint( $mission_hero_image );
+		}
+		
+		// Fallback to first gallery image
+		$mission_gallery_post_id = get_post_meta( $post->ID, 'mission_gallery_post', true );
+		if ( $mission_gallery_post_id ) {
+			$gallery_post_images = get_post_meta( $mission_gallery_post_id, 'gallery_images', true );
+			if ( is_array( $gallery_post_images ) && ! empty( $gallery_post_images ) && ! empty( $gallery_post_images[0] ) ) {
+				return absint( $gallery_post_images[0] );
+			}
 		}
 	}
 	return $thumbnail_id;
