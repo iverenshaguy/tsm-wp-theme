@@ -63,6 +63,14 @@ function tsm_theme_scripts() {
 			'nonce'   => wp_create_nonce( 'tsm_missions_nonce' ),
 		) );
 	}
+	
+	// Localize script for gallery AJAX
+	if ( is_post_type_archive( 'gallery' ) || is_tax( 'gallery_category' ) ) {
+		wp_localize_script( 'tsm-theme-script', 'tsmGalleries', array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'tsm_galleries_nonce' ),
+		) );
+	}
 
 	// Enqueue comment reply script on single posts
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {

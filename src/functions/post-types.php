@@ -795,6 +795,38 @@ function tsm_register_gallery_post_type() {
 add_action( 'init', 'tsm_register_gallery_post_type' );
 
 /**
+ * Register Gallery Category Taxonomy
+ */
+function tsm_register_gallery_category_taxonomy() {
+	$labels = array(
+		'name'              => _x( 'Gallery Categories', 'taxonomy general name', 'tsm-theme' ),
+		'singular_name'     => _x( 'Gallery Category', 'taxonomy singular name', 'tsm-theme' ),
+		'search_items'      => __( 'Search Categories', 'tsm-theme' ),
+		'all_items'         => __( 'All Categories', 'tsm-theme' ),
+		'parent_item'       => __( 'Parent Category', 'tsm-theme' ),
+		'parent_item_colon' => __( 'Parent Category:', 'tsm-theme' ),
+		'edit_item'         => __( 'Edit Category', 'tsm-theme' ),
+		'update_item'       => __( 'Update Category', 'tsm-theme' ),
+		'add_new_item'      => __( 'Add New Category', 'tsm-theme' ),
+		'new_item_name'     => __( 'New Category Name', 'tsm-theme' ),
+		'menu_name'         => __( 'Categories', 'tsm-theme' ),
+	);
+
+	$args = array(
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'gallery-category' ),
+		'show_in_rest'      => true,
+	);
+
+	register_taxonomy( 'gallery_category', array( 'gallery' ), $args );
+}
+add_action( 'init', 'tsm_register_gallery_category_taxonomy' );
+
+/**
  * Add Gallery Meta Box
  */
 function tsm_add_gallery_meta_boxes() {

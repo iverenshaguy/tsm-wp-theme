@@ -12,16 +12,16 @@ get_header();
 <section class="w-full">
 	<div class="relative min-h-[600px] flex items-center justify-center bg-cover bg-center" data-alt="<?php echo esc_attr( get_theme_mod( 'missions_hero_alt', 'Wide shot of a diverse mission team smiling together in a rural village' ) ); ?>" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%), url("<?php echo esc_url( get_theme_mod( 'missions_hero_image', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtzCEOTB5-TTBzqPY_TtOLn84ppGCAsXToDqXryoylyXhh9r7rNppAPxaYuniv-309Yg72GDc84WVHhQT-7wypZo-qBUU8tLNeGEiUTqVbFcDc41BrWYsZfUA7WjLpNm_MlKFfBk_Nlatn0-pZa6UpNm26Zn_BorXkuDMEGVnE3_xQNV68UJQS1CmG8g74VfV9A6W54YeYr6-mzilsHlPrgXUfsVRGk8AyR4YxGkX4pt1HFxgQIWhWVAJFqQ79L9553-nOUtRgrpg' ) ); ?>");'>
 		<div class="max-w-[960px] px-6 text-center text-white">
-			<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30">
-				<span class="material-symbols-outlined text-primary text-sm">public</span>
-				<span class="text-white text-xs font-bold tracking-widest uppercase">
+			<div class="inline-flex gap-2 items-center px-3 py-1 mb-6 rounded-full border backdrop-blur-sm bg-primary/20 border-primary/30">
+				<span class="text-sm material-symbols-outlined text-primary">public</span>
+				<span class="text-xs font-bold tracking-widest text-white uppercase">
 					<?php
 					$missions_badge = get_theme_mod( 'missions_badge', 'Our Global Outreach' );
 					echo esc_html( $missions_badge );
 					?>
 				</span>
 			</div>
-			<h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+			<h1 class="mb-6 text-4xl font-bold leading-tight md:text-6xl">
 				<?php
 				$missions_hero_heading = get_theme_mod(
 					'missions_hero_heading',
@@ -30,7 +30,7 @@ get_header();
 				echo wp_kses_post( $missions_hero_heading );
 				?>
 			</h1>
-			<p class="text-lg md:text-xl font-normal opacity-90 mb-10 max-w-2xl mx-auto">
+			<p class="mx-auto mb-10 max-w-2xl text-lg font-normal opacity-90 md:text-xl">
 				<?php
 				$missions_hero_description = get_theme_mod(
 					'missions_hero_description',
@@ -39,7 +39,7 @@ get_header();
 				echo esc_html( $missions_hero_description );
 				?>
 			</p>
-			<div class="flex flex-col sm:flex-row gap-4 justify-center">
+			<div class="flex flex-col gap-4 justify-center sm:flex-row">
 				<?php
 				$vision_url = get_theme_mod( 'missions_vision_url', '' );
 				if ( empty( $vision_url ) ) {
@@ -63,9 +63,9 @@ get_header();
 <!-- Impact Stats Bar -->
 <section class="max-w-[1200px] mx-auto px-6 -mt-12 relative z-10 mb-20">
 	<div class="bg-white dark:bg-[#1a2e1e] rounded-xl shadow-xl border border-[#cfe7d5] dark:border-[#2a4431] p-2">
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+		<div class="grid grid-cols-1 gap-2 md:grid-cols-3">
 			<div class="flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#cfe7d5] dark:border-[#2a4431]">
-				<p class="text-accent text-sm font-bold uppercase tracking-wider mb-1">
+				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
 					<?php echo esc_html( get_theme_mod( 'missions_stat_1_label', 'Villages Reached' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
@@ -73,15 +73,15 @@ get_header();
 				</p>
 			</div>
 			<div class="flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#cfe7d5] dark:border-[#2a4431]">
-				<p class="text-accent text-sm font-bold uppercase tracking-wider mb-1">
+				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
 					<?php echo esc_html( get_theme_mod( 'missions_stat_2_label', 'Lives Touched' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
 					<?php echo esc_html( get_theme_mod( 'missions_stat_2_value', '10k+' ) ); ?>
 				</p>
 			</div>
-			<div class="flex flex-col items-center justify-center p-8">
-				<p class="text-accent text-sm font-bold uppercase tracking-wider mb-1">
+			<div class="flex flex-col justify-center items-center p-8">
+				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
 					<?php echo esc_html( get_theme_mod( 'missions_stat_3_label', 'Mission Partners' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
@@ -94,14 +94,14 @@ get_header();
 
 <!-- Main Content: Featured Missions + Sidebar -->
 <section class="max-w-[1200px] mx-auto px-6 pb-20">
-	<div class="flex flex-col lg:flex-row gap-16">
+	<div class="flex flex-col gap-16 lg:flex-row">
 		<!-- Featured Missions Column -->
 		<div class="flex-1">
 			<div class="mb-12">
-				<h2 class="text-3xl font-bold tracking-tight mb-4 text-accent">
+				<h2 class="mb-4 text-3xl font-bold tracking-tight text-accent">
 					<?php echo esc_html( get_theme_mod( 'missions_stories_title', 'The Journey: Where We Go' ) ); ?>
 				</h2>
-				<div class="h-1.5 w-20 bg-primary rounded-full"></div>
+				<div class="w-20 h-1.5 rounded-full bg-primary"></div>
 			</div>
 			
 			<!-- Year Filter Pills -->
@@ -147,55 +147,62 @@ get_header();
 				
 				if ( $has_year_categories ) :
 					?>
-					<div class="mb-8 flex flex-wrap items-center justify-center gap-3" id="mission-year-filters">
+					<div class="flex gap-2 overflow-x-auto no-scrollbar justify-center items-center mb-8" id="mission-year-filters">
 					<button 
-						class="mission-filter-pill active px-6 py-2 rounded-full font-semibold text-sm transition-all bg-primary text-white border border-primary"
+						class="mission-filter-pill active flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors bg-primary"
 						data-year="all"
 						type="button"
 					>
-						All
+						<p class="text-white text-sm font-semibold">All</p>
 					</button>
 					<?php foreach ( $recent_years as $year ) : ?>
 						<button 
-							class="mission-filter-pill px-6 py-2 rounded-full font-semibold text-sm transition-all bg-white dark:bg-[#1a2e1e] text-primary border border-[#cfe7d5] dark:border-[#2a4431] hover:border-primary"
+							class="mission-filter-pill flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30"
 							data-year="<?php echo esc_attr( $year ); ?>"
 							type="button"
 						>
-							<?php echo esc_html( $year ); ?>
+							<p class="text-gray-700 dark:text-gray-300 text-sm font-medium"><?php echo esc_html( $year ); ?></p>
 						</button>
 					<?php endforeach; ?>
 					<?php if ( $has_archives ) : ?>
 						<button 
-							class="mission-filter-pill px-6 py-2 rounded-full font-semibold text-sm transition-all bg-white dark:bg-[#1a2e1e] text-primary border border-[#cfe7d5] dark:border-[#2a4431] hover:border-primary"
+							class="mission-filter-pill flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors bg-white dark:bg-[#162b1b] hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border border-emerald-50 dark:border-emerald-900/30"
 							data-year="archives"
 							type="button"
 						>
-							Archives
+							<p class="text-gray-700 dark:text-gray-300 text-sm font-medium">Archives</p>
 						</button>
 					<?php endif; ?>
 					</div>
 				<?php endif; ?>
 			<?php endif; ?>
 			
-			<!-- Infinite Scroll Container -->
+			<!-- Missions Container -->
 			<div id="missions-feed" class="space-y-16" data-exclude-ids="[]" style="contain: layout style paint;">
 				<!-- Missions will be loaded here via AJAX -->
 			</div>
 			
-			<!-- Loading Indicator -->
-			<div id="missions-loading" class="hidden text-center py-8" style="min-height: 60px;">
-				<div class="inline-flex items-center gap-2 text-primary">
-					<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<!-- Status and Load More Button -->
+			<div id="missions-load-more-container" class="py-8 text-center">
+				<!-- Status Counter -->
+				<div id="missions-status" class="mb-4 text-sm text-primary">
+					<!-- Will be populated by JavaScript -->
+				</div>
+				
+				<!-- Load More Button -->
+				<button id="missions-load-more-btn" class="hidden items-center gap-2 px-6 py-3 rounded-lg border border-[#cfe7d5] dark:border-[#2a4431] bg-white dark:bg-[#1a2e1e] text-accent font-medium hover:border-primary hover:text-primary transition-all">
+					<span>Load More</span>
+					<span class="material-symbols-outlined">expand_more</span>
+				</button>
+				
+				<!-- Loading Indicator -->
+				<div id="missions-loading" class="hidden gap-2 items-center text-primary">
+					<svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 					</svg>
 					<span class="text-sm font-medium">Loading missions...</span>
 				</div>
-			</div>
-			
-			<!-- End of Feed Message -->
-			<div id="missions-end" class="hidden text-center py-8">
-				<p class="text-gray-500 dark:text-gray-400 text-sm">You've reached the end of the missions feed.</p>
 			</div>
 		</div>
 		
@@ -203,11 +210,11 @@ get_header();
 		<div class="hidden lg:block lg:w-[360px] space-y-8">
 			<div class="sticky top-24">
 				<div class="bg-white dark:bg-[#1a2e1e] rounded-xl border border-[#cfe7d5] dark:border-[#2a4431] overflow-hidden shadow-sm">
-					<div class="bg-primary p-6">
-						<h3 class="text-white text-xl font-bold">
+					<div class="p-6 bg-primary">
+						<h3 class="text-xl font-bold text-white">
 							<?php echo esc_html( get_theme_mod( 'missions_sidebar_title', 'Partner with Us' ) ); ?>
 						</h3>
-						<p class="text-white/80 text-sm mt-1">
+						<p class="mt-1 text-sm text-white/80">
 							<?php echo esc_html( get_theme_mod( 'missions_sidebar_subtitle', 'Transform lives together' ) ); ?>
 						</p>
 					</div>
@@ -222,17 +229,17 @@ get_header();
 						?>
 						<!-- Action 1: Pray -->
 						<div class="flex gap-4">
-							<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+							<div class="flex justify-center items-center rounded-lg size-10 bg-primary/10 text-primary shrink-0">
 								<span class="material-symbols-outlined">auto_awesome</span>
 							</div>
 							<div>
 								<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_1_title', 'Pray with Us' ) ); ?></h4>
-								<p class="text-sm opacity-70 mb-2 text-accent">
+								<p class="mb-2 text-sm opacity-70 text-accent">
 									<?php echo esc_html( get_theme_mod( 'missions_action_1_description', 'Receive weekly prayer points from the field.' ) ); ?>
 								</p>
 								<?php if ( ! empty( $prayer_url ) ) : ?>
 									<?php $prayer_text = get_theme_mod( 'missions_action_1_button', 'Join Prayer Team' ); ?>
-									<a class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all" href="<?php echo esc_url( $prayer_url ); ?>">
+									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $prayer_url ); ?>">
 										<?php echo esc_html( $prayer_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
 								<?php endif; ?>
@@ -241,17 +248,17 @@ get_header();
 						<div class="h-px bg-[#cfe7d5] dark:bg-[#2a4431]"></div>
 						<!-- Action 2: Give -->
 						<div class="flex gap-4">
-							<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+							<div class="flex justify-center items-center rounded-lg size-10 bg-primary/10 text-primary shrink-0">
 								<span class="material-symbols-outlined">volunteer_activism</span>
 							</div>
 							<div>
 								<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_2_title', 'Give Generously' ) ); ?></h4>
-								<p class="text-sm opacity-70 mb-2 text-accent">
+								<p class="mb-2 text-sm opacity-70 text-accent">
 									<?php echo esc_html( get_theme_mod( 'missions_action_2_description', '100% of your gift goes directly to mission projects.' ) ); ?>
 								</p>
 								<?php if ( ! empty( $give_url ) ) : ?>
 									<?php $give_text = get_theme_mod( 'missions_action_2_button', 'Donate Now' ); ?>
-									<a class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all" href="<?php echo esc_url( $give_url ); ?>">
+									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $give_url ); ?>">
 										<?php echo esc_html( $give_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
 								<?php endif; ?>
@@ -261,16 +268,16 @@ get_header();
 						<?php if ( ! empty( $join_url ) ) : ?>
 							<div class="h-px bg-[#cfe7d5] dark:bg-[#2a4431]"></div>
 							<div class="flex gap-4">
-								<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+								<div class="flex justify-center items-center rounded-lg size-10 bg-primary/10 text-primary shrink-0">
 									<span class="material-symbols-outlined">flight_takeoff</span>
 								</div>
 								<div>
 									<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_3_title', 'Join a Mission' ) ); ?></h4>
-									<p class="text-sm opacity-70 mb-2 text-accent">
+									<p class="mb-2 text-sm opacity-70 text-accent">
 										<?php echo esc_html( get_theme_mod( 'missions_action_3_description', 'Applications for 2025 summer trips are now open.' ) ); ?>
 									</p>
 									<?php $join_text = get_theme_mod( 'missions_action_3_button', 'Apply to Join' ); ?>
-									<a class="text-primary font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all" href="<?php echo esc_url( $join_url ); ?>">
+									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $join_url ); ?>">
 										<?php echo esc_html( $join_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
 								</div>
@@ -298,10 +305,10 @@ get_header();
 					if ( $upcoming_missions->have_posts() ) :
 						?>
 						<div class="bg-[#f0f7f2] dark:bg-[#132818] p-6 text-center">
-							<p class="text-xs uppercase font-bold tracking-widest text-accent mb-4">
+							<p class="mb-4 text-xs font-bold tracking-widest uppercase text-accent">
 								<?php echo esc_html( get_theme_mod( 'missions_trips_label', 'Upcoming Trips' ) ); ?>
 							</p>
-							<ul class="text-left space-y-3 mb-6">
+							<ul class="mb-6 space-y-3 text-left">
 								<?php
 								while ( $upcoming_missions->have_posts() ) :
 									$upcoming_missions->the_post();
@@ -327,7 +334,7 @@ get_header();
 									}
 									?>
 									<li class="flex justify-between text-sm">
-										<a href="<?php echo esc_url( get_permalink() ); ?>" class="opacity-70 text-accent  transition-colors">
+										<a href="<?php echo esc_url( get_permalink() ); ?>" class="opacity-70 transition-colors text-accent">
 											<?php echo esc_html( $location_display ? $location_display : get_the_title() ); ?>
 										</a>
 										<span class="font-bold text-accent"><?php echo esc_html( $mission_date ? $mission_date : '' ); ?></span>
@@ -348,13 +355,13 @@ get_header();
 				$testimonial_author = get_theme_mod( 'missions_testimonial_author', '' );
 				if ( ! empty( $testimonial_text ) ) :
 					?>
-					<div class="mt-8 p-6 bg-primary/5 rounded-xl border border-primary/20 italic">
-						<span class="material-symbols-outlined text-primary mb-2">format_quote</span>
-						<p class="text-sm opacity-80 leading-relaxed text-accent">
+					<div class="p-6 mt-8 italic rounded-xl border bg-primary/5 border-primary/20">
+						<span class="mb-2 material-symbols-outlined text-primary">format_quote</span>
+						<p class="text-sm leading-relaxed opacity-80 text-accent">
 							<?php echo esc_html( $testimonial_text ); ?>
 						</p>
 						<?php if ( ! empty( $testimonial_author ) ) : ?>
-							<p class="text-xs font-bold mt-4 not-italic text-accent">
+							<p class="mt-4 text-xs not-italic font-bold text-accent">
 								— <?php echo esc_html( $testimonial_author ); ?>
 							</p>
 						<?php endif; ?>

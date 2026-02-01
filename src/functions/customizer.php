@@ -18,6 +18,8 @@ require_once get_template_directory() . '/functions/customizer/about-page.php';
 require_once get_template_directory() . '/functions/customizer/ministries-page.php';
 require_once get_template_directory() . '/functions/customizer/missions-page.php';
 require_once get_template_directory() . '/functions/customizer/books-archive.php';
+require_once get_template_directory() . '/functions/customizer/articles-archive.php';
 require_once get_template_directory() . '/functions/customizer/know-jesus-page.php';
 require_once get_template_directory() . '/functions/customizer/contact-page.php';
 require_once get_template_directory() . '/functions/customizer/partners-page.php';
+require_once get_template_directory() . '/functions/customizer/single-article.php';

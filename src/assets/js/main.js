@@ -1124,6 +1124,9 @@
     initMissionsInfiniteScroll();
   });
 
+  // Global flag to prevent opening lightboxes during close
+  window.tsmLightboxClosing = false;
+
   /**
    * Initialize all gallery lightboxes on the page
    */
@@ -1159,6 +1162,7 @@
     const lightboxPrev = lightbox.querySelector('.tsm-lightbox-prev');
     const lightboxNext = lightbox.querySelector('.tsm-lightbox-next');
     const thumbnails = lightbox.querySelectorAll('.tsm-lightbox-thumbnail');
+    const thumbnailContainer = lightbox.querySelector('.tsm-lightbox-thumbnails');
 
     if (!lightboxImage) return;
 
@@ -1211,7 +1215,7 @@
         lightboxDownload.href = img.full;
       }
 
-      // Update thumbnail selection
+      // Update thumbnail selection and scroll active thumbnail into view
       thumbnails.forEach(function (thumb, i) {
         if (i === index) {
           thumb.classList.add(
@@ -1223,6 +1227,16 @@
             'opacity-100'
           );
           thumb.classList.remove('opacity-40');
+          
+          // Scroll the active thumbnail into view if container exists
+          if (thumbnailContainer) {
+            // Use scrollIntoView with smooth behavior to center the active thumbnail
+            thumb.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+            });
+          }
         } else {
           thumb.classList.remove(
             'ring-2',
@@ -1238,20 +1252,71 @@
     }
 
     function openLightbox(index) {
+      // Don't open if we're in the middle of closing
+      if (window.tsmLightboxClosing) {
+        return;
+      }
+      
+      // Don't open if another lightbox is already open
+      const openLightbox = document.querySelector('.tsm-lightbox:not(.hidden)');
+      if (openLightbox && openLightbox !== lightbox) {
+        return;
+      }
+      
       currentIndex = index;
       updateLightbox(index);
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
       lightbox.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+      window.tsmLightboxClosing = false; // Reset flag
+      
+      // Disable pointer events on gallery items to prevent clicks through lightbox
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      galleryItems.forEach(function(item) {
+        item.style.pointerEvents = 'none';
+      });
     }
+    
+    // Store the openLightbox function on the lightbox element so it can be called from outside
+    lightbox._openLightbox = openLightbox;
 
     function closeLightbox() {
+      // Prevent duplicate close calls for THIS specific lightbox
+      if (lightbox._isClosing) {
+        return;
+      }
+      
+      // Only prevent if another lightbox is closing (not this one)
+      if (window.tsmLightboxClosing && window.tsmClosingLightboxId !== lightbox.id) {
+        return;
+      }
+      
+      lightbox._isClosing = true;
+      window.tsmLightboxClosing = true;
+      
+      // Store reference to this specific lightbox being closed
+      window.tsmClosingLightboxId = lightbox.id;
+      
       lightbox.classList.add('hidden');
       lightbox.classList.remove('flex');
       lightbox.style.display = 'none';
       document.body.style.overflow = '';
+      
+      // Re-enable pointer events on gallery items after a delay
+      setTimeout(function() {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(function(item) {
+          item.style.pointerEvents = '';
+        });
+        lightbox._isClosing = false;
+        window.tsmLightboxClosing = false;
+        window.tsmClosingLightboxId = null;
+      }, 500);
     }
+    
+    // Store the closeLightbox function on the lightbox element
+    lightbox._closeLightbox = closeLightbox;
 
     function nextImage() {
       const next = (currentIndex + 1) % totalImages;
@@ -1266,8 +1331,35 @@
     // Open lightbox on image click
     // Map visible gallery images to their index in the full gallery
     galleryImages.forEach(function (img) {
+      // Mark this image as having a direct handler to prevent gallery-item from interfering
+      img.setAttribute('data-has-direct-handler', 'true');
+      
       img.addEventListener('click', function (e) {
+        // If this click came from a gallery-item card (not a direct click on the image),
+        // let the gallery-item handler manage it
+        const galleryItem = img.closest('.gallery-item');
+        if (galleryItem && e.target !== img && !img.contains(e.target) && e.target.closest('.gallery-item') === galleryItem) {
+          // The click originated from the gallery-item card, not directly on the image
+          // Let the gallery-item handler take care of it
+          return;
+        }
+        
         e.preventDefault();
+        e.stopPropagation();
+        
+        // Don't open if clicking on lightbox controls
+        if (e.target.closest('.tsm-lightbox-close') ||
+            e.target.closest('.tsm-lightbox-prev') ||
+            e.target.closest('.tsm-lightbox-next') ||
+            e.target.closest('.tsm-lightbox-download')) {
+          return;
+        }
+        
+        // Don't open if we're in the middle of closing
+        if (window.tsmLightboxClosing) {
+          return;
+        }
+        
         const imgEl = img.querySelector('img') || img;
         const fullUrl = imgEl.getAttribute('data-full') || imgEl.src;
 
@@ -1281,7 +1373,7 @@
         }
 
         openLightbox(clickedIndex);
-      });
+      }, false); // Use bubble phase
     });
 
     // Thumbnail click
@@ -1291,15 +1383,34 @@
       });
     });
 
-    // Navigation buttons
+    // Navigation buttons - close button with capture phase to prevent bubbling
     if (lightboxClose) {
-      lightboxClose.addEventListener('click', closeLightbox);
+      // Remove any existing listeners by cloning
+      const newCloseBtn = lightboxClose.cloneNode(true);
+      lightboxClose.parentNode.replaceChild(newCloseBtn, lightboxClose);
+      
+      newCloseBtn.addEventListener('click', function (e) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        e.preventDefault();
+        // Don't set the flag here - let closeLightbox() handle it
+        // This ensures closeLightbox() can execute properly
+        closeLightbox();
+        return false;
+      }, true); // Capture phase - catches before bubble phase
     }
+    
     if (lightboxNext) {
-      lightboxNext.addEventListener('click', nextImage);
+      lightboxNext.addEventListener('click', function(e) {
+        e.stopPropagation();
+        nextImage();
+      });
     }
     if (lightboxPrev) {
-      lightboxPrev.addEventListener('click', prevImage);
+      lightboxPrev.addEventListener('click', function(e) {
+        e.stopPropagation();
+        prevImage();
+      });
     }
 
     // Keyboard navigation
@@ -1307,6 +1418,7 @@
       if (lightbox.classList.contains('hidden')) return;
 
       if (e.key === 'Escape') {
+        window.tsmLightboxClosing = true;
         closeLightbox();
       } else if (e.key === 'ArrowRight') {
         nextImage();
@@ -1321,19 +1433,22 @@
 
     // Close on background click
     lightbox.addEventListener('click', function (e) {
-      if (e.target === lightbox) {
+      // Only close if clicking directly on the lightbox background, not on any child elements
+      if (e.target === lightbox && !e.target.closest('.tsm-lightbox-close, .tsm-lightbox-prev, .tsm-lightbox-next, .tsm-lightbox-download, .tsm-lightbox-image, .tsm-lightbox-thumbnail')) {
+        window.tsmLightboxClosing = true;
         closeLightbox();
       }
-    });
+    }, true); // Use capture phase
   }
 
   /**
-   * Initialize missions infinite scroll and filtering
+   * Initialize missions load more button and filtering
    */
   function initMissionsInfiniteScroll() {
     const missionsFeed = document.getElementById('missions-feed');
     const loadingIndicator = document.getElementById('missions-loading');
-    const endMessage = document.getElementById('missions-end');
+    const loadMoreBtn = document.getElementById('missions-load-more-btn');
+    const statusCounter = document.getElementById('missions-status');
     const filterPills = document.querySelectorAll('.mission-filter-pill');
 
     if (!missionsFeed || !window.tsmMissions) {
@@ -1345,8 +1460,8 @@
     let isLoading = false;
     let hasMore = true;
     let excludeIds = [];
-    // Track total missions loaded (for potential future use/debugging)
-    let totalMissionsLoaded = 0; // eslint-disable-line no-unused-vars
+    let totalMissionsLoaded = 0;
+    let totalMissionsCount = 0;
 
     // Get exclude IDs from data attribute
     const excludeIdsAttr = missionsFeed.getAttribute('data-exclude-ids');
@@ -1371,16 +1486,23 @@
       if (reset) {
         currentPage = 1;
         hasMore = true;
+        totalMissionsLoaded = 0;
         // Clear content smoothly without causing layout shift
         requestAnimationFrame(function () {
           missionsFeed.innerHTML = '';
           loadingIndicator.classList.remove('hidden');
-          endMessage.classList.add('hidden');
+          loadingIndicator.classList.add('inline-flex');
+          loadMoreBtn.classList.add('hidden');
+          loadMoreBtn.classList.remove('inline-flex');
+          statusCounter.textContent = '';
         });
       } else {
-        // Show loading indicator without causing jump
+        // Show loading indicator and hide button
         requestAnimationFrame(function () {
           loadingIndicator.classList.remove('hidden');
+          loadingIndicator.classList.add('inline-flex');
+          loadMoreBtn.classList.add('hidden');
+          loadMoreBtn.classList.remove('inline-flex');
         });
       }
 
@@ -1406,6 +1528,11 @@
           if (data.success && data.data.missions) {
             const missions = data.data.missions;
             hasMore = Boolean(data.data.has_more);
+            
+            // Update total count on first load
+            if (reset && data.data.total_count !== undefined) {
+              totalMissionsCount = parseInt(data.data.total_count, 10);
+            }
 
             if (missions.length === 0 && reset) {
               missionsFeed.innerHTML =
@@ -1413,6 +1540,10 @@
               totalMissionsLoaded = 0;
               isLoading = false;
               loadingIndicator.classList.add('hidden');
+              loadingIndicator.classList.remove('inline-flex');
+              loadMoreBtn.classList.add('hidden');
+              loadMoreBtn.classList.remove('inline-flex');
+              statusCounter.textContent = '';
               return;
             }
 
@@ -1440,16 +1571,24 @@
 
               totalMissionsLoaded += missions.length;
 
-              // Update end message visibility without causing layout shift
-              if (!hasMore) {
-                endMessage.classList.remove('hidden');
+              // Update status counter
+              if (totalMissionsCount > 0) {
+                statusCounter.textContent = 'Viewing ' + totalMissionsLoaded + ' of ' + totalMissionsCount + ' missions';
+              }
+
+              // Show/hide load more button
+              if (hasMore) {
+                loadMoreBtn.classList.remove('hidden');
+                loadMoreBtn.classList.add('inline-flex');
               } else {
-                endMessage.classList.add('hidden');
+                loadMoreBtn.classList.add('hidden');
+                loadMoreBtn.classList.remove('inline-flex');
               }
 
               // Hide loading indicator after content is rendered
               isLoading = false;
               loadingIndicator.classList.add('hidden');
+              loadingIndicator.classList.remove('inline-flex');
 
               // Only increment page if we successfully loaded missions
               if (missions.length > 0) {
@@ -1460,6 +1599,9 @@
             // Failed to load missions
             isLoading = false;
             loadingIndicator.classList.add('hidden');
+            loadingIndicator.classList.remove('inline-flex');
+            loadMoreBtn.classList.remove('hidden');
+            loadMoreBtn.classList.add('inline-flex');
             if (reset) {
               missionsFeed.innerHTML =
                 '<p class="py-8 text-center text-red-500">Failed to load missions. Please refresh the page.</p>';
@@ -1580,26 +1722,46 @@
       pill.addEventListener('click', function () {
         const year = this.getAttribute('data-year');
 
-        // Update active state
+        // Update active state - match books archive pill styling
         filterPills.forEach(function (p) {
-          p.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+          // Remove active button classes
+          p.classList.remove('active', 'bg-primary', 'border-primary');
           p.classList.add(
             'bg-white',
-            'dark:bg-[#1a2e1e]',
-            'text-primary',
-            'border-[#cfe7d5]',
-            'dark:border-[#2a4431]'
+            'dark:bg-[#162b1b]',
+            'hover:bg-emerald-50',
+            'dark:hover:bg-emerald-900/30',
+            'border',
+            'border-emerald-50',
+            'dark:border-emerald-900/30'
           );
+          
+          // Update text inside <p> tag
+          const pTag = p.querySelector('p');
+          if (pTag) {
+            pTag.classList.remove('text-white', 'font-semibold');
+            pTag.classList.add('text-gray-700', 'dark:text-gray-300', 'font-medium');
+          }
         });
 
-        this.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+        // Set active state
+        this.classList.add('active', 'bg-primary');
         this.classList.remove(
           'bg-white',
-          'dark:bg-[#1a2e1e]',
-          'text-primary',
-          'border-[#cfe7d5]',
-          'dark:border-[#2a4431]'
+          'dark:bg-[#162b1b]',
+          'hover:bg-emerald-50',
+          'dark:hover:bg-emerald-900/30',
+          'border',
+          'border-emerald-50',
+          'dark:border-emerald-900/30'
         );
+        
+        // Update text inside <p> tag
+        const activePTag = this.querySelector('p');
+        if (activePTag) {
+          activePTag.classList.remove('text-gray-700', 'dark:text-gray-300', 'font-medium');
+          activePTag.classList.add('text-white', 'font-semibold');
+        }
 
         // Update current year and reload
         currentYear = year;
@@ -1608,44 +1770,15 @@
     });
 
     /**
-     * Infinite scroll detection - uses missions feed container instead of document height
+     * Load more button click handler
      */
-    let scrollTimeout;
-    let lastScrollTop = 0;
-    function handleScroll() {
-      // Use requestAnimationFrame for smoother scroll handling
-      requestAnimationFrame(function () {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function () {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          const windowHeight = window.innerHeight;
-          
-          // Use missions feed container bottom position instead of document height
-          // This prevents sidebar content from interfering with scroll detection
-          const missionsFeedRect = missionsFeed.getBoundingClientRect();
-          const missionsFeedBottom = missionsFeedRect.bottom + scrollTop;
-          
-          // Check if we're near the bottom of the missions feed container
-          const threshold = 300; // pixels before bottom to trigger load
-          const isNearBottom = scrollTop + windowHeight >= missionsFeedBottom - threshold;
-
-          // Only check if scrolling down (not up) to prevent unnecessary checks
-          if (
-            scrollTop > lastScrollTop &&
-            isNearBottom &&
-            hasMore &&
-            !isLoading
-          ) {
-            loadMissions(false);
-          }
-
-          lastScrollTop = scrollTop;
-        }, 150);
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', function () {
+        if (!isLoading && hasMore) {
+          loadMissions(false);
+        }
       });
     }
-
-    // Use passive event listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Initial load
     loadMissions(true);

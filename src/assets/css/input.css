@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar utility */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Lazy loading image styles */
 img.lazy {
   opacity: 0;
@@ -86,6 +96,20 @@ img.lazy.loaded {
 
 .mission-content blockquote {
   @apply border-l-4 border-primary pl-4 italic text-gray-600 dark:text-gray-400 my-4;
+}
+
+/* Bounce animation for Load More button arrow */
+@keyframes bounce-arrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+#missions-load-more-btn .material-symbols-outlined {
+  animation: bounce-arrow 1.5s ease-in-out infinite;
 }
 
 /* Material Symbols styling */

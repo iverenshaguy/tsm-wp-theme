@@ -287,14 +287,129 @@ function tsm_load_missions_ajax() {
 		wp_reset_postdata();
 	}
 	
+	// Get total count for status display
+	$total_count = (int) $missions_query->found_posts;
+	
 	wp_send_json_success( array(
-		'missions' => $missions,
-		'has_more' => $has_more,
-		'page'     => $page,
+		'missions'    => $missions,
+		'has_more'    => $has_more,
+		'page'        => $page,
+		'total_count' => $total_count,
 	) );
 }
 add_action( 'wp_ajax_tsm_load_missions', 'tsm_load_missions_ajax' );
 add_action( 'wp_ajax_nopriv_tsm_load_missions', 'tsm_load_missions_ajax' );
+
+/**
+ * AJAX handler to load galleries for pagination
+ */
+function tsm_load_galleries_ajax() {
+	check_ajax_referer( 'tsm_galleries_nonce', 'nonce' );
+	
+	$page = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
+	$category = isset( $_POST['category'] ) ? sanitize_text_field( $_POST['category'] ) : 'all';
+	$posts_per_page = get_option( 'posts_per_page' );
+	
+	$args = array(
+		'post_type'      => 'gallery',
+		'posts_per_page' => $posts_per_page,
+		'paged'          => $page,
+		'post_status'    => 'publish',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	);
+	
+	// Filter by category if specified
+	if ( $category !== 'all' ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'gallery_category',
+				'field'    => 'slug',
+				'terms'    => $category,
+			),
+		);
+	}
+	
+	$galleries_query = new WP_Query( $args );
+	
+	$galleries = array();
+	$max_pages = (int) $galleries_query->max_num_pages;
+	$current_page = (int) $page;
+	$has_more = $max_pages > $current_page;
+	
+	if ( $galleries_query->have_posts() ) {
+		while ( $galleries_query->have_posts() ) {
+			$galleries_query->the_post();
+			
+			$gallery_images = get_post_meta( get_the_ID(), 'gallery_images', true );
+			if ( ! is_array( $gallery_images ) ) {
+				$gallery_images = array();
+			}
+			$gallery_images = array_filter( $gallery_images );
+			$image_count = count( $gallery_images );
+			
+			// Get featured image or first gallery image
+			$thumbnail_url = '';
+			$thumbnail_alt = '';
+			if ( has_post_thumbnail() ) {
+				$thumbnail_id = get_post_thumbnail_id();
+				$thumbnail_url = wp_get_attachment_image_url( $thumbnail_id, 'large' );
+				$thumbnail_alt = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+			} elseif ( ! empty( $gallery_images[0] ) ) {
+				$thumbnail_url = wp_get_attachment_image_url( $gallery_images[0], 'large' );
+				$thumbnail_alt = get_post_meta( $gallery_images[0], '_wp_attachment_image_alt', true );
+			}
+			
+			// Get gallery category
+			$gallery_cats = get_the_terms( get_the_ID(), 'gallery_category' );
+			$category_name = '';
+			$category_slug = '';
+			if ( $gallery_cats && ! is_wp_error( $gallery_cats ) && ! empty( $gallery_cats ) ) {
+				$category_name = $gallery_cats[0]->name;
+				$category_slug = $gallery_cats[0]->slug;
+			}
+			
+			// Prepare lightbox images
+			$lightbox_images = array();
+			if ( ! empty( $gallery_images ) ) {
+				foreach ( $gallery_images as $image_id ) {
+					$lightbox_images[] = array(
+						'full'  => wp_get_attachment_image_url( $image_id, 'full' ),
+						'thumb' => wp_get_attachment_image_url( $image_id, 'thumbnail' ),
+						'alt'   => get_post_meta( $image_id, '_wp_attachment_image_alt', true ) ?: get_the_title(),
+					);
+				}
+			}
+			
+			$galleries[] = array(
+				'id'            => get_the_ID(),
+				'title'         => get_the_title(),
+				'date'          => get_the_date( 'F j, Y' ),
+				'thumbnail_url' => $thumbnail_url,
+				'thumbnail_alt' => $thumbnail_alt,
+				'category_name' => $category_name,
+				'category_slug' => $category_slug,
+				'image_count'   => $image_count,
+				'lightbox_id'   => 'gallery-lightbox-' . get_the_ID(),
+				'lightbox_images' => $lightbox_images,
+				'location'      => $category_name, // Use category as location
+			);
+		}
+		wp_reset_postdata();
+	}
+	
+	// Get total count
+	$total_count = (int) $galleries_query->found_posts;
+	
+	wp_send_json_success( array(
+		'galleries'    => $galleries,
+		'has_more'     => $has_more,
+		'page'         => $page,
+		'total_count'  => $total_count,
+	) );
+}
+add_action( 'wp_ajax_tsm_load_galleries', 'tsm_load_galleries_ajax' );
+add_action( 'wp_ajax_nopriv_tsm_load_galleries', 'tsm_load_galleries_ajax' );
 
 /**
  * Get available years for missions filter (from post date)
@@ -423,3 +538,226 @@ function tsm_mission_get_post_thumbnail_id( $thumbnail_id, $post ) {
 	return $thumbnail_id;
 }
 add_filter( 'post_thumbnail_id', 'tsm_mission_get_post_thumbnail_id', 10, 2 );
+
+/**
+ * Add custom rewrite rules for date archives with articles/archives prefix
+ */
+function tsm_add_date_archive_rewrite_rules() {
+	// Add rewrite rules for year/month archives with articles/archives prefix
+	add_rewrite_rule(
+		'^articles/archives/([0-9]{4})/([0-9]{1,2})/?$',
+		'index.php?year=$matches[1]&monthnum=$matches[2]',
+		'top'
+	);
+	
+	// Add rewrite rule for year archives
+	add_rewrite_rule(
+		'^articles/archives/([0-9]{4})/?$',
+		'index.php?year=$matches[1]',
+		'top'
+	);
+}
+add_action( 'init', 'tsm_add_date_archive_rewrite_rules' );
+
+/**
+ * Filter month link to use articles/archives prefix
+ */
+function tsm_filter_month_link( $link, $year, $month ) {
+	$home_url = home_url( '/' );
+	$link = $home_url . 'articles/archives/' . $year . '/' . zeroise( $month, 2 ) . '/';
+	return $link;
+}
+add_filter( 'month_link', 'tsm_filter_month_link', 10, 3 );
+
+/**
+ * Filter year link to use articles/archives prefix
+ */
+function tsm_filter_year_link( $link, $year ) {
+	$home_url = home_url( '/' );
+	$link = $home_url . 'articles/archives/' . $year . '/';
+	return $link;
+}
+add_filter( 'year_link', 'tsm_filter_year_link', 10, 2 );
+
+/**
+ * AJAX handler for loading month articles in archive library
+ */
+function tsm_get_month_articles() {
+	$year = isset( $_GET['year'] ) ? absint( $_GET['year'] ) : 0;
+	$monthnum = isset( $_GET['monthnum'] ) ? absint( $_GET['monthnum'] ) : 0;
+	
+	if ( ! $year || ! $monthnum ) {
+		wp_send_json_error( array( 'message' => 'Invalid parameters' ) );
+	}
+	
+	$month_posts_query = new WP_Query( array(
+		'year'           => $year,
+		'monthnum'       => $monthnum,
+		'posts_per_page' => -1,
+		'post_status'    => 'publish',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	) );
+	
+	ob_start();
+	if ( $month_posts_query->have_posts() ) :
+		?>
+		<div class="divide-y divide-gray-100 dark:divide-gray-800">
+			<?php while ( $month_posts_query->have_posts() ) : $month_posts_query->the_post(); ?>
+				<?php
+				$post_categories = get_the_category();
+				$category_name = ! empty( $post_categories ) ? $post_categories[0]->name : '';
+				?>
+				<div class="flex flex-col gap-4 justify-between py-4 md:flex-row md:items-center archive-article-item" data-categories="<?php echo esc_attr( ! empty( $post_categories ) ? implode( ',', array_map( function( $cat ) { return $cat->slug; }, $post_categories ) ) : '' ); ?>">
+					<div>
+						<?php if ( $category_name ) : ?>
+							<span class="inline-block text-[10px] font-bold uppercase tracking-widest text-primary mb-1"><?php echo esc_html( $category_name ); ?></span>
+						<?php endif; ?>
+						<h4 class="text-lg font-bold transition-colors cursor-pointer hover:text-primary">
+							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+						</h4>
+						<p class="text-xs text-gray-400">Published: <?php echo esc_html( get_the_date( 'F d, Y' ) ); ?></p>
+					</div>
+					<a href="<?php the_permalink(); ?>" class="text-xs font-bold whitespace-nowrap text-primary hover:underline">View Article</a>
+				</div>
+			<?php endwhile; ?>
+		</div>
+		<?php
+	else :
+		?>
+		<p class="text-sm text-gray-500 dark:text-gray-400 py-4">No articles found.</p>
+		<?php
+	endif;
+	wp_reset_postdata();
+	
+	$html = ob_get_clean();
+	
+	wp_send_json_success( array( 'html' => $html ) );
+}
+add_action( 'wp_ajax_get_month_articles', 'tsm_get_month_articles' );
+add_action( 'wp_ajax_nopriv_get_month_articles', 'tsm_get_month_articles' );
+
+/**
+ * Calculate estimated reading time for a post
+ *
+ * @param int $post_id Post ID.
+ * @return int Reading time in minutes.
+ */
+function tsm_get_reading_time( $post_id = null ) {
+	if ( ! $post_id ) {
+		$post_id = get_the_ID();
+	}
+	
+	$content = get_post_field( 'post_content', $post_id );
+	$word_count = str_word_count( strip_tags( $content ) );
+	
+	// Average reading speed: 200-250 words per minute
+	// Using 225 as average
+	$reading_time = ceil( $word_count / 225 );
+	
+	// Minimum 1 minute
+	return max( 1, $reading_time );
+}
+
+/**
+ * Get article thumbnail URL with fallback logic
+ * 
+ * Priority: Featured image > First image in content > Category-specific placeholder > Generic placeholder > Book placeholder
+ *
+ * @param int|null    $post_id      Post ID. Defaults to current post.
+ * @param string      $image_size   Image size for featured image. Default 'medium'.
+ * @param string|null $category_name Category name for placeholder selection. Default null (auto-detect).
+ * @return string     Image URL
+ */
+function tsm_get_article_thumbnail_url( $post_id = null, $image_size = 'medium', $category_name = null ) {
+	if ( ! $post_id ) {
+		$post_id = get_the_ID();
+	}
+	
+	$thumbnail_url = '';
+	
+	// Priority 1: Featured image
+	$thumbnail_id = get_post_thumbnail_id( $post_id );
+	if ( $thumbnail_id ) {
+		$thumbnail_url = wp_get_attachment_image_url( $thumbnail_id, $image_size );
+	}
+	
+	// Priority 2: First image in post content
+	if ( empty( $thumbnail_url ) ) {
+		$content = get_post_field( 'post_content', $post_id );
+		preg_match( '/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches );
+		if ( ! empty( $matches[1] ) ) {
+			$thumbnail_url = $matches[1];
+		}
+	}
+	
+	// Priority 3-5: Placeholder images
+	if ( empty( $thumbnail_url ) ) {
+		// Auto-detect category if not provided
+		if ( is_null( $category_name ) ) {
+			$post_categories = get_the_category( $post_id );
+			$category_name = ! empty( $post_categories ) ? $post_categories[0]->name : '';
+		}
+		
+		$category_name_lower = strtolower( $category_name );
+		$placeholder_file = 'article-placeholder.png';
+		
+		// Determine placeholder based on category
+		if ( stripos( $category_name_lower, 'word for the month' ) !== false ) {
+			$placeholder_file = 'word-for-the-month-placeholder.png';
+		} elseif ( stripos( $category_name_lower, 'favour for the week' ) !== false ) {
+			$placeholder_file = 'favour-for-the-week-placeholder.png';
+		}
+		
+		$placeholder_path = get_template_directory() . '/assets/images/' . $placeholder_file;
+		$thumbnail_url = get_template_directory_uri() . '/assets/images/' . $placeholder_file;
+		
+		// If specific placeholder doesn't exist, fallback to article placeholder, then book placeholder
+		if ( ! file_exists( $placeholder_path ) ) {
+			$article_placeholder = get_template_directory() . '/assets/images/article-placeholder.png';
+			if ( file_exists( $article_placeholder ) ) {
+				$thumbnail_url = get_template_directory_uri() . '/assets/images/article-placeholder.png';
+			} else {
+				$thumbnail_url = get_template_directory_uri() . '/assets/images/book-placeholder.png';
+			}
+		}
+	}
+	
+	return $thumbnail_url;
+}
+
+/**
+ * Load a component template part
+ * 
+ * Wrapper around get_template_part() that ensures components can be found
+ * in the components/ directory
+ *
+ * @param string $component Component name (without .php extension)
+ * @param array  $args      Optional arguments to pass to the component
+ */
+function tsm_get_component( $component, $args = array() ) {
+	// Try the components directory first
+	$located = locate_template( "components/{$component}.php" );
+	if ( $located ) {
+		// Extract args into component scope (matching get_template_part behavior)
+		if ( isset( $args ) && is_array( $args ) ) {
+			extract( $args, EXTR_SKIP );
+		}
+		include $located;
+		return;
+	}
+	
+	// Fallback: try template-parts/components/ directory
+	$located = locate_template( "template-parts/components/{$component}.php" );
+	if ( $located ) {
+		if ( isset( $args ) && is_array( $args ) ) {
+			extract( $args, EXTR_SKIP );
+		}
+		include $located;
+		return;
+	}
+	
+	// Last resort: use get_template_part (won't work but won't crash)
+	get_template_part( "components/{$component}", null, $args );
+}
+

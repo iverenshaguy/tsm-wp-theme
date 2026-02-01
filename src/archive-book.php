@@ -240,11 +240,13 @@ $books_query = new WP_Query( $books_args );
 					$book_title = get_the_title();
 					$book_title_lower = strtolower( $book_title );
 					$book_category_names = '';
+					$book_category_slugs = '';
 					if ( $book_categories && ! is_wp_error( $book_categories ) && ! empty( $book_categories ) ) {
 						$book_category_names = strtolower( implode( ' ', wp_list_pluck( $book_categories, 'name' ) ) );
+						$book_category_slugs = implode( ' ', wp_list_pluck( $book_categories, 'slug' ) );
 					}
 					?>
-					<a href="<?php the_permalink(); ?>" class="book-card group flex flex-col bg-white dark:bg-[#162b1b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-emerald-50 dark:border-emerald-900/20 cursor-pointer" data-title="<?php echo esc_attr( $book_title_lower ); ?>" data-categories="<?php echo esc_attr( $book_category_names ); ?>">
+					<a href="<?php the_permalink(); ?>" class="book-card group flex flex-col bg-white dark:bg-[#162b1b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-emerald-50 dark:border-emerald-900/20 cursor-pointer" data-title="<?php echo esc_attr( $book_title_lower ); ?>" data-categories="<?php echo esc_attr( $book_category_names ); ?>" data-category-slugs="<?php echo esc_attr( $book_category_slugs ); ?>">
 						<div class="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
 							<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style='background-image: url("<?php echo esc_url( $book_image ? $book_image : get_template_directory_uri() . '/assets/images/book-placeholder.jpg' ); ?>");'>
 							</div>
@@ -277,80 +279,151 @@ $books_query = new WP_Query( $books_args );
 
 <script>
 (function() {
-	// Save scroll position before navigation
-	function saveScrollPosition() {
-		sessionStorage.setItem('bookArchiveScrollPosition', window.pageYOffset || document.documentElement.scrollTop);
-	}
-
-	// Restore scroll position
-	function restoreScrollPosition() {
-		const savedPosition = sessionStorage.getItem('bookArchiveScrollPosition');
-		if (savedPosition !== null) {
-			window.scrollTo(0, parseInt(savedPosition, 10));
-			sessionStorage.removeItem('bookArchiveScrollPosition');
-		}
-	}
-
-	// Restore scroll on page load
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', restoreScrollPosition);
-	} else {
-		restoreScrollPosition();
-	}
-
-	// Category filter links
-	const categoryLinks = document.querySelectorAll('.category-filter-link');
-	categoryLinks.forEach(function(link) {
-		link.addEventListener('click', function(e) {
-			saveScrollPosition();
-		});
-	});
-
-	// Clear filters link
-	const clearFiltersLink = document.getElementById('clear-filters-link');
-	if (clearFiltersLink) {
-		clearFiltersLink.addEventListener('click', function(e) {
-			saveScrollPosition();
-		});
-	}
-
-
-	// Search input - filter without page reload
-	let searchTimeout;
+	// Current filter state
+	let currentCategoryFilter = '<?php echo esc_js( $category_filter ); ?>';
+	
+	// Search input and books grid
 	const searchInput = document.getElementById('book-search-input');
 	const booksGrid = document.getElementById('books-grid');
 	const noBooksMessage = document.getElementById('no-books-message');
 	
-	if (searchInput && booksGrid) {
-		function filterBooks() {
-			const searchTerm = searchInput.value.toLowerCase().trim();
-			const bookCards = booksGrid.querySelectorAll('.book-card');
-			let visibleCount = 0;
+	// Filter books function - handles both search and category filtering
+	function filterBooks() {
+		if (!booksGrid) return;
+		
+		const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+		const bookCards = booksGrid.querySelectorAll('.book-card');
+		let visibleCount = 0;
+		
+		bookCards.forEach(function(card) {
+			let shouldShow = true;
 			
-			bookCards.forEach(function(card) {
+			// Filter by category
+			if (currentCategoryFilter && currentCategoryFilter !== 'all') {
+				const categorySlugs = card.getAttribute('data-category-slugs') || '';
+				if (!categorySlugs.includes(currentCategoryFilter)) {
+					shouldShow = false;
+				}
+			}
+			
+			// Filter by search term
+			if (shouldShow && searchTerm !== '') {
 				const title = card.getAttribute('data-title') || '';
 				const categories = card.getAttribute('data-categories') || '';
 				const searchableText = title + ' ' + categories;
-				
-				if (searchTerm === '' || searchableText.includes(searchTerm)) {
-					card.style.display = '';
-					visibleCount++;
-				} else {
-					card.style.display = 'none';
+				if (!searchableText.includes(searchTerm)) {
+					shouldShow = false;
 				}
-			});
+			}
 			
-			// Show/hide no results message
-			if (noBooksMessage) {
-				if (visibleCount === 0 && searchTerm !== '') {
-					noBooksMessage.style.display = 'block';
-					booksGrid.style.display = 'none';
-				} else {
-					noBooksMessage.style.display = 'none';
-					booksGrid.style.display = 'grid';
+			// Show/hide card
+			if (shouldShow) {
+				card.style.display = '';
+				visibleCount++;
+			} else {
+				card.style.display = 'none';
+			}
+		});
+		
+		// Show/hide no results message
+		if (noBooksMessage) {
+			if (visibleCount === 0 && (currentCategoryFilter !== 'all' || searchTerm !== '')) {
+				noBooksMessage.style.display = 'block';
+				booksGrid.style.display = 'none';
+			} else {
+				noBooksMessage.style.display = 'none';
+				booksGrid.style.display = 'grid';
+			}
+		}
+	}
+	
+	// Update filter pills active state
+	function updateFilterPills(selectedCategory) {
+		// Update "All" pill
+		const clearFiltersLink = document.getElementById('clear-filters-link');
+		if (clearFiltersLink) {
+			const allPTag = clearFiltersLink.querySelector('p');
+			if (selectedCategory === 'all' || !selectedCategory) {
+				clearFiltersLink.classList.remove('bg-white', 'dark:bg-[#162b1b]', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-900/30', 'border', 'border-emerald-50', 'dark:border-emerald-900/30');
+				clearFiltersLink.classList.add('bg-primary');
+				if (allPTag) {
+					allPTag.classList.remove('text-gray-700', 'dark:text-gray-300', 'font-medium');
+					allPTag.classList.add('text-white', 'font-semibold');
+				}
+			} else {
+				clearFiltersLink.classList.remove('bg-primary');
+				clearFiltersLink.classList.add('bg-white', 'dark:bg-[#162b1b]', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-900/30', 'border', 'border-emerald-50', 'dark:border-emerald-900/30');
+				if (allPTag) {
+					allPTag.classList.remove('text-white', 'font-semibold');
+					allPTag.classList.add('text-gray-700', 'dark:text-gray-300', 'font-medium');
 				}
 			}
 		}
+		
+		// Update category pills
+		const categoryLinks = document.querySelectorAll('.category-filter-link');
+		categoryLinks.forEach(function(link) {
+			const href = link.getAttribute('href');
+			const urlParams = new URLSearchParams(href.split('?')[1] || '');
+			const linkCategory = urlParams.get('category') || '';
+			const pTag = link.querySelector('p');
+			
+			if (linkCategory === selectedCategory && selectedCategory !== 'all') {
+				link.classList.remove('bg-white', 'dark:bg-[#162b1b]', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-900/30', 'border', 'border-emerald-50', 'dark:border-emerald-900/30');
+				link.classList.add('bg-primary', 'border-primary');
+				if (pTag) {
+					pTag.classList.remove('text-gray-700', 'dark:text-gray-300', 'font-medium');
+					pTag.classList.add('text-white', 'font-semibold');
+				}
+			} else {
+				link.classList.remove('bg-primary', 'border-primary');
+				link.classList.add('bg-white', 'dark:bg-[#162b1b]', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-900/30', 'border', 'border-emerald-50', 'dark:border-emerald-900/30');
+				if (pTag) {
+					pTag.classList.remove('text-white', 'font-semibold');
+					pTag.classList.add('text-gray-700', 'dark:text-gray-300', 'font-medium');
+				}
+			}
+		});
+	}
+	
+	// Category filter links - prevent default and filter via JavaScript
+	const categoryLinks = document.querySelectorAll('.category-filter-link');
+	categoryLinks.forEach(function(link) {
+		link.addEventListener('click', function(e) {
+			e.preventDefault();
+			const href = this.getAttribute('href');
+			const urlParams = new URLSearchParams(href.split('?')[1] || '');
+			const category = urlParams.get('category') || 'all';
+			
+			currentCategoryFilter = category;
+			updateFilterPills(category);
+			filterBooks();
+			
+			// Update URL without reload
+			const newUrl = category === 'all' 
+				? window.location.pathname 
+				: window.location.pathname + '?category=' + encodeURIComponent(category);
+			window.history.pushState({ category: category }, '', newUrl);
+		});
+	});
+
+	// Clear filters link - prevent default and filter via JavaScript
+	const clearFiltersLink = document.getElementById('clear-filters-link');
+	if (clearFiltersLink) {
+		clearFiltersLink.addEventListener('click', function(e) {
+			e.preventDefault();
+			currentCategoryFilter = 'all';
+			updateFilterPills('all');
+			filterBooks();
+			
+			// Update URL without reload
+			window.history.pushState({ category: 'all' }, '', window.location.pathname);
+		});
+	}
+	
+	// Search input - filter without page reload
+	if (searchInput && booksGrid) {
+		let searchTimeout;
 		
 		searchInput.addEventListener('input', function() {
 			clearTimeout(searchTimeout);
@@ -366,6 +439,9 @@ $books_query = new WP_Query( $books_args );
 			});
 		}
 	}
+	
+	// Initial filter on page load
+	filterBooks();
 })();
 </script>
 
