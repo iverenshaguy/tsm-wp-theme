@@ -12,24 +12,25 @@
 ### Method 1: Command Line Export (Recommended)
 
 **Simple export (keeps local URLs):**
+
 ```bash
 ./scripts/export-database.sh database-export.sql
 ```
 
-**Export with URL conversion (converts to production URLs before export):**
+**Export with URL conversion (converts to production URLs before export, then reverts back):**
+
 ```bash
 ./scripts/export-database-with-urls.sh database-export.sql https://terryshaguy.local:8443 https://terryshaguy.org
 ```
 
 This will:
+
 1. Convert URLs from `https://terryshaguy.local:8443` → `https://terryshaguy.org` in your database
 2. Export the database with production URLs already set
-3. Save to `database-export.sql`
+3. **Automatically revert URLs back to local URLs** so your local environment continues working
+4. Save to `database-export.sql`
 
-**Note**: After export with URL conversion, your local database will have production URLs. To revert:
-```bash
-./scripts/update-wordpress-urls-to-dev.sh https://terryshaguy.org https://terryshaguy.local:8443
-```
+**Note**: The script automatically reverts URLs back to localhost after export, so your local database will continue working normally. The exported SQL file contains production URLs ready for deployment.
 
 ---
 
@@ -62,6 +63,7 @@ docker-compose up -d
 6. The SQL file will download to your computer
 
 **Custom Export Options** (if you want more control):
+
 - Click **Custom** export method
 - Select specific tables if needed
 - Choose compression (gzip/zip) for large databases
@@ -80,18 +82,15 @@ Convert URLs before exporting so the SQL file has production URLs:
 ```
 
 ✅ **Pros**: SQL file is ready to import with correct URLs  
-✅ **Cons**: Your local database will have production URLs (can revert)
-
-**To revert URLs back to local after export:**
-```bash
-./scripts/update-wordpress-urls-to-dev.sh https://terryshaguy.org https://terryshaguy.local:8443
-```
+✅ **Pros**: URLs are automatically reverted back to localhost after export  
+✅ **Pros**: Your local database continues working normally
 
 ---
 
 ### Option B: Update URLs After Import in cPanel phpMyAdmin
 
 1. **Export from Docker** (keep local URLs):
+
    ```bash
    ./scripts/export-database.sh database-export.sql
    ```
@@ -102,6 +101,7 @@ Convert URLs before exporting so the SQL file has production URLs:
    - Click on your database in phpMyAdmin
    - Click the **SQL** tab
    - Paste this SQL (replace with your actual URLs and table prefix):
+
    ```sql
    UPDATE terrysha_options SET option_value = REPLACE(option_value, 'https://terryshaguy.local:8443', 'https://terryshaguy.org') WHERE option_name IN ('siteurl', 'home');
    UPDATE terrysha_posts SET post_content = REPLACE(post_content, 'https://terryshaguy.local:8443', 'https://terryshaguy.org');
@@ -110,9 +110,11 @@ Convert URLs before exporting so the SQL file has production URLs:
    UPDATE terrysha_comments SET comment_content = REPLACE(comment_content, 'https://terryshaguy.local:8443', 'https://terryshaguy.org');
    UPDATE terrysha_comments SET comment_author_url = REPLACE(comment_author_url, 'https://terryshaguy.local:8443', 'https://terryshaguy.org');
    ```
+
    - Click **Go**
 
    **OR use the script command** (if you have SSH access to cPanel):
+
    ```bash
    ./scripts/update-wordpress-urls-to-prod.sh https://terryshaguy.local:8443 https://terryshaguy.org
    ```
@@ -126,12 +128,16 @@ Convert URLs before exporting so the SQL file has production URLs:
 
 ### Step 1: Export from Docker
 
-**Option A: Export with production URLs** (recommended):
+**Option A: Export with production URLs** (recommended - automatically reverts URLs):
+
 ```bash
 ./scripts/export-database-with-urls.sh database-export.sql https://terryshaguy.local:8443 https://terryshaguy.org
 ```
 
+**Note**: This script automatically reverts URLs back to localhost after export, so your local environment continues working.
+
 **Option B: Export with local URLs**:
+
 ```bash
 ./scripts/export-database.sh database-export.sql
 ```
@@ -151,10 +157,12 @@ Convert URLs before exporting so the SQL file has production URLs:
 If you used Option B above, update URLs in cPanel phpMyAdmin:
 
 **Using phpMyAdmin SQL Tab:**
+
 - Click **SQL** tab
 - Run the UPDATE queries shown in Option B above (replace `https://terryshaguy.local:8443` with `https://terryshaguy.org`)
 
 **OR using script command** (if you have SSH access):
+
 ```bash
 ./scripts/update-wordpress-urls-to-prod.sh https://terryshaguy.local:8443 https://terryshaguy.org
 ```
@@ -162,6 +170,7 @@ If you used Option B above, update URLs in cPanel phpMyAdmin:
 ### Step 4: Update wp-config.php
 
 Edit `wp-config.php` on your production server to use the new database:
+
 ```php
 define( 'DB_NAME', 'username_wordpress_new' );
 define( 'DB_USER', 'username_dbuser' );
@@ -175,11 +184,13 @@ define( 'DB_PASSWORD', 'your_password' );
 ### Export Fails: "Container not found"
 
 Make sure Docker containers are running:
+
 ```bash
 docker-compose ps
 ```
 
 If containers aren't running:
+
 ```bash
 docker-compose up -d
 ```
@@ -187,6 +198,7 @@ docker-compose up -d
 ### Export File is Empty
 
 1. Check if database has data:
+
    ```bash
    docker exec tsm-theme-db mysql -uwordpress -pwordpress wordpress -e "SHOW TABLES;"
    ```
@@ -198,11 +210,13 @@ docker-compose up -d
 ### phpMyAdmin Won't Connect
 
 1. Check if phpMyAdmin container is running:
+
    ```bash
    docker ps | grep phpmyadmin
    ```
 
 2. Check phpMyAdmin logs:
+
    ```bash
    docker logs tsm-theme-phpmyadmin
    ```
@@ -226,6 +240,7 @@ docker-compose up -d
 ## Quick Reference
 
 ### Docker Database Info
+
 - **Container**: `tsm-theme-db`
 - **Database**: `wordpress`
 - **User**: `wordpress`
@@ -233,23 +248,27 @@ docker-compose up -d
 - **Port**: `3306` (exposed for external tools)
 
 ### phpMyAdmin Access
+
 - **URL**: http://localhost:8081
 - **Username**: `wordpress`
 - **Password**: `wordpress`
 - **Server**: `db`
 
 ### Export Scripts
+
 - `./scripts/export-database.sh` - Simple export (keeps local URLs)
 - `./scripts/export-database-with-urls.sh` - Export with URL conversion
 
 ### URL Update Scripts
 
 **Convert local → production:**
+
 ```bash
 ./scripts/update-wordpress-urls-to-prod.sh https://terryshaguy.local:8443 https://terryshaguy.org
 ```
 
 **Convert production → local:**
+
 ```bash
 ./scripts/update-wordpress-urls-to-dev.sh https://terryshaguy.org https://terryshaguy.local:8443
 ```
