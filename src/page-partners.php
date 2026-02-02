@@ -226,18 +226,37 @@ $account_notes = tsm_get_theme_mod_cached( 'partners_account_notes', '' );
 $contact_phone = tsm_get_theme_mod_cached( 'contact_phone', '+234 (703) 030-8123' );
 
 // Collect all accounts (up to 4)
+// First account = Local Account (NGN), Second account = International Account (USD)
 $accounts = array();
+$account_position = 0; // Track position in the accounts array (0-based)
+
 for ( $i = 1; $i <= 4; $i++ ) {
 	$account_number = tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_number', '' );
 	if ( ! empty( $account_number ) ) {
+		// Determine label based on position in the accounts array
+		// First account (position 0) = Local Account (NGN)
+		// Second account (position 1) = International Account (USD)
+		// Additional accounts use customizer label or default
+		if ( $account_position === 0 ) {
+			$label = __( 'Local Account (NGN)', 'tsm-theme' );
+		} elseif ( $account_position === 1 ) {
+			$label = __( 'International Account (USD)', 'tsm-theme' );
+		} else {
+			// For accounts 3 and 4, use customizer label if set, otherwise default
+			$customizer_label = tsm_get_theme_mod_cached( 'partners_account_' . $i . '_label', '' );
+			$label = ! empty( $customizer_label ) ? $customizer_label : sprintf( __( 'Account %d', 'tsm-theme' ), $i );
+		}
+		
 		$accounts[] = array(
-			'label'         => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_label', sprintf( __( 'Account %d', 'tsm-theme' ), $i ) ),
+			'label'         => $label,
 			'bank_name'     => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_bank_name', '' ),
 			'account_name' => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_name', '' ),
 			'account_number' => $account_number,
 			'routing_number' => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_routing_number', '' ),
 			'swift_code'    => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_swift_code', '' ),
 		);
+		
+		$account_position++; // Increment position counter
 	}
 }
 
@@ -296,14 +315,9 @@ if ( $has_account_details ) :
 							</div>
 							<?php if ( ! empty( $account['label'] ) ) : ?>
 								<?php
-								// If only one account, show "Account" instead of "Account 1" or numbered label
+								// Always show the account label (Local Account (NGN) or International Account (USD))
+								// Even if only one account is provided
 								$display_label = $account['label'];
-								if ( $account_count === 1 ) {
-									// Check if label matches default pattern "Account 1" or similar
-									if ( preg_match( '/^Account\s+\d+$/i', $account['label'] ) ) {
-										$display_label = __( 'Account', 'tsm-theme' );
-									}
-								}
 								?>
 								<p class="text-[10px] font-black text-primary uppercase tracking-tighter mb-3">
 									<?php echo esc_html( $display_label ); ?>
