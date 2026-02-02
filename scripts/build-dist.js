@@ -4,7 +4,7 @@
  * Post-build script to copy deployable files to dist/ folder
  * This creates a clean deployment package with only files needed for WordPress
  * Run after CSS/JS build processes
- * 
+ *
  * Copies PHP templates from root and src/, and built assets from assets/ to dist/
  */
 
@@ -30,7 +30,9 @@ const phpTemplates = [
   '404.php',
   'archive.php',
   'archive-book.php',
+  'archive-gallery.php',
   'archive-mission.php',
+  'date.php',
   'single.php',
   'single-book.php',
   'single-mission.php',
@@ -43,15 +45,13 @@ const phpTemplates = [
   'page-prayer-requests.php',
   'front-page.php',
   'search.php',
+  'sw.js', // Service worker
   'screenshot.png',
   'screenshot.jpg',
 ];
 
 // Directories to copy
-const directoriesToCopy = [
-  'functions',
-  'template-parts',
-];
+const directoriesToCopy = ['functions', 'template-parts', 'components'];
 
 // Files/folders to exclude from assets
 const excludePatterns = [
@@ -74,18 +74,18 @@ function copyDirectory(src, dest) {
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
   }
-  
+
   const entries = fs.readdirSync(src, { withFileTypes: true });
-  
+
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    
+
     // Skip excluded patterns
-    if (excludePatterns.some(pattern => pattern.test(srcPath))) {
+    if (excludePatterns.some((pattern) => pattern.test(srcPath))) {
       continue;
     }
-    
+
     if (entry.isDirectory()) {
       copyDirectory(srcPath, destPath);
     } else {
@@ -106,7 +106,7 @@ function buildDist() {
       }
       fs.renameSync(distAssets, assetsBackup);
     }
-    
+
     // Remove everything except assets
     const entries = fs.readdirSync(distDir, { withFileTypes: true });
     for (const entry of entries) {
@@ -115,7 +115,7 @@ function buildDist() {
         fs.rmSync(entryPath, { recursive: true, force: true });
       }
     }
-    
+
     // Restore assets backup
     if (fs.existsSync(assetsBackup)) {
       if (fs.existsSync(distAssets)) {
@@ -126,22 +126,22 @@ function buildDist() {
   } else {
     fs.mkdirSync(distDir, { recursive: true });
   }
-  
+
   console.log('📦 Copying files to dist/...');
-  
+
   // Copy PHP templates (check src/ first, then root)
   for (const file of phpTemplates) {
     const srcPath = path.join(srcDir, file);
     const rootPath = path.join(rootDir, file);
     const destPath = path.join(distDir, file);
-    
+
     let sourcePath = null;
     if (fs.existsSync(srcPath)) {
       sourcePath = srcPath;
     } else if (fs.existsSync(rootPath)) {
       sourcePath = rootPath;
     }
-    
+
     if (sourcePath && fs.existsSync(sourcePath)) {
       copyFile(sourcePath, destPath);
       console.log(`✓ Copied file: ${file}`);
@@ -152,44 +152,44 @@ function buildDist() {
       console.warn(`⚠️  Warning: ${file} not found, skipping...`);
     }
   }
-  
+
   // Copy directories (check src/ first, then root)
   for (const dir of directoriesToCopy) {
     const srcPath = path.join(srcDir, dir);
     const rootPath = path.join(rootDir, dir);
     const destPath = path.join(distDir, dir);
-    
+
     let sourcePath = null;
     if (fs.existsSync(srcPath)) {
       sourcePath = srcPath;
     } else if (fs.existsSync(rootPath)) {
       sourcePath = rootPath;
     }
-    
+
     if (sourcePath && fs.existsSync(sourcePath)) {
       copyDirectory(sourcePath, destPath);
       console.log(`✓ Copied directory: ${dir}/`);
     }
   }
-  
+
   // Copy built assets from src/assets/ to dist/assets/
   // Note: CSS and JS are already built to dist/ by build:css:dist and build:js:dist
   // This step ensures images, style.css, and any other assets are copied, and creates directory structure if needed
   const assetsSrc = path.join(srcDir, 'assets');
   const assetsDest = path.join(distDir, 'assets');
-  
+
   if (fs.existsSync(assetsSrc)) {
     // Create dist/assets structure if it doesn't exist
     if (!fs.existsSync(assetsDest)) {
       fs.mkdirSync(assetsDest, { recursive: true });
     }
-    
+
     // Ensure CSS directory exists (CSS is already built to dist/assets/css/main.css by build:css:dist)
     const cssDest = path.join(assetsDest, 'css');
     if (!fs.existsSync(cssDest)) {
       fs.mkdirSync(cssDest, { recursive: true });
     }
-    
+
     // Copy style.css from src/assets/css/ to dist/assets/css/
     const styleCssSrc = path.join(assetsSrc, 'css', 'style.css');
     const styleCssDest = path.join(cssDest, 'style.css');
@@ -197,31 +197,35 @@ function buildDist() {
       copyFile(styleCssSrc, styleCssDest);
       console.log(`✓ Copied: assets/css/style.css`);
     }
-    
+
     // CSS is already built to dist/assets/css/main.css by build:css:dist
     // Don't copy from src/ as it would overwrite the minified version
     const distMainCss = path.join(cssDest, 'main.css');
     if (fs.existsSync(distMainCss)) {
       console.log(`✓ Using: assets/css/main.css (already built to dist/)`);
     } else {
-      console.warn(`⚠️  Warning: assets/css/main.css not found in dist/ - run 'npm run build:css:dist' first`);
+      console.warn(
+        `⚠️  Warning: assets/css/main.css not found in dist/ - run 'npm run build:css:dist' first`
+      );
     }
-    
+
     // Ensure JS directory exists (JS is already built to dist/assets/js/main.js by build:js:dist)
     const jsDest = path.join(assetsDest, 'js');
     if (!fs.existsSync(jsDest)) {
       fs.mkdirSync(jsDest, { recursive: true });
     }
-    
+
     // JS is already built to dist/assets/js/main.js by build:js:dist
     // Don't copy from src/ as it would overwrite the minified version
     const distMainJs = path.join(jsDest, 'main.js');
     if (fs.existsSync(distMainJs)) {
       console.log(`✓ Using: assets/js/main.js (already built to dist/)`);
     } else {
-      console.warn(`⚠️  Warning: assets/js/main.js not found in dist/ - run 'npm run build:js:dist' first`);
+      console.warn(
+        `⚠️  Warning: assets/js/main.js not found in dist/ - run 'npm run build:js:dist' first`
+      );
     }
-    
+
     // Copy images (always needed)
     const imagesSrc = path.join(assetsSrc, 'images');
     const imagesDest = path.join(assetsDest, 'images');
@@ -230,7 +234,7 @@ function buildDist() {
       console.log(`✓ Copied directory: assets/images/`);
     }
   }
-  
+
   console.log('\n✅ Build complete! Deployable files are in dist/');
   console.log('📁 You can now deploy the contents of dist/ to wp-content/themes/tsm-theme/');
 }

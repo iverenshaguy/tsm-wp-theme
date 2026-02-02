@@ -84,3 +84,5 @@ certs/
 files/
 
 *.backup
+
+uploads-backup
