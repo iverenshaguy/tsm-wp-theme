@@ -10,20 +10,20 @@ get_header();
 
 <!-- Hero Section -->
 <section class="w-full">
-	<div class="relative min-h-[600px] flex items-center justify-center bg-cover bg-center" data-alt="<?php echo esc_attr( get_theme_mod( 'missions_hero_alt', 'Wide shot of a diverse mission team smiling together in a rural village' ) ); ?>" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%), url("<?php echo esc_url( get_theme_mod( 'missions_hero_image', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtzCEOTB5-TTBzqPY_TtOLn84ppGCAsXToDqXryoylyXhh9r7rNppAPxaYuniv-309Yg72GDc84WVHhQT-7wypZo-qBUU8tLNeGEiUTqVbFcDc41BrWYsZfUA7WjLpNm_MlKFfBk_Nlatn0-pZa6UpNm26Zn_BorXkuDMEGVnE3_xQNV68UJQS1CmG8g74VfV9A6W54YeYr6-mzilsHlPrgXUfsVRGk8AyR4YxGkX4pt1HFxgQIWhWVAJFqQ79L9553-nOUtRgrpg' ) ); ?>");'>
+	<div class="relative min-h-[600px] flex items-center justify-center bg-cover bg-center" data-alt="<?php echo esc_attr( tsm_get_theme_mod_cached( 'missions_hero_alt', 'Wide shot of a diverse mission team smiling together in a rural village' ) ); ?>" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%), url("<?php echo esc_url( tsm_get_theme_mod_cached( 'missions_hero_image', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtzCEOTB5-TTBzqPY_TtOLn84ppGCAsXToDqXryoylyXhh9r7rNppAPxaYuniv-309Yg72GDc84WVHhQT-7wypZo-qBUU8tLNeGEiUTqVbFcDc41BrWYsZfUA7WjLpNm_MlKFfBk_Nlatn0-pZa6UpNm26Zn_BorXkuDMEGVnE3_xQNV68UJQS1CmG8g74VfV9A6W54YeYr6-mzilsHlPrgXUfsVRGk8AyR4YxGkX4pt1HFxgQIWhWVAJFqQ79L9553-nOUtRgrpg' ) ); ?>");'>
 		<div class="max-w-[960px] px-6 text-center text-white">
 			<div class="inline-flex gap-2 items-center px-3 py-1 mb-6 rounded-full border backdrop-blur-sm bg-primary/20 border-primary/30">
 				<span class="text-sm material-symbols-outlined text-primary">public</span>
 				<span class="text-xs font-bold tracking-widest text-white uppercase">
 					<?php
-					$missions_badge = get_theme_mod( 'missions_badge', 'Our Global Outreach' );
+					$missions_badge = tsm_get_theme_mod_cached( 'missions_badge', 'Our Global Outreach' );
 					echo esc_html( $missions_badge );
 					?>
 				</span>
 			</div>
 			<h1 class="mb-6 text-4xl font-bold leading-tight md:text-6xl">
 				<?php
-				$missions_hero_heading = get_theme_mod(
+				$missions_hero_heading = tsm_get_theme_mod_cached(
 					'missions_hero_heading',
 					'"Our heart is to see every nation touched by the love of Christ."'
 				);
@@ -32,7 +32,7 @@ get_header();
 			</h1>
 			<p class="mx-auto mb-10 max-w-2xl text-lg font-normal opacity-90 md:text-xl">
 				<?php
-				$missions_hero_description = get_theme_mod(
+				$missions_hero_description = tsm_get_theme_mod_cached(
 					'missions_hero_description',
 					'David & Sarah Graham\'s vision for global transformation through mission, prayer, and sustainable community empowerment.'
 				);
@@ -41,18 +41,18 @@ get_header();
 			</p>
 			<div class="flex flex-col gap-4 justify-center sm:flex-row">
 				<?php
-				$vision_url = get_theme_mod( 'missions_vision_url', '' );
+				$vision_url = tsm_get_theme_mod_cached( 'missions_vision_url', '' );
 				if ( empty( $vision_url ) ) {
 					$vision_url = home_url( '/our-ministries' );
 				}
-				$film_url = get_theme_mod( 'missions_film_url', '' );
+				$film_url = tsm_get_theme_mod_cached( 'missions_film_url', '' );
 				?>
 				<a href="<?php echo esc_url( $vision_url ); ?>" class="min-w-[180px] rounded-lg h-14 px-8 bg-primary text-white hover:text-white text-base font-bold hover:scale-105 transition-transform flex items-center justify-center">
-					<?php echo esc_html( get_theme_mod( 'missions_vision_button', 'Learn Our Vision' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_vision_button', 'Learn Our Vision' ) ); ?>
 				</a>
 				<?php if ( ! empty( $film_url ) ) : ?>
 					<a href="<?php echo esc_url( $film_url ); ?>" class="min-w-[180px] rounded-lg h-14 px-8 bg-white/10 backdrop-blur-md text-white border border-white/30 text-base font-bold hover:bg-white/20 transition-all flex items-center justify-center">
-						<?php echo esc_html( get_theme_mod( 'missions_film_button', 'Watch the Film' ) ); ?>
+						<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_film_button', 'Watch the Film' ) ); ?>
 					</a>
 				<?php endif; ?>
 			</div>
@@ -66,26 +66,26 @@ get_header();
 		<div class="grid grid-cols-1 gap-2 md:grid-cols-3">
 			<div class="flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#cfe7d5] dark:border-[#2a4431]">
 				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_1_label', 'Villages Reached' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_1_label', 'Villages Reached' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_1_value', '40+' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_1_value', '40+' ) ); ?>
 				</p>
 			</div>
 			<div class="flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#cfe7d5] dark:border-[#2a4431]">
 				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_2_label', 'Lives Touched' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_2_label', 'Lives Touched' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_2_value', '10k+' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_2_value', '10k+' ) ); ?>
 				</p>
 			</div>
 			<div class="flex flex-col justify-center items-center p-8">
 				<p class="mb-1 text-sm font-bold tracking-wider uppercase text-accent">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_3_label', 'Mission Partners' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_3_label', 'Mission Partners' ) ); ?>
 				</p>
 				<p class="text-3xl font-bold text-primary">
-					<?php echo esc_html( get_theme_mod( 'missions_stat_3_value', '100+' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stat_3_value', '100+' ) ); ?>
 				</p>
 			</div>
 		</div>
@@ -99,7 +99,7 @@ get_header();
 		<div class="flex-1">
 			<div class="mb-12">
 				<h2 class="mb-4 text-3xl font-bold tracking-tight text-accent">
-					<?php echo esc_html( get_theme_mod( 'missions_stories_title', 'The Journey: Where We Go' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_stories_title', 'The Journey: Where We Go' ) ); ?>
 				</h2>
 				<div class="w-20 h-1.5 rounded-full bg-primary"></div>
 			</div>
@@ -212,20 +212,20 @@ get_header();
 				<div class="bg-white dark:bg-[#1a2e1e] rounded-xl border border-[#cfe7d5] dark:border-[#2a4431] overflow-hidden shadow-sm">
 					<div class="p-6 bg-primary">
 						<h3 class="text-xl font-bold text-white">
-							<?php echo esc_html( get_theme_mod( 'missions_sidebar_title', 'Partner with Us' ) ); ?>
+							<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_sidebar_title', 'Partner with Us' ) ); ?>
 						</h3>
 						<p class="mt-1 text-sm text-white/80">
-							<?php echo esc_html( get_theme_mod( 'missions_sidebar_subtitle', 'Transform lives together' ) ); ?>
+							<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_sidebar_subtitle', 'Transform lives together' ) ); ?>
 						</p>
 					</div>
 					<div class="p-6 space-y-6">
 						<?php
-						$prayer_url = get_theme_mod( 'missions_action_1_url', '' );
-						$give_url = get_theme_mod( 'missions_action_2_url', '' );
+						$prayer_url = tsm_get_theme_mod_cached( 'missions_action_1_url', '' );
+						$give_url = tsm_get_theme_mod_cached( 'missions_action_2_url', '' );
 						if ( empty( $give_url ) ) {
 							$give_url = home_url( '/partners' );
 						}
-						$join_url = get_theme_mod( 'missions_action_3_url', '' );
+						$join_url = tsm_get_theme_mod_cached( 'missions_action_3_url', '' );
 						?>
 						<!-- Action 1: Pray -->
 						<div class="flex gap-4">
@@ -233,12 +233,12 @@ get_header();
 								<span class="material-symbols-outlined">auto_awesome</span>
 							</div>
 							<div>
-								<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_1_title', 'Pray with Us' ) ); ?></h4>
+								<h4 class="font-bold text-accent"><?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_1_title', 'Pray with Us' ) ); ?></h4>
 								<p class="mb-2 text-sm opacity-70 text-accent">
-									<?php echo esc_html( get_theme_mod( 'missions_action_1_description', 'Receive weekly prayer points from the field.' ) ); ?>
+									<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_1_description', 'Receive weekly prayer points from the field.' ) ); ?>
 								</p>
 								<?php if ( ! empty( $prayer_url ) ) : ?>
-									<?php $prayer_text = get_theme_mod( 'missions_action_1_button', 'Join Prayer Team' ); ?>
+									<?php $prayer_text = tsm_get_theme_mod_cached( 'missions_action_1_button', 'Join Prayer Team' ); ?>
 									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $prayer_url ); ?>">
 										<?php echo esc_html( $prayer_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
@@ -252,12 +252,12 @@ get_header();
 								<span class="material-symbols-outlined">volunteer_activism</span>
 							</div>
 							<div>
-								<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_2_title', 'Give Generously' ) ); ?></h4>
+								<h4 class="font-bold text-accent"><?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_2_title', 'Give Generously' ) ); ?></h4>
 								<p class="mb-2 text-sm opacity-70 text-accent">
-									<?php echo esc_html( get_theme_mod( 'missions_action_2_description', '100% of your gift goes directly to mission projects.' ) ); ?>
+									<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_2_description', '100% of your gift goes directly to mission projects.' ) ); ?>
 								</p>
 								<?php if ( ! empty( $give_url ) ) : ?>
-									<?php $give_text = get_theme_mod( 'missions_action_2_button', 'Donate Now' ); ?>
+									<?php $give_text = tsm_get_theme_mod_cached( 'missions_action_2_button', 'Donate Now' ); ?>
 									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $give_url ); ?>">
 										<?php echo esc_html( $give_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
@@ -272,11 +272,11 @@ get_header();
 									<span class="material-symbols-outlined">flight_takeoff</span>
 								</div>
 								<div>
-									<h4 class="font-bold text-accent"><?php echo esc_html( get_theme_mod( 'missions_action_3_title', 'Join a Mission' ) ); ?></h4>
+									<h4 class="font-bold text-accent"><?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_3_title', 'Join a Mission' ) ); ?></h4>
 									<p class="mb-2 text-sm opacity-70 text-accent">
-										<?php echo esc_html( get_theme_mod( 'missions_action_3_description', 'Applications for 2025 summer trips are now open.' ) ); ?>
+										<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_action_3_description', 'Applications for 2025 summer trips are now open.' ) ); ?>
 									</p>
-									<?php $join_text = get_theme_mod( 'missions_action_3_button', 'Apply to Join' ); ?>
+									<?php $join_text = tsm_get_theme_mod_cached( 'missions_action_3_button', 'Apply to Join' ); ?>
 									<a class="flex gap-2 items-center text-sm font-bold transition-all text-primary hover:gap-3" href="<?php echo esc_url( $join_url ); ?>">
 										<?php echo esc_html( $join_text ); ?> <span class="material-symbols-outlined !text-base">arrow_forward</span>
 									</a>
@@ -306,7 +306,7 @@ get_header();
 						?>
 						<div class="bg-[#f0f7f2] dark:bg-[#132818] p-6 text-center">
 							<p class="mb-4 text-xs font-bold tracking-widest uppercase text-accent">
-								<?php echo esc_html( get_theme_mod( 'missions_trips_label', 'Upcoming Trips' ) ); ?>
+								<?php echo esc_html( tsm_get_theme_mod_cached( 'missions_trips_label', 'Upcoming Trips' ) ); ?>
 							</p>
 							<ul class="mb-6 space-y-3 text-left">
 								<?php
@@ -351,8 +351,8 @@ get_header();
 				</div>
 				<!-- Testimonial Sidebar Mini -->
 				<?php
-				$testimonial_text = get_theme_mod( 'missions_testimonial_text', '' );
-				$testimonial_author = get_theme_mod( 'missions_testimonial_author', '' );
+				$testimonial_text = tsm_get_theme_mod_cached( 'missions_testimonial_text', '' );
+				$testimonial_author = tsm_get_theme_mod_cached( 'missions_testimonial_author', '' );
 				if ( ! empty( $testimonial_text ) ) :
 					?>
 					<div class="p-6 mt-8 italic rounded-xl border bg-primary/5 border-primary/20">

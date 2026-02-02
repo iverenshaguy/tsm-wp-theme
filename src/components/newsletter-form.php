@@ -23,18 +23,18 @@ $args = wp_parse_args( isset( $args ) ? $args : array(), array(
 ) );
 
 // Get customizer settings if not provided
-$show_subscribe_form = get_theme_mod( $args['customizer_prefix'] . '_show_subscribe_form', true );
+$show_subscribe_form = tsm_get_theme_mod_cached( $args['customizer_prefix'] . '_show_subscribe_form', true );
 if ( ! $show_subscribe_form ) {
 	return;
 }
 
-$newsletter_title = ! empty( $args['title'] ) ? $args['title'] : get_theme_mod( $args['customizer_prefix'] . '_newsletter_title', 'Weekly Resources' );
-$newsletter_description = ! empty( $args['description'] ) ? $args['description'] : get_theme_mod( $args['customizer_prefix'] . '_newsletter_description', 'Join 5,000+ others receiving weekly encouragement and articles directly in their inbox.' );
-$newsletter_form_id = ! empty( $args['form_id'] ) ? $args['form_id'] : get_theme_mod( $args['customizer_prefix'] . '_newsletter_form_id', '' );
+$newsletter_title = ! empty( $args['title'] ) ? $args['title'] : tsm_get_theme_mod_cached( $args['customizer_prefix'] . '_newsletter_title', 'Weekly Resources' );
+$newsletter_description = ! empty( $args['description'] ) ? $args['description'] : tsm_get_theme_mod_cached( $args['customizer_prefix'] . '_newsletter_description', 'Join 5,000+ others receiving weekly encouragement and articles directly in their inbox.' );
+$newsletter_form_id = ! empty( $args['form_id'] ) ? $args['form_id'] : tsm_get_theme_mod_cached( $args['customizer_prefix'] . '_newsletter_form_id', '' );
 
 // Fallback to global newsletter form ID if prefix-specific one is not set
 if ( empty( $newsletter_form_id ) ) {
-	$newsletter_form_id = get_theme_mod( 'newsletter_form_id', '' );
+	$newsletter_form_id = tsm_get_theme_mod_cached( 'newsletter_form_id', '' );
 }
 ?>
 

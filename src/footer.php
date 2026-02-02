@@ -7,7 +7,7 @@
 					<div class="text-primary dark:text-accent size-full">
 						<?php if ( has_custom_logo() ) : ?>
 							<?php 
-							$logo_id = get_theme_mod( 'custom_logo' );
+							$logo_id = tsm_get_theme_mod_cached( 'custom_logo' );
 							$logo = wp_get_attachment_image_src( $logo_id, 'full' );
 							if ( $logo ) {
 								echo '<img src="' . esc_url( $logo[0] ) . '" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" class="h-12 w-auto" />';
@@ -21,18 +21,18 @@
 					</div>
 				</div>
 				<p class="text-gray-500 text-sm leading-relaxed mb-8">
-					<?php echo esc_html( get_theme_mod( 'footer_description', 'Empowering the global church through joint missions, biblical literature, and prophetic teaching.' ) ); ?>
+					<?php echo esc_html( tsm_get_theme_mod_cached( 'footer_description', 'Empowering the global church through joint missions, biblical literature, and prophetic teaching.' ) ); ?>
 				</p>
 				<div class="flex gap-4">
 					<?php
-					$social_facebook = get_theme_mod( 'social_facebook', '#' );
-					$social_instagram = get_theme_mod( 'social_instagram', '#' );
-					$social_linkedin = get_theme_mod( 'social_linkedin', '#' );
-					$social_whatsapp = get_theme_mod( 'social_whatsapp', '' );
+					$social_facebook = tsm_get_theme_mod_cached( 'social_facebook', '#' );
+					$social_instagram = tsm_get_theme_mod_cached( 'social_instagram', '#' );
+					$social_linkedin = tsm_get_theme_mod_cached( 'social_linkedin', '#' );
+					$social_whatsapp = tsm_get_theme_mod_cached( 'social_whatsapp', '' );
 					
 					// If WhatsApp URL not set, generate from contact phone
 					if ( empty( $social_whatsapp ) ) {
-						$contact_phone = get_theme_mod( 'contact_phone', '+234 (703) 030-8123' );
+						$contact_phone = tsm_get_theme_mod_cached( 'contact_phone', '+234 (703) 030-8123' );
 						if ( ! empty( $contact_phone ) ) {
 							$phone_whatsapp = preg_replace( '/[^0-9]/', '', $contact_phone );
 							$social_whatsapp = 'https://wa.me/' . $phone_whatsapp;
@@ -69,7 +69,7 @@
 				if ( is_active_sidebar( 'footer-1' ) ) {
 					dynamic_sidebar( 'footer-1' );
 				} else {
-					$ministry_focus = get_theme_mod( 'ministry_focus', "Itinerant Ministry\nGlobal Mission Outreach\nLeadership Development\nTeaching Ministry" );
+					$ministry_focus = tsm_get_theme_mod_cached( 'ministry_focus', "Itinerant Ministry\nGlobal Mission Outreach\nLeadership Development\nTeaching Ministry" );
 					$items = explode( "\n", $ministry_focus );
 					?>
 					<ul class="space-y-4 text-sm text-gray-500">
@@ -92,7 +92,7 @@
 					// Use individual quick link settings
 					$has_links = false;
 					for ( $i = 1; $i <= 4; $i++ ) {
-						$title = get_theme_mod( 'quick_link_' . $i . '_title', '' );
+						$title = tsm_get_theme_mod_cached( 'quick_link_' . $i . '_title', '' );
 						if ( ! empty( $title ) ) {
 							$has_links = true;
 							break;
@@ -104,8 +104,8 @@
 						<ul class="space-y-4 text-sm text-gray-500">
 							<?php
 							for ( $i = 1; $i <= 4; $i++ ) {
-								$title = get_theme_mod( 'quick_link_' . $i . '_title', '' );
-								$url   = get_theme_mod( 'quick_link_' . $i . '_url', '' );
+								$title = tsm_get_theme_mod_cached( 'quick_link_' . $i . '_title', '' );
+								$url   = tsm_get_theme_mod_cached( 'quick_link_' . $i . '_url', '' );
 
 								if ( empty( $title ) ) {
 									continue;
@@ -155,10 +155,10 @@
 				<h5 class="font-bold mb-8 text-primary dark:text-white uppercase tracking-wider text-sm">Contact Us</h5>
 				<div class="space-y-6">
 					<?php
-					$contact_email = get_theme_mod( 'contact_email', 'terry@terryshaguy.org' );
-					$contact_phone = get_theme_mod( 'contact_phone', '+234 (703) 030-8123' );
-					$contact_phone_2 = get_theme_mod( 'contact_phone_2', '+234 (708) 143-6641' );
-					$contact_address = get_theme_mod( 'contact_address', '2, Kutamiti Street, Basorun. P.O. Box 19824 U.I., Ibadan, Nigeria.' );
+					$contact_email = tsm_get_theme_mod_cached( 'contact_email', 'terry@terryshaguy.org' );
+					$contact_phone = tsm_get_theme_mod_cached( 'contact_phone', '+234 (703) 030-8123' );
+					$contact_phone_2 = tsm_get_theme_mod_cached( 'contact_phone_2', '+234 (708) 143-6641' );
+					$contact_address = tsm_get_theme_mod_cached( 'contact_address', '2, Kutamiti Street, Basorun. P.O. Box 19824 U.I., Ibadan, Nigeria.' );
 					?>
 					<div class="flex items-start gap-4 group">
 						<span class="material-symbols-outlined text-accent group-hover:scale-110 transition-transform">mail</span>

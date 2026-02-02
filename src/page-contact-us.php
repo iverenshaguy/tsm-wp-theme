@@ -20,20 +20,20 @@ get_header();
 			<span class="material-symbols-outlined text-primary text-sm">mail</span>
 			<span class="text-white text-xs font-bold tracking-widest uppercase">
 				<?php
-				$contact_hero_badge = get_theme_mod( 'contact_hero_badge', 'Get in Touch' );
+				$contact_hero_badge = tsm_get_theme_mod_cached( 'contact_hero_badge', 'Get in Touch' );
 				echo esc_html( $contact_hero_badge );
 				?>
 			</span>
 		</div>
 		<h1 class="text-white text-4xl md:text-6xl font-black mb-6">
 			<?php
-			$contact_hero_title = get_theme_mod( 'contact_hero_title', 'Connect With Us' );
+			$contact_hero_title = tsm_get_theme_mod_cached( 'contact_hero_title', 'Connect With Us' );
 			echo esc_html( $contact_hero_title );
 			?>
 		</h1>
 		<p class="text-white/80 text-lg max-w-2xl mx-auto">
 			<?php
-			$contact_hero_description = get_theme_mod(
+			$contact_hero_description = tsm_get_theme_mod_cached(
 				'contact_hero_description',
 				'Whether you have a general question, a booking inquiry, or just want to share a testimony, we would love to hear from you.'
 			);
@@ -52,7 +52,7 @@ get_header();
 				<h2 class="text-2xl font-black text-accent dark:text-white mb-8 flex items-center gap-3">
 					<span class="material-symbols-outlined text-accent">mail</span>
 					<?php
-					$contact_form_title = get_theme_mod( 'contact_form_title', 'Send a Message' );
+					$contact_form_title = tsm_get_theme_mod_cached( 'contact_form_title', 'Send a Message' );
 					echo esc_html( $contact_form_title );
 					?>
 				</h2>
@@ -122,19 +122,19 @@ get_header();
 				<div class="relative z-10">
 					<span class="inline-block bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase mb-4">
 						<?php
-						$booking_badge = get_theme_mod( 'contact_booking_badge', 'Invitations' );
+						$booking_badge = tsm_get_theme_mod_cached( 'contact_booking_badge', 'Invitations' );
 						echo esc_html( $booking_badge );
 						?>
 					</span>
 					<h3 class="text-2xl font-black mb-4">
 						<?php
-						$booking_title = get_theme_mod( 'contact_booking_title', 'Booking Inquiries' );
+						$booking_title = tsm_get_theme_mod_cached( 'contact_booking_title', 'Booking Inquiries' );
 						echo esc_html( $booking_title );
 						?>
 					</h3>
 					<p class="text-white/90 mb-6 leading-relaxed">
 						<?php
-						$booking_description = get_theme_mod(
+						$booking_description = tsm_get_theme_mod_cached(
 							'contact_booking_description',
 							'Interested in inviting Terry or Debbie to speak at your church, conference, or seminar? We would love to review your invitation.'
 						);
@@ -142,7 +142,7 @@ get_header();
 						?>
 					</p>
 					<?php
-					$booking_form_url = get_theme_mod( 'contact_booking_form_url', '' );
+					$booking_form_url = tsm_get_theme_mod_cached( 'contact_booking_form_url', '' );
 					if ( ! empty( $booking_form_url ) ) :
 						?>
 						<a class="inline-flex items-center gap-2 bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all" href="<?php echo esc_url( $booking_form_url ); ?>">
@@ -156,16 +156,16 @@ get_header();
 			<div class="bg-white dark:bg-[#0a140d] p-8 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-[#1d3a24] flex-grow">
 				<h3 class="text-xl font-black text-accent dark:text-white mb-8">
 					<?php
-					$contact_info_title = get_theme_mod( 'contact_info_title', 'Contact Information' );
+					$contact_info_title = tsm_get_theme_mod_cached( 'contact_info_title', 'Contact Information' );
 					echo esc_html( $contact_info_title );
 					?>
 				</h3>
 				<div class="space-y-8">
 					<?php
-					$contact_email   = get_theme_mod( 'contact_email', '' );
-					$contact_phone   = get_theme_mod( 'contact_phone', '' );
-					$contact_phone_2 = get_theme_mod( 'contact_phone_2', '+234 (708) 143-6641' );
-					$contact_address = get_theme_mod( 'contact_address', '' );
+					$contact_email   = tsm_get_theme_mod_cached( 'contact_email', '' );
+					$contact_phone   = tsm_get_theme_mod_cached( 'contact_phone', '' );
+					$contact_phone_2 = tsm_get_theme_mod_cached( 'contact_phone_2', '+234 (708) 143-6641' );
+					$contact_address = tsm_get_theme_mod_cached( 'contact_address', '' );
 					?>
 					
 					<!-- Email -->
@@ -252,10 +252,10 @@ get_header();
 						</h4>
 						<div class="flex gap-4">
 							<?php
-							$social_facebook = get_theme_mod( 'social_facebook', '' );
-							$social_instagram = get_theme_mod( 'social_instagram', '' );
-							$social_linkedin = get_theme_mod( 'social_linkedin', '' );
-							$social_whatsapp = get_theme_mod( 'social_whatsapp', '' );
+							$social_facebook = tsm_get_theme_mod_cached( 'social_facebook', '' );
+							$social_instagram = tsm_get_theme_mod_cached( 'social_instagram', '' );
+							$social_linkedin = tsm_get_theme_mod_cached( 'social_linkedin', '' );
+							$social_whatsapp = tsm_get_theme_mod_cached( 'social_whatsapp', '' );
 							
 							// If WhatsApp URL not set, generate from contact phone
 							if ( empty( $social_whatsapp ) && ! empty( $contact_phone ) ) {
@@ -295,9 +295,9 @@ get_header();
 
 <!-- FAQ Section -->
 <?php
-$faq_title = get_theme_mod( 'contact_faq_title', 'Frequently Asked Questions' );
-$faq_subtitle = get_theme_mod( 'contact_faq_subtitle', 'Before reaching out, you might find your answer here.' );
-$faq_items = get_theme_mod(
+$faq_title = tsm_get_theme_mod_cached( 'contact_faq_title', 'Frequently Asked Questions' );
+$faq_subtitle = tsm_get_theme_mod_cached( 'contact_faq_subtitle', 'Before reaching out, you might find your answer here.' );
+$faq_items = tsm_get_theme_mod_cached(
 	'contact_faq_items',
 	'How far in advance should we book?|We typically recommend booking 6-12 months in advance for international travel and 3-6 months for domestic events.|Do you travel individually?|While we prioritize joint ministry as a couple, we do accept individual speaking engagements based on the specific context and need.'
 );

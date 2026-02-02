@@ -15,7 +15,7 @@ get_header();
 			<div class="max-w-2xl flex flex-col gap-6 items-start text-left">
 				<h1 class="text-white text-4xl font-bold leading-tight tracking-[-0.033em] md:text-6xl">
 					<?php
-					$hero_heading = get_theme_mod(
+					$hero_heading = tsm_get_theme_mod_cached(
 						'hero_heading',
 						'Teaching the Word. Transforming Lives.'
 					);
@@ -24,7 +24,7 @@ get_header();
 				</h1>
 				<p class="text-white/90 text-lg md:text-xl font-normal max-w-2xl leading-relaxed">
 					<?php
-					$hero_description = get_theme_mod(
+					$hero_description = tsm_get_theme_mod_cached(
 						'hero_description',
 						'Besides teaching, Terry and Debbie Shaguy consider it a calling and an urgent priority to help less fortunate people, especially in Africa, rise above the darkness and horrors of poverty.'
 					);
@@ -34,11 +34,11 @@ get_header();
 				<div class="flex flex-col sm:flex-row gap-4 mt-6">
 					<?php
 					// Get contact page URL from Customizer setting
-					$contact_page_id = get_theme_mod( 'contact_page_id', 0 );
+					$contact_page_id = tsm_get_theme_mod_cached( 'contact_page_id', 0 );
 					$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
 					
 					// Get missions page URL from Customizer setting
-					$missions_page_id = get_theme_mod( 'missions_page_id', 0 );
+					$missions_page_id = tsm_get_theme_mod_cached( 'missions_page_id', 0 );
 					$missions_url = $missions_page_id ? get_permalink( $missions_page_id ) : home_url( '/missions' );
 					?>
 					<a href="<?php echo esc_url( $contact_url ); ?>" class="flex min-w-[220px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-white text-primary hover:text-accent text-lg font-bold shadow-xl hover:bg-gray-100 transition-all">
@@ -59,14 +59,14 @@ get_header();
 		<div class="relative">
 			<div class="aspect-square rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-primary/20 transform -rotate-2">
 				<?php
-				$about_image = get_theme_mod( 'about_image', get_template_directory_uri() . '/assets/images/about.png' );
+				$about_image = tsm_get_theme_mod_cached( 'about_image', get_template_directory_uri() . '/assets/images/about.png' );
 				?>
 				<img alt="Terry and Debbie Shaguy Professional Portrait" class="w-full h-full object-cover" src="<?php echo esc_url( $about_image ); ?>" loading="lazy" decoding="async"/>
 			</div>
 			<div class="absolute -bottom-6 -right-6 bg-primary text-white p-8 rounded-2xl shadow-xl hidden md:block max-w-[240px]">
 				<p class="serif-text italic text-lg leading-relaxed">
 					<?php
-					$about_quote = get_theme_mod(
+					$about_quote = tsm_get_theme_mod_cached(
 						'about_quote',
 						'"Dedicated to sharing hope across the nations."'
 					);
@@ -82,7 +82,7 @@ get_header();
 			</h3>
 			<div class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
 				<?php
-				$about_content = get_theme_mod(
+				$about_content = tsm_get_theme_mod_cached(
 					'about_content',
 					'With over 25 years in ministry, we have dedicated our lives to training leaders and reaching the unreached. Together, we bring a balanced perspective on faith, family, and global service. 
 
@@ -98,7 +98,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 					<div>
 						<h4 class="font-bold text-accent dark:text-white">
 							<?php
-							$villages_count = get_theme_mod( 'villages_count', '40' );
+							$villages_count = tsm_get_theme_mod_cached( 'villages_count', '40' );
 							echo esc_html( $villages_count ) . '+ Villages';
 							?>
 						</h4>
@@ -110,7 +110,7 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 					<div>
 						<h4 class="font-bold text-accent dark:text-white">
 							<?php
-							$books_count = get_theme_mod( 'books_count', '12' );
+							$books_count = tsm_get_theme_mod_cached( 'books_count', '12' );
 							echo esc_html( $books_count ) . '+ Books';
 							?>
 						</h4>
@@ -127,18 +127,18 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_1_icon', 'campaign' ) ); ?></span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( tsm_get_theme_mod_cached( 'service_1_icon', 'campaign' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
 					<?php
-					$service_1_title = get_theme_mod( 'service_1_title', 'Itinerant Teaching' );
+					$service_1_title = tsm_get_theme_mod_cached( 'service_1_title', 'Itinerant Teaching' );
 					echo esc_html( $service_1_title );
 					?>
 				</h4>
 				<p class="text-gray-600 dark:text-gray-400 text-base">
 					<?php
-					$service_1_description = get_theme_mod( 'service_1_description', 'Available for conferences, revivals, and church gatherings globally.' );
+					$service_1_description = tsm_get_theme_mod_cached( 'service_1_description', 'Available for conferences, revivals, and church gatherings globally.' );
 					echo esc_html( $service_1_description );
 					?>
 				</p>
@@ -146,18 +146,18 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_2_icon', 'menu_book' ) ); ?></span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( tsm_get_theme_mod_cached( 'service_2_icon', 'menu_book' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
 					<?php
-					$service_2_title = get_theme_mod( 'service_2_title', 'Authorship' );
+					$service_2_title = tsm_get_theme_mod_cached( 'service_2_title', 'Authorship' );
 					echo esc_html( $service_2_title );
 					?>
 				</h4>
 				<p class="text-gray-600 dark:text-gray-400 text-base">
 					<?php
-					$service_2_description = get_theme_mod( 'service_2_description', 'Writing together and individually to equip the body of Christ.' );
+					$service_2_description = tsm_get_theme_mod_cached( 'service_2_description', 'Writing together and individually to equip the body of Christ.' );
 					echo esc_html( $service_2_description );
 					?>
 				</p>
@@ -165,18 +165,18 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_3_icon', 'volunteer_activism' ) ); ?></span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( tsm_get_theme_mod_cached( 'service_3_icon', 'volunteer_activism' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
 					<?php
-					$service_3_title = get_theme_mod( 'service_3_title', 'Global Outreach' );
+					$service_3_title = tsm_get_theme_mod_cached( 'service_3_title', 'Global Outreach' );
 					echo esc_html( $service_3_title );
 					?>
 				</h4>
 				<p class="text-gray-600 dark:text-gray-400 text-base">
 					<?php
-					$service_3_description = get_theme_mod( 'service_3_description', 'Leading mission teams and humanitarian efforts across the globe.' );
+					$service_3_description = tsm_get_theme_mod_cached( 'service_3_description', 'Leading mission teams and humanitarian efforts across the globe.' );
 					echo esc_html( $service_3_description );
 					?>
 				</p>
@@ -184,18 +184,18 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 		</div>
 		<div class="flex flex-col gap-5 rounded-2xl border border-primary/20 dark:border-primary/30 bg-white dark:bg-[#0a140d] p-8 shadow-sm hover:shadow-lg transition-all border-b-4 border-b-primary">
 			<div class="bg-primary/10 text-primary p-3 rounded-lg w-fit">
-				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( get_theme_mod( 'service_4_icon', 'groups' ) ); ?></span>
+				<span class="material-symbols-outlined !text-3xl"><?php echo esc_html( tsm_get_theme_mod_cached( 'service_4_icon', 'groups' ) ); ?></span>
 			</div>
 			<div class="flex flex-col gap-2">
 				<h4 class="text-primary dark:text-white text-xl font-bold">
 					<?php
-					$service_4_title = get_theme_mod( 'service_4_title', 'Couple\'s Ministry' );
+					$service_4_title = tsm_get_theme_mod_cached( 'service_4_title', 'Couple\'s Ministry' );
 					echo esc_html( $service_4_title );
 					?>
 				</h4>
 				<p class="text-gray-600 dark:text-gray-400 text-base">
 					<?php
-					$service_4_description = get_theme_mod( 'service_4_description', 'Providing biblical guidance and seminars for marriages and families.' );
+					$service_4_description = tsm_get_theme_mod_cached( 'service_4_description', 'Providing biblical guidance and seminars for marriages and families.' );
 					echo esc_html( $service_4_description );
 					?>
 				</p>
@@ -207,9 +207,9 @@ Our journey has taken us from rural villages in Nigeria to bustling metropolises
 <!-- Featured Book Section -->
 <?php
 // Get featured book - check front page customizer first, then books archive customizer, then meta field
-$featured_book_id = get_theme_mod( 'front_page_featured_book', 0 );
+$featured_book_id = tsm_get_theme_mod_cached( 'front_page_featured_book', 0 );
 if ( ! $featured_book_id || $featured_book_id === 0 ) {
-	$featured_book_id = get_theme_mod( 'books_featured_book', 0 );
+	$featured_book_id = tsm_get_theme_mod_cached( 'books_featured_book', 0 );
 }
 $featured_book_id = absint( $featured_book_id );
 
@@ -269,8 +269,8 @@ if ( $featured_query && $featured_query->have_posts() ) :
 		: ( get_the_excerpt() ? get_the_excerpt() : 'Discover the latest insights from Terry Shaguy in this transformative guide to spiritual growth and enduring faith. A cornerstone for every believer\'s library.' );
 	
 	// Use badge from book or fallback to customizer
-	$display_badge = $featured_badge ? $featured_badge : get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
-	$display_author = $featured_author ? $featured_author : get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
+	$display_badge = $featured_badge ? $featured_badge : tsm_get_theme_mod_cached( 'featured_book_badge', 'NEW RELEASE' );
+	$display_author = $featured_author ? $featured_author : tsm_get_theme_mod_cached( 'featured_book_author', 'Terry Shaguy' );
 	?>
 	<section class="bg-gradient-to-br from-accent via-primary to-primary text-white py-24 overflow-hidden relative">
 		<div class="absolute right-0 top-0 w-1/3 h-full bg-accent/10 -skew-x-12 translate-x-1/2"></div>
@@ -309,7 +309,7 @@ if ( $featured_query && $featured_query->have_posts() ) :
 				</div>
 				<div class="order-1 lg:order-2 flex justify-center">
 					<div class="relative w-full max-w-md aspect-[3/4] rounded-lg shadow-2xl overflow-hidden transform lg:rotate-6 hover:rotate-0 transition-transform duration-500 group">
-						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( $featured_image ? $featured_image : get_theme_mod( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
+						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( $featured_image ? $featured_image : tsm_get_theme_mod_cached( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
 							<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-10 group-hover:opacity-0 transition-opacity duration-500">
 								<div>
 								</div>
@@ -335,19 +335,19 @@ else :
 				<div class="order-2 lg:order-1">
 					<span class="bg-white/20 text-white px-4 py-1 rounded text-xs font-bold mb-6 inline-block border border-white/20">
 						<?php
-						$featured_book_badge = get_theme_mod( 'featured_book_badge', 'NEW RELEASE' );
+						$featured_book_badge = tsm_get_theme_mod_cached( 'featured_book_badge', 'NEW RELEASE' );
 						echo esc_html( $featured_book_badge );
 						?>
 					</span>
 					<h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
 						<?php
-						$featured_book_title = get_theme_mod( 'featured_book_title', 'Walking the Narrow Road' );
+						$featured_book_title = tsm_get_theme_mod_cached( 'featured_book_title', 'Walking the Narrow Road' );
 						echo esc_html( $featured_book_title );
 						?>
 					</h2>
 					<p class="text-white/80 text-lg mb-8 leading-relaxed max-w-xl">
 						<?php
-						$featured_book_description = get_theme_mod(
+						$featured_book_description = tsm_get_theme_mod_cached(
 							'featured_book_description',
 							'Discover the transformative power of surrendered living. In his latest book, Terry Shaguy shares profound lessons from two decades on the mission field, teaching us how to find God\'s voice in the midst of global noise.'
 						);
@@ -355,22 +355,22 @@ else :
 						?>
 					</p>
 					<div class="flex flex-wrap gap-4">
-						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
+						<a href="<?php echo esc_url( tsm_get_theme_mod_cached( 'featured_book_buy_url', home_url( '/books/walking-the-narrow-road' ) ) ); ?>" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">
 							Get Your Copy
 						</a>
-						<a href="<?php echo esc_url( get_theme_mod( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
+						<a href="<?php echo esc_url( tsm_get_theme_mod_cached( 'featured_book_excerpt_url', home_url( '/books/walking-the-narrow-road#excerpt' ) ) ); ?>" class="bg-transparent border-2 border-white/40 backdrop-blur-md text-white hover:text-white font-bold py-4 px-10 rounded-lg hover:bg-white/10 transition-all">
 							Read Excerpt
 						</a>
 					</div>
 				</div>
 				<div class="order-1 lg:order-2 flex justify-center">
 					<div class="relative w-full max-w-md aspect-[3/4] rounded-lg shadow-2xl overflow-hidden transform lg:rotate-6 hover:rotate-0 transition-transform duration-500">
-						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( get_theme_mod( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
+						<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?php echo esc_url( tsm_get_theme_mod_cached( 'featured_book_image', get_template_directory_uri() . '/assets/images/book-cover.png' ) ); ?>')">
 							<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-10">
 								<div>
 									<p class="text-xs font-bold tracking-widest text-accent uppercase mb-2">
 										<?php
-										$featured_book_author = get_theme_mod( 'featured_book_author', 'Terry Shaguy' );
+										$featured_book_author = tsm_get_theme_mod_cached( 'featured_book_author', 'Terry Shaguy' );
 										echo esc_html( $featured_book_author );
 										?>
 									</p>

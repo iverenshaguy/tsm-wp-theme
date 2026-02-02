@@ -16,7 +16,7 @@ $sort_by = isset( $_GET['sort'] ) ? sanitize_text_field( $_GET['sort'] ) : 'newe
 global $wp_query;
 
 // Get featured book - check customizer first, then meta field
-$featured_book_id = get_theme_mod( 'books_featured_book', 0 );
+$featured_book_id = tsm_get_theme_mod_cached( 'books_featured_book', 0 );
 $featured_book_id = absint( $featured_book_id );
 
 // Initialize featured query variable

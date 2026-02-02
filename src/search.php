@@ -58,10 +58,10 @@ if ( $is_category_archive && $current_category ) {
 }
 
 // Customizer settings for newsletter
-$show_subscribe_form = get_theme_mod( 'articles_show_subscribe_form', true );
-$newsletter_title = get_theme_mod( 'articles_newsletter_title', 'Weekly Resources' );
-$newsletter_description = get_theme_mod( 'articles_newsletter_description', 'Join 5,000+ others receiving weekly encouragement and articles directly in their inbox.' );
-$newsletter_form_id = get_theme_mod( 'articles_newsletter_form_id', '' );
+$show_subscribe_form = tsm_get_theme_mod_cached( 'articles_show_subscribe_form', true );
+$newsletter_title = tsm_get_theme_mod_cached( 'articles_newsletter_title', 'Weekly Resources' );
+$newsletter_description = tsm_get_theme_mod_cached( 'articles_newsletter_description', 'Join 5,000+ others receiving weekly encouragement and articles directly in their inbox.' );
+$newsletter_form_id = tsm_get_theme_mod_cached( 'articles_newsletter_form_id', '' );
 ?>
 
 <main class="max-w-[1200px] mx-auto px-6 py-12">

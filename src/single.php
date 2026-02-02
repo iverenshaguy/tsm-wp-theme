@@ -54,7 +54,7 @@ while ( have_posts() ) :
 	// Get author (use default if not set)
 	$author_id = get_the_author_meta( 'ID' );
 	$author_name = get_the_author();
-	$default_author = get_theme_mod( 'single_article_default_author', 'Dr. Tor Terry Shaguy' );
+	$default_author = tsm_get_theme_mod_cached( 'single_article_default_author', 'Dr. Tor Terry Shaguy' );
 	
 	// Use default author if author name is empty or default
 	if ( empty( $author_name ) || $author_name === 'admin' || $author_name === 'Administrator' ) {
@@ -63,7 +63,7 @@ while ( have_posts() ) :
 	
 	// Get author avatar, fallback to default author image
 	$author_avatar = get_avatar_url( $author_id, array( 'size' => 48 ) );
-	$default_author_image = get_theme_mod( 'single_article_default_author_image', '' );
+	$default_author_image = tsm_get_theme_mod_cached( 'single_article_default_author_image', '' );
 	if ( empty( $author_avatar ) || ! $author_avatar || strpos( $author_avatar, 'gravatar.com' ) !== false && empty( get_avatar_url( $author_id ) ) ) {
 		if ( ! empty( $default_author_image ) ) {
 			$author_avatar = $default_author_image;
@@ -94,14 +94,14 @@ while ( have_posts() ) :
 	}
 	
 	// Customizer settings
-	$show_subscribe_form = get_theme_mod( 'single_article_show_subscribe_form', true );
-	$newsletter_title = get_theme_mod( 'single_article_newsletter_title', 'Subscribe to Devotions' );
-	$newsletter_description = get_theme_mod( 'single_article_newsletter_description', 'Join 12,000+ others receiving daily wisdom and spiritual encouragement in their inbox every morning.' );
-	$newsletter_form_id = get_theme_mod( 'single_article_newsletter_form_id', '' );
+	$show_subscribe_form = tsm_get_theme_mod_cached( 'single_article_show_subscribe_form', true );
+	$newsletter_title = tsm_get_theme_mod_cached( 'single_article_newsletter_title', 'Subscribe to Devotions' );
+	$newsletter_description = tsm_get_theme_mod_cached( 'single_article_newsletter_description', 'Join 12,000+ others receiving daily wisdom and spiritual encouragement in their inbox every morning.' );
+	$newsletter_form_id = tsm_get_theme_mod_cached( 'single_article_newsletter_form_id', '' );
 	
 	// Fallback to articles archive form ID if single article form ID is not set
 	if ( empty( $newsletter_form_id ) ) {
-		$newsletter_form_id = get_theme_mod( 'articles_newsletter_form_id', '' );
+		$newsletter_form_id = tsm_get_theme_mod_cached( 'articles_newsletter_form_id', '' );
 	}
 	?>
 	

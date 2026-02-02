@@ -15,20 +15,20 @@ get_header();
 			<div class="relative group">
 				<div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-primary/20">
 					<?php
-					$about_image = get_theme_mod( 'about_page_image', get_template_directory_uri() . '/assets/images/about.png' );
+					$about_image = tsm_get_theme_mod_cached( 'about_page_image', get_template_directory_uri() . '/assets/images/about.png' );
 					?>
-					<img alt="<?php echo esc_attr( get_theme_mod( 'about_page_name', 'Terry Shaguy' ) ); ?>" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" src="<?php echo esc_url( $about_image ); ?>"/>
+					<img alt="<?php echo esc_attr( tsm_get_theme_mod_cached( 'about_page_name', 'Terry Shaguy' ) ); ?>" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" src="<?php echo esc_url( $about_image ); ?>"/>
 				</div>
 				<div class="absolute -bottom-6 -left-6 bg-primary text-white p-8 rounded-2xl shadow-xl max-w-[280px]">
 					<h4 class="mb-2 text-xs font-bold tracking-widest uppercase text-accent">
 						<?php
-						$about_quote_label = get_theme_mod( 'about_quote_label', 'Core Philosophy' );
+						$about_quote_label = tsm_get_theme_mod_cached( 'about_quote_label', 'Core Philosophy' );
 						echo esc_html( $about_quote_label );
 						?>
 					</h4>
 					<p class="text-lg italic leading-relaxed serif-text">
 						<?php
-						$about_quote = get_theme_mod(
+						$about_quote = tsm_get_theme_mod_cached(
 							'about_quote',
 							'"The Gospel, lived with depth and expressed through love, stewardship, and shared responsibility."'
 						);
@@ -41,13 +41,13 @@ get_header();
 				<div>
 					<h5 class="mb-4 text-sm font-bold tracking-wider uppercase text-accent dark:text-primary">
 						<?php
-						$fast_facts_title = get_theme_mod( 'about_fast_facts_title', 'Fast Facts' );
+						$fast_facts_title = tsm_get_theme_mod_cached( 'about_fast_facts_title', 'Fast Facts' );
 						echo esc_html( $fast_facts_title );
 						?>
 					</h5>
 					<ul class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
 						<?php
-						$fast_facts = get_theme_mod(
+						$fast_facts = tsm_get_theme_mod_cached(
 							'about_fast_facts',
 							"school|Ph.D. in Global Theology\npublic|20+ Years Global Field Experience\nedit_note|Author of 8 Best-selling Titles\nlocation_on|Based in Ibadan, Nigeria"
 						);
@@ -77,13 +77,13 @@ get_header();
 			<header class="mb-12">
 				<h2 class="mb-4 text-sm font-bold tracking-widest uppercase text-primary">
 					<?php
-					$about_subtitle = get_theme_mod( 'about_page_subtitle', 'The Life & Ministry Of' );
+					$about_subtitle = tsm_get_theme_mod_cached( 'about_page_subtitle', 'The Life & Ministry Of' );
 					echo esc_html( $about_subtitle );
 					?>
 				</h2>
 				<h1 class="mb-6 text-5xl font-bold leading-tight text-accent dark:text-white md:text-6xl">
 					<?php
-					$about_name = get_theme_mod( 'about_page_name', 'Terry Shaguy' );
+					$about_name = tsm_get_theme_mod_cached( 'about_page_name', 'Terry Shaguy' );
 					echo esc_html( $about_name );
 					?>
 				</h1>
@@ -102,13 +102,13 @@ get_header();
 							<div>
 								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
-									$about_section_1_title = get_theme_mod( 'about_section_1_title', 'His Calling' );
+									$about_section_1_title = tsm_get_theme_mod_cached( 'about_section_1_title', 'His Calling' );
 									echo esc_html( $about_section_1_title );
 									?>
 								</h3>
 								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
-									$about_section_1_content = get_theme_mod(
+									$about_section_1_content = tsm_get_theme_mod_cached(
 										'about_section_1_content',
 										'<p>Dr. Terry Shaguy\'s journey began with a distinct sense of purpose in the small rural communities of the Appalachian foothills. From an early age, Terry felt a profound pull toward the intersection of faith and global humanitarian needs. This wasn\'t merely a vocational choice but a transformative calling that has led him into some of the world\'s most remote corners.</p><p>His ministry is defined by a relentless pursuit of depth. Whether teaching in a crowded urban center or mentoring leaders in a quiet village, Terry\'s approach remains rooted in the belief that spiritual growth is the catalyst for all lasting societal change.</p>'
 									);
@@ -119,7 +119,7 @@ get_header();
 							<div class="p-8 my-8 italic rounded-r-xl border-l-4 bg-primary/5 dark:bg-white/5 border-primary">
 								<p class="text-xl text-accent dark:text-white">
 									<?php
-									$about_highlight_quote = get_theme_mod(
+									$about_highlight_quote = tsm_get_theme_mod_cached(
 										'about_highlight_quote',
 										'"We do not travel to the ends of the earth to bring God there; we travel to discover where He is already working and join Him in that harvest."'
 									);
@@ -133,13 +133,13 @@ get_header();
 							<div>
 								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
-									$about_section_2_title = get_theme_mod( 'about_section_2_title', 'Academic Background' );
+									$about_section_2_title = tsm_get_theme_mod_cached( 'about_section_2_title', 'Academic Background' );
 									echo esc_html( $about_section_2_title );
 									?>
 								</h3>
 								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
-									$about_section_2_content = get_theme_mod(
+									$about_section_2_content = tsm_get_theme_mod_cached(
 										'about_section_2_content',
 										'<p>Recognizing that zeal must be tempered with wisdom, Terry pursued a rigorous academic path. He holds a Master\'s of Divinity and a Ph.D. in Global Theology from the Trinity Evangelical Divinity School. His research focused on the indigenous expressions of faith in the Global South, a subject he continues to write and lecture on extensively.</p><p>Today, he serves as a visiting professor at several seminaries globally, helping to bridge the gap between traditional theological study and practical mission-field application.</p>'
 									);
@@ -150,13 +150,13 @@ get_header();
 							<div>
 								<h3 class="mb-4 font-sans text-2xl font-medium tracking-tight text-accent dark:text-primary sans-serif">
 									<?php
-									$about_section_3_title = get_theme_mod( 'about_section_3_title', 'Personal Life' );
+									$about_section_3_title = tsm_get_theme_mod_cached( 'about_section_3_title', 'Personal Life' );
 									echo esc_html( $about_section_3_title );
 									?>
 								</h3>
 								<div class="space-y-4 text-lg leading-relaxed text-gray-700 serif-text dark:text-gray-300">
 									<?php
-									$about_section_3_content = get_theme_mod(
+									$about_section_3_content = tsm_get_theme_mod_cached(
 										'about_section_3_content',
 										'<p>Beyond the pulpit and the lecture hall, Terry is a devoted husband to Debbie and a father of three. He often credits his family as his greatest grounding force. Terry is an avid hiker and can often be found exploring the trails of the Smoky Mountains when he is not on international assignment.</p><p>Terry and Debbie\'s partnership in ministry is a cornerstone of their work, demonstrating a model of shared leadership and mutual respect that they bring to every conference and mission they lead together.</p>'
 									);
@@ -181,20 +181,20 @@ get_header();
 				<span class="text-sm material-symbols-outlined text-primary">menu_book</span>
 				<span class="text-xs font-bold tracking-widest uppercase text-primary">
 					<?php
-					$about_books_badge = get_theme_mod( 'about_books_badge', 'Resources' );
+					$about_books_badge = tsm_get_theme_mod_cached( 'about_books_badge', 'Resources' );
 					echo esc_html( $about_books_badge );
 					?>
 				</span>
 			</div>
 			<h3 class="text-4xl font-black text-accent dark:text-white">
 				<?php
-				$about_books_title = get_theme_mod( 'about_books_title', 'Books by Terry' );
+				$about_books_title = tsm_get_theme_mod_cached( 'about_books_title', 'Books by Terry' );
 				echo esc_html( $about_books_title );
 				?>
 			</h3>
 			<p class="mx-auto mt-4 max-w-2xl text-gray-500">
 				<?php
-				$about_books_description = get_theme_mod(
+				$about_books_description = tsm_get_theme_mod_cached(
 					'about_books_description',
 					'Deepen your study with these selected works focusing on spiritual growth, global missions, and leadership.'
 				);
@@ -204,7 +204,7 @@ get_header();
 		</div>
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 			<?php
-			$books_page_id = get_theme_mod( 'books_page_id', 0 );
+			$books_page_id = tsm_get_theme_mod_cached( 'books_page_id', 0 );
 			$books_url = $books_page_id ? get_permalink( $books_page_id ) : home_url( '/books' );
 			
 			// Query books - try custom post type 'book' first, fallback to posts with 'books' category
@@ -315,7 +315,7 @@ get_header();
 <section class="max-w-[1280px] mx-auto px-6 py-20">
 	<div class="overflow-hidden relative p-12 text-center text-white rounded-3xl bg-primary md:p-20">
 		<?php
-		$cta_bg_image = get_theme_mod( 'about_cta_bg_image', '' );
+		$cta_bg_image = tsm_get_theme_mod_cached( 'about_cta_bg_image', '' );
 		if ( $cta_bg_image ) {
 			?>
 			<div class="absolute inset-0 bg-center bg-cover opacity-10" style="background-image: url('<?php echo esc_url( $cta_bg_image ); ?>')"></div>
@@ -328,13 +328,13 @@ get_header();
 			</div>
 			<h2 class="mb-6 text-3xl font-black md:text-5xl">
 				<?php
-				$about_cta_title = get_theme_mod( 'about_cta_title', 'Invite Terry to Your Event' );
+				$about_cta_title = tsm_get_theme_mod_cached( 'about_cta_title', 'Invite Terry to Your Event' );
 				echo esc_html( $about_cta_title );
 				?>
 			</h2>
 			<p class="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-white/80">
 				<?php
-				$about_cta_description = get_theme_mod(
+				$about_cta_description = tsm_get_theme_mod_cached(
 					'about_cta_description',
 					'Dr. Terry Shaguy is available for keynote speaking, leadership seminars, and theological training worldwide.'
 				);
@@ -343,9 +343,9 @@ get_header();
 			</p>
 			<div class="flex flex-col gap-4 justify-center sm:flex-row">
 				<?php
-				$contact_page_id = get_theme_mod( 'contact_page_id', 0 );
+				$contact_page_id = tsm_get_theme_mod_cached( 'contact_page_id', 0 );
 				$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
-				$speakers_kit_url = get_theme_mod( 'speakers_kit_url', '' );
+				$speakers_kit_url = tsm_get_theme_mod_cached( 'speakers_kit_url', '' );
 				?>
 				<a href="<?php echo esc_url( $contact_url ); ?>" class="px-10 py-5 font-bold bg-white rounded-lg shadow-xl transition-all text-primary hover:text-accent hover:bg-gray-100 hover:scale-105 active:scale-95">
 					Check Availability

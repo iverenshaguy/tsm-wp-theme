@@ -645,7 +645,7 @@ function tsm_handle_partner_form() {
 	// Check if account details are configured (check all 4 accounts)
 	$has_account_details = false;
 	for ( $i = 1; $i <= 4; $i++ ) {
-		$account_number = get_theme_mod( 'partners_account_' . $i . '_account_number', '' );
+		$account_number = tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_number', '' );
 		if ( ! empty( $account_number ) ) {
 			$has_account_details = true;
 			break;
@@ -745,7 +745,7 @@ function tsm_handle_partner_form_ajax() {
 	// Check if account details are configured
 	$has_account_details = false;
 	for ( $i = 1; $i <= 4; $i++ ) {
-		$account_number = get_theme_mod( 'partners_account_' . $i . '_account_number', '' );
+		$account_number = tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_number', '' );
 		if ( ! empty( $account_number ) ) {
 			$has_account_details = true;
 			break;

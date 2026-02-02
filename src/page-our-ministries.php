@@ -15,14 +15,14 @@ get_header();
 			<span class="material-symbols-outlined text-primary text-sm">visibility</span>
 			<span class="text-primary text-xs font-bold tracking-widest uppercase">
 				<?php
-				$ministries_badge = get_theme_mod( 'ministries_badge', 'The Heart of the Vision' );
+				$ministries_badge = tsm_get_theme_mod_cached( 'ministries_badge', 'The Heart of the Vision' );
 				echo esc_html( $ministries_badge );
 				?>
 			</span>
 		</div>
 		<h1 class="text-4xl md:text-6xl text-primary dark:text-white font-normal italic leading-[1.15] mb-12 serif-text">
 			<?php
-			$ministries_vision = get_theme_mod(
+			$ministries_vision = tsm_get_theme_mod_cached(
 				'ministries_vision',
 				'"Breaking poverty through <span class="text-accent">wise enterprise</span> and <span class="text-accent font-bold not-italic">community spirit</span>."'
 			);
@@ -34,13 +34,13 @@ get_header();
 			<div class="bg-white dark:bg-background-dark border border-gray-100 dark:border-[#1d3a24] shadow-sm rounded-2xl p-6 max-w-sm">
 				<p class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-bold mb-2">
 					<?php
-					$motto_label = get_theme_mod( 'ministries_motto_label', 'Our Motto' );
+					$motto_label = tsm_get_theme_mod_cached( 'ministries_motto_label', 'Our Motto' );
 					echo esc_html( $motto_label );
 					?>
 				</p>
 				<p class="text-2xl text-primary dark:text-accent font-serif font-bold italic serif-text">
 					<?php
-					$motto_text = get_theme_mod( 'ministries_motto_text', '"Win and Help Win"' );
+					$motto_text = tsm_get_theme_mod_cached( 'ministries_motto_text', '"Win and Help Win"' );
 					echo esc_html( $motto_text );
 					?>
 				</p>
@@ -57,13 +57,13 @@ get_header();
 				<div>
 					<h2 class="text-3xl text-primary serif-text dark:text-white mb-6">
 						<?php
-						$ministries_mission_title = get_theme_mod( 'ministries_mission_title', 'Our mission is to walk with you as we restore Kingdom wealth.' );
+						$ministries_mission_title = tsm_get_theme_mod_cached( 'ministries_mission_title', 'Our mission is to walk with you as we restore Kingdom wealth.' );
 						echo esc_html( $ministries_mission_title );
 						?>
 					</h2>
 					<p class="text-lg text-gray-500 dark:text-gray-400 font-light leading-relaxed">
 						<?php
-						$ministries_mission_description = get_theme_mod(
+						$ministries_mission_description = tsm_get_theme_mod_cached(
 							'ministries_mission_description',
 							'We believe that financial freedom is not just about individuals, but about equipping the entire body of Christ for the final harvest.'
 						);
@@ -73,7 +73,7 @@ get_header();
 				</div>
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
 					<?php
-					$ministries_pillars = get_theme_mod(
+					$ministries_pillars = tsm_get_theme_mod_cached(
 						'ministries_pillars',
 						'hub|Galvanizing the Church|Preparing the global body for the divine transfer of wealth through enterprise.|flare|Re-awakening Purpose|Raising a Joshua Generation focused on achieving Kingdom wealth for His glory.|handshake|Bridging the Gap|Restoring the essential family and community spirit that destroys systemic poverty.|shield|Equipping Every Saint|Providing the financial tools needed for the spiritual battle ahead.'
 					);
@@ -102,7 +102,7 @@ get_header();
 			<div class="relative">
 				<div class="rounded-3xl overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
 					<?php
-					$ministries_image = get_theme_mod( 'ministries_image', get_template_directory_uri() . '/assets/images/ministry-work.jpg' );
+					$ministries_image = tsm_get_theme_mod_cached( 'ministries_image', get_template_directory_uri() . '/assets/images/ministry-work.jpg' );
 					?>
 					<img alt="Ministry Work" class="w-full aspect-[4/5] object-cover" src="<?php echo esc_url( $ministries_image ); ?>"/>
 				</div>
@@ -110,7 +110,7 @@ get_header();
 					<span class="material-symbols-outlined mb-2 opacity-50">format_quote</span>
 					<p class="text-lg font-serif italic leading-relaxed serif-text">
 						<?php
-						$ministries_quote = get_theme_mod(
+						$ministries_quote = tsm_get_theme_mod_cached(
 							'ministries_quote',
 							'"The church is rising to take her place in the economy of heaven."'
 						);
@@ -129,13 +129,13 @@ get_header();
 		<div class="text-center mb-24">
 			<h2 class="text-3xl md:text-5xl font-black text-accent dark:text-white mb-4">
 				<?php
-				$timeline_title = get_theme_mod( 'ministries_timeline_title', 'Our Journey Together' );
+				$timeline_title = tsm_get_theme_mod_cached( 'ministries_timeline_title', 'Our Journey Together' );
 				echo esc_html( $timeline_title );
 				?>
 			</h2>
 			<p class="text-gray-500 dark:text-gray-400">
 				<?php
-				$timeline_subtitle = get_theme_mod( 'ministries_timeline_subtitle', 'How we practically bring the vision to life, step by step.' );
+				$timeline_subtitle = tsm_get_theme_mod_cached( 'ministries_timeline_subtitle', 'How we practically bring the vision to life, step by step.' );
 				echo esc_html( $timeline_subtitle );
 				?>
 			</p>
@@ -144,7 +144,7 @@ get_header();
 			<div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary to-transparent -translate-x-1/2 hidden md:block"></div>
 			<div class="space-y-16 relative">
 				<?php
-				$timeline_items = get_theme_mod(
+				$timeline_items = tsm_get_theme_mod_cached(
 					'ministries_timeline_items',
 					'payments|Wealth Creation Conferences|Intensive seminars sharing biblical strategies for generating and circulating wealth.|left|account_tree|REGAM Committees|Local support structures helping believers find stable, profitable employment.|right|volunteer_activism|"Helps" Ministry|Building financial foundations for fellow ministers to increase their reach.|left|model_training|Empowerment Workshops|Hands-on practical training specifically tailored for financial stewardship.|right|medical_services|Rural & Medical Outreaches|Healing bodies and sharing the Gospel in hard-to-reach communities.|left|psychology|Life & Career Coaching|One-on-one professional guidance for life development and career paths.|right|edit_note|Publishing Consultants|Mentoring authors and media creators to spread the Kingdom message.|left|support|Missions Supporters|A global network of financiers committed to funding gospel expansion.|right|local_library|Writers & Publishers|A community of storytellers dedicated to Christian media and books.|left|celebration|Soul Winning|The ultimate goal: leading every heart back to the Father.|right'
 				);
@@ -196,8 +196,8 @@ get_header();
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 			<div class="grid grid-cols-2 gap-4">
 				<?php
-				$resource_image_1 = get_theme_mod( 'ministries_resource_image_1', get_template_directory_uri() . '/assets/images/book-1.jpg' );
-				$resource_image_2 = get_theme_mod( 'ministries_resource_image_2', get_template_directory_uri() . '/assets/images/book-2.jpg' );
+				$resource_image_1 = tsm_get_theme_mod_cached( 'ministries_resource_image_1', get_template_directory_uri() . '/assets/images/book-1.jpg' );
+				$resource_image_2 = tsm_get_theme_mod_cached( 'ministries_resource_image_2', get_template_directory_uri() . '/assets/images/book-2.jpg' );
 				?>
 				<img alt="Book" class="rounded-2xl shadow-lg -rotate-3" src="<?php echo esc_url( $resource_image_1 ); ?>"/>
 				<img alt="Publication" class="rounded-2xl shadow-lg rotate-3 translate-y-12" src="<?php echo esc_url( $resource_image_2 ); ?>"/>
@@ -205,19 +205,19 @@ get_header();
 			<div>
 				<h2 class="text-4xl text-accent serif-text dark:text-white mb-8">
 					<?php
-					$resources_title = get_theme_mod( 'ministries_resources_title', 'Equip your mind with truth.' );
+					$resources_title = tsm_get_theme_mod_cached( 'ministries_resources_title', 'Equip your mind with truth.' );
 					echo esc_html( $resources_title );
 					?>
 				</h2>
 				<div class="space-y-4 mb-12">
 					<?php
-					$resource_items = get_theme_mod(
+					$resource_items = tsm_get_theme_mod_cached(
 						'ministries_resource_items',
 						'menu_book|Books & Publications'
 					);
 					$res_items = explode( '|', $resource_items );
 					$res_count = count( $res_items ) / 2;
-					$books_page_id = get_theme_mod( 'books_page_id', 0 );
+					$books_page_id = tsm_get_theme_mod_cached( 'books_page_id', 0 );
 					$books_url = $books_page_id ? get_permalink( $books_page_id ) : home_url( '/books' );
 					for ( $i = 0; $i < $res_count; $i++ ) {
 						$res_icon = isset( $res_items[ $i * 2 ] ) ? trim( $res_items[ $i * 2 ] ) : 'check';
@@ -247,19 +247,19 @@ get_header();
 					</div>
 					<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-4">
 						<?php
-						$bible_label = get_theme_mod( 'ministries_bible_label', 'Our Foundation' );
+						$bible_label = tsm_get_theme_mod_cached( 'ministries_bible_label', 'Our Foundation' );
 						echo esc_html( $bible_label );
 						?>
 					</p>
 					<h4 class="text-3xl font-serif mb-4 serif-text">
 						<?php
-						$bible_title = get_theme_mod( 'ministries_bible_title', 'The Holy Bible' );
+						$bible_title = tsm_get_theme_mod_cached( 'ministries_bible_title', 'The Holy Bible' );
 						echo esc_html( $bible_title );
 						?>
 					</h4>
 					<p class="text-white/70 text-sm leading-relaxed max-w-sm">
 						<?php
-						$bible_description = get_theme_mod(
+						$bible_description = tsm_get_theme_mod_cached(
 							'ministries_bible_description',
 							'The primary source of all our wisdom, strategy, and inspiration for the work of the ministry.'
 						);
@@ -276,7 +276,7 @@ get_header();
 <section class="max-w-[1280px] mx-auto py-24 px-6">
 	<div class="bg-primary text-white rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
 		<?php
-		$cta_bg_image = get_theme_mod( 'ministries_cta_bg_image', '' );
+		$cta_bg_image = tsm_get_theme_mod_cached( 'ministries_cta_bg_image', '' );
 		if ( $cta_bg_image ) {
 			?>
 			<div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('<?php echo esc_url( $cta_bg_image ); ?>')"></div>
@@ -289,13 +289,13 @@ get_header();
 			</div>
 			<h2 class="text-3xl md:text-5xl font-black mb-6">
 				<?php
-				$cta_title = get_theme_mod( 'ministries_cta_title', 'Ready to make a difference?' );
+				$cta_title = tsm_get_theme_mod_cached( 'ministries_cta_title', 'Ready to make a difference?' );
 				echo esc_html( $cta_title );
 				?>
 			</h2>
 			<p class="text-white/80 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
 				<?php
-				$cta_description = get_theme_mod(
+				$cta_description = tsm_get_theme_mod_cached(
 					'ministries_cta_description',
 					'Join the REGAM Global community and help us break the chains of poverty through faith and wise enterprise.'
 				);
@@ -305,7 +305,7 @@ get_header();
 			<div class="flex flex-col sm:flex-row justify-center gap-4">
 				<?php
 				$partner_url = home_url( '/partners' );
-				$contact_page_id = get_theme_mod( 'contact_page_id', 0 );
+				$contact_page_id = tsm_get_theme_mod_cached( 'contact_page_id', 0 );
 				$contact_url = $contact_page_id ? get_permalink( $contact_page_id ) : home_url( '/contact-us' );
 				?>
 				 <a href="<?php echo esc_url( $partner_url ); ?>" target="_blank" rel="noopener" class="bg-white text-primary hover:text-accent hover:bg-gray-100 font-bold py-4 px-10 rounded-lg shadow-xl transition-all flex items-center gap-2">

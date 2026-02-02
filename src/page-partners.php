@@ -67,10 +67,10 @@ get_header();
 				<h4 class="text-xl font-bold text-[#0a2e16] dark:text-white"><?php echo esc_html__( 'Direct Channels', 'tsm-theme' ); ?></h4>
 				<div class="space-y-6">
 					<?php
-					$partners_email  = get_theme_mod( 'partners_email', 'partners@terryshaguy.org' );
-					$contact_phone   = get_theme_mod( 'contact_phone', '' );
-					$contact_phone_2 = get_theme_mod( 'contact_phone_2', '+234 (708) 143-6641' );
-					$contact_address = get_theme_mod( 'contact_address', '' );
+					$partners_email  = tsm_get_theme_mod_cached( 'partners_email', 'partners@terryshaguy.org' );
+					$contact_phone   = tsm_get_theme_mod_cached( 'contact_phone', '' );
+					$contact_phone_2 = tsm_get_theme_mod_cached( 'contact_phone_2', '+234 (708) 143-6641' );
+					$contact_address = tsm_get_theme_mod_cached( 'contact_address', '' );
 					?>
 					
 					<!-- Email -->
@@ -219,24 +219,24 @@ get_header();
 <!-- Account Details Modal -->
 <?php
 // Get customizable success message
-$success_title = get_theme_mod( 'partners_success_title', __( 'Thank You for Your Heart to Partner!', 'tsm-theme' ) );
-$success_description = get_theme_mod( 'partners_success_description', '' ); // Optional - empty by default
-$account_section_title = get_theme_mod( 'partners_account_section_title', __( 'Account Details for Contributions', 'tsm-theme' ) );
-$account_notes = get_theme_mod( 'partners_account_notes', '' );
-$contact_phone = get_theme_mod( 'contact_phone', '+234 (703) 030-8123' );
+$success_title = tsm_get_theme_mod_cached( 'partners_success_title', __( 'Thank You for Your Heart to Partner!', 'tsm-theme' ) );
+$success_description = tsm_get_theme_mod_cached( 'partners_success_description', '' ); // Optional - empty by default
+$account_section_title = tsm_get_theme_mod_cached( 'partners_account_section_title', __( 'Account Details for Contributions', 'tsm-theme' ) );
+$account_notes = tsm_get_theme_mod_cached( 'partners_account_notes', '' );
+$contact_phone = tsm_get_theme_mod_cached( 'contact_phone', '+234 (703) 030-8123' );
 
 // Collect all accounts (up to 4)
 $accounts = array();
 for ( $i = 1; $i <= 4; $i++ ) {
-	$account_number = get_theme_mod( 'partners_account_' . $i . '_account_number', '' );
+	$account_number = tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_number', '' );
 	if ( ! empty( $account_number ) ) {
 		$accounts[] = array(
-			'label'         => get_theme_mod( 'partners_account_' . $i . '_label', sprintf( __( 'Account %d', 'tsm-theme' ), $i ) ),
-			'bank_name'     => get_theme_mod( 'partners_account_' . $i . '_bank_name', '' ),
-			'account_name' => get_theme_mod( 'partners_account_' . $i . '_account_name', '' ),
+			'label'         => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_label', sprintf( __( 'Account %d', 'tsm-theme' ), $i ) ),
+			'bank_name'     => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_bank_name', '' ),
+			'account_name' => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_account_name', '' ),
 			'account_number' => $account_number,
-			'routing_number' => get_theme_mod( 'partners_account_' . $i . '_routing_number', '' ),
-			'swift_code'    => get_theme_mod( 'partners_account_' . $i . '_swift_code', '' ),
+			'routing_number' => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_routing_number', '' ),
+			'swift_code'    => tsm_get_theme_mod_cached( 'partners_account_' . $i . '_swift_code', '' ),
 		);
 	}
 }
@@ -382,7 +382,7 @@ if ( $has_account_details ) :
 			<!-- Action Buttons -->
 			<div class="flex flex-col gap-4">
 				<?php
-				$brochure_url = get_theme_mod( 'partners_brochure_url', '' );
+				$brochure_url = tsm_get_theme_mod_cached( 'partners_brochure_url', '' );
 				if ( ! empty( $brochure_url ) ) :
 				?>
 					<a href="<?php echo esc_url( $brochure_url ); ?>" target="_blank" rel="noopener" class="flex gap-3 justify-center items-center px-8 py-4 w-full text-sm font-black tracking-widest text-white uppercase rounded-xl shadow-xl transition-all bg-primary hover:bg-primary/90 shadow-primary/20">

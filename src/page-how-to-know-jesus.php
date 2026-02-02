@@ -15,10 +15,10 @@ get_header();
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 				<div class="p-8 md:p-16">
 					<?php
-					$hero_label = get_theme_mod( 'know_jesus_hero_label', 'Your Spiritual Journey' );
-					$hero_title = get_theme_mod( 'know_jesus_hero_title', 'The Greatest Love Story Ever Told' );
-					$hero_description = get_theme_mod( 'know_jesus_hero_description', 'Whether you\'re searching for meaning, peace, or a fresh start, the message of the Gospel is for you. Discover the path to a personal relationship with Jesus Christ.' );
-					$hero_image = get_theme_mod( 'know_jesus_hero_image', '' );
+					$hero_label = tsm_get_theme_mod_cached( 'know_jesus_hero_label', 'Your Spiritual Journey' );
+					$hero_title = tsm_get_theme_mod_cached( 'know_jesus_hero_title', 'The Greatest Love Story Ever Told' );
+					$hero_description = tsm_get_theme_mod_cached( 'know_jesus_hero_description', 'Whether you\'re searching for meaning, peace, or a fresh start, the message of the Gospel is for you. Discover the path to a personal relationship with Jesus Christ.' );
+					$hero_image = tsm_get_theme_mod_cached( 'know_jesus_hero_image', '' );
 					?>
 					<span class="text-accent font-bold tracking-[0.2em] uppercase text-sm mb-6 block"><?php echo esc_html( $hero_label ); ?></span>
 					<h1 class="text-primary dark:text-white text-5xl md:text-7xl font-black leading-tight mb-6">
@@ -47,7 +47,7 @@ get_header();
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 			<div class="order-2 lg:order-1">
 				<?php
-				$problem_image = get_theme_mod( 'know_jesus_problem_image', '' );
+				$problem_image = tsm_get_theme_mod_cached( 'know_jesus_problem_image', '' );
 				?>
 				<div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
 					<?php if ( ! empty( $problem_image ) ) : ?>
@@ -61,11 +61,11 @@ get_header();
 				<div class="step-number">01</div>
 				<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4"><?php echo esc_html__( 'The Need', 'tsm-theme' ); ?></h2>
 				<?php
-				$problem_title = get_theme_mod( 'know_jesus_problem_title', 'The Problem: We are Separated from God' );
-				$problem_text_1 = get_theme_mod( 'know_jesus_problem_text_1', 'God created us to be in a perfect relationship with Him. However, we chose our own way. This independent streak is what the Bible calls "sin."' );
-				$problem_verse_1 = get_theme_mod( 'know_jesus_problem_verse_1', '"For all have sinned and fall short of the glory of God." — Romans 3:23' );
-				$problem_text_2 = get_theme_mod( 'know_jesus_problem_text_2', 'This separation creates a void in our hearts—a gap that we often try to fill with success, relationships, or even religion, but nothing seems to bridge the divide.' );
-        $problem_verse_2 = get_theme_mod( 'know_jesus_problem_verse_2', '"Neither is there salvation in any other; for there is none other name under heaven given among men, whereby we must be saved." — Acts 4:12' );
+				$problem_title = tsm_get_theme_mod_cached( 'know_jesus_problem_title', 'The Problem: We are Separated from God' );
+				$problem_text_1 = tsm_get_theme_mod_cached( 'know_jesus_problem_text_1', 'God created us to be in a perfect relationship with Him. However, we chose our own way. This independent streak is what the Bible calls "sin."' );
+				$problem_verse_1 = tsm_get_theme_mod_cached( 'know_jesus_problem_verse_1', '"For all have sinned and fall short of the glory of God." — Romans 3:23' );
+				$problem_text_2 = tsm_get_theme_mod_cached( 'know_jesus_problem_text_2', 'This separation creates a void in our hearts—a gap that we often try to fill with success, relationships, or even religion, but nothing seems to bridge the divide.' );
+        $problem_verse_2 = tsm_get_theme_mod_cached( 'know_jesus_problem_verse_2', '"Neither is there salvation in any other; for there is none other name under heaven given among men, whereby we must be saved." — Acts 4:12' );
 				?>
 				<h3 class="text-primary dark:text-white text-4xl md:text-5xl font-black leading-tight mb-8">
 					<?php echo esc_html( $problem_title ); ?>
@@ -95,13 +95,13 @@ get_header();
 					<div class="flex items-center justify-center w-12 h-12 rounded-full bg-white text-primary font-black text-xl mb-6">02</div>
 					<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4"><?php echo esc_html__( 'The Bridge', 'tsm-theme' ); ?></h2>
 					<?php
-					$solution_title = get_theme_mod( 'know_jesus_solution_title', 'The Solution: Jesus is the Only Way' );
-					$solution_text_1 = get_theme_mod( 'know_jesus_solution_text_1', 'Jesus Christ is God\'s only provision for our sin. Through His death on the cross and His resurrection, He paid the penalty for our sins and bridged the gap between us and God.' );
-					$solution_verse_1 = get_theme_mod( 'know_jesus_solution_verse_1', '"I am the way, the truth, and the life. No one comes to the Father except through Me." — John 14:6' );
-					$solution_text_2 = get_theme_mod( 'know_jesus_solution_text_2', 'It isn\'t about what we can do to reach God, but what God has already done to reach us.' );
-          $solution_verse_2 = get_theme_mod( 'know_jesus_solution_verse_2', '"That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved." — Romans 10:9' );
-					$solution_image = get_theme_mod( 'know_jesus_solution_image', '' );
-					$solution_image_text = get_theme_mod( 'know_jesus_solution_image_text', 'Grace is a Gift' );
+					$solution_title = tsm_get_theme_mod_cached( 'know_jesus_solution_title', 'The Solution: Jesus is the Only Way' );
+					$solution_text_1 = tsm_get_theme_mod_cached( 'know_jesus_solution_text_1', 'Jesus Christ is God\'s only provision for our sin. Through His death on the cross and His resurrection, He paid the penalty for our sins and bridged the gap between us and God.' );
+					$solution_verse_1 = tsm_get_theme_mod_cached( 'know_jesus_solution_verse_1', '"I am the way, the truth, and the life. No one comes to the Father except through Me." — John 14:6' );
+					$solution_text_2 = tsm_get_theme_mod_cached( 'know_jesus_solution_text_2', 'It isn\'t about what we can do to reach God, but what God has already done to reach us.' );
+          $solution_verse_2 = tsm_get_theme_mod_cached( 'know_jesus_solution_verse_2', '"That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved." — Romans 10:9' );
+					$solution_image = tsm_get_theme_mod_cached( 'know_jesus_solution_image', '' );
+					$solution_image_text = tsm_get_theme_mod_cached( 'know_jesus_solution_image_text', 'Grace is a Gift' );
 					?>
 					<h3 class="text-4xl md:text-6xl font-black mb-8 leading-tight">
 						<?php echo esc_html( $solution_title ); ?>
@@ -147,19 +147,19 @@ get_header();
 			<div class="step-number mx-auto">03</div>
 			<h2 class="text-accent uppercase tracking-widest text-sm font-bold mb-4"><?php echo esc_html__( 'The Choice', 'tsm-theme' ); ?></h2>
 			<?php
-			$choice_title = get_theme_mod( 'know_jesus_choice_title', 'Your Response: Will You Receive Him?' );
-			$choice_description = get_theme_mod( 'know_jesus_choice_description', 'Knowing these truths is not enough. We must individually receive Jesus Christ as Savior and Lord; then we can know and experience God\'s love and plan for our lives.' );
-			$believe_title = get_theme_mod( 'know_jesus_believe_title', 'Believe' );
-			$believe_text = get_theme_mod( 'know_jesus_believe_text', 'Believe that Jesus is the Son of God and that He died and rose again for you.' );
-			$repent_title = get_theme_mod( 'know_jesus_repent_title', 'Repent' );
-			$repent_text = get_theme_mod( 'know_jesus_repent_text', 'Turn from your own way and decide to follow God\'s direction for your life.' );
-			$receive_title = get_theme_mod( 'know_jesus_receive_title', 'Receive' );
-			$receive_text = get_theme_mod( 'know_jesus_receive_text', 'Invite Jesus to enter your heart and life as your personal Savior.' );
-			$confess_title = get_theme_mod( 'know_jesus_confess_title', 'Confess' );
-			$confess_text = get_theme_mod( 'know_jesus_confess_text', 'Confess Jesus audibly as the Lord over your life.' );
-			$prayer_title = get_theme_mod( 'know_jesus_prayer_title', 'A Suggested Prayer' );
-			$prayer_text = get_theme_mod( 'know_jesus_prayer_text', '"Heavenly Father, I thank you for the gift of Jesus Christ. I believe I am a sinner and the sacrificial work of Jesus on the cross is for someone like me. Jesus, you who rose from the dead, save me. Please be my Lord and personal saviour. Thank you, Father, for I receive a New Heart and new Spirit by faith and I am Born again in Jesus name, Amen."' );
-			$prayer_question = get_theme_mod( 'know_jesus_prayer_question', 'Does this prayer express the desire of your heart?' );
+			$choice_title = tsm_get_theme_mod_cached( 'know_jesus_choice_title', 'Your Response: Will You Receive Him?' );
+			$choice_description = tsm_get_theme_mod_cached( 'know_jesus_choice_description', 'Knowing these truths is not enough. We must individually receive Jesus Christ as Savior and Lord; then we can know and experience God\'s love and plan for our lives.' );
+			$believe_title = tsm_get_theme_mod_cached( 'know_jesus_believe_title', 'Believe' );
+			$believe_text = tsm_get_theme_mod_cached( 'know_jesus_believe_text', 'Believe that Jesus is the Son of God and that He died and rose again for you.' );
+			$repent_title = tsm_get_theme_mod_cached( 'know_jesus_repent_title', 'Repent' );
+			$repent_text = tsm_get_theme_mod_cached( 'know_jesus_repent_text', 'Turn from your own way and decide to follow God\'s direction for your life.' );
+			$receive_title = tsm_get_theme_mod_cached( 'know_jesus_receive_title', 'Receive' );
+			$receive_text = tsm_get_theme_mod_cached( 'know_jesus_receive_text', 'Invite Jesus to enter your heart and life as your personal Savior.' );
+			$confess_title = tsm_get_theme_mod_cached( 'know_jesus_confess_title', 'Confess' );
+			$confess_text = tsm_get_theme_mod_cached( 'know_jesus_confess_text', 'Confess Jesus audibly as the Lord over your life.' );
+			$prayer_title = tsm_get_theme_mod_cached( 'know_jesus_prayer_title', 'A Suggested Prayer' );
+			$prayer_text = tsm_get_theme_mod_cached( 'know_jesus_prayer_text', '"Heavenly Father, I thank you for the gift of Jesus Christ. I believe I am a sinner and the sacrificial work of Jesus on the cross is for someone like me. Jesus, you who rose from the dead, save me. Please be my Lord and personal saviour. Thank you, Father, for I receive a New Heart and new Spirit by faith and I am Born again in Jesus name, Amen."' );
+			$prayer_question = tsm_get_theme_mod_cached( 'know_jesus_prayer_question', 'Does this prayer express the desire of your heart?' );
 			?>
 			<h3 class="text-primary dark:text-white text-4xl md:text-5xl font-black leading-tight mb-6">
 				<?php echo esc_html( $choice_title ); ?>
@@ -210,11 +210,11 @@ get_header();
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 			<div>
 				<?php
-				$form_title = get_theme_mod( 'know_jesus_form_title', 'I Made a Decision Today' );
-				$form_description_1 = get_theme_mod( 'know_jesus_form_description_1', 'If you just prayed that prayer or have questions about what it means to follow Jesus, we are happy to hear from you.' );
-				$form_description_2 = get_theme_mod( 'know_jesus_form_description_2', 'You can also download our free "Next Steps" guide to help you begin your journey of faith.' );
-				$form_benefit = get_theme_mod( 'know_jesus_form_benefit', 'Download Free digital "Next Steps" guide' );
-				$form_download_file_id = get_theme_mod( 'know_jesus_form_download_file', '' );
+				$form_title = tsm_get_theme_mod_cached( 'know_jesus_form_title', 'I Made a Decision Today' );
+				$form_description_1 = tsm_get_theme_mod_cached( 'know_jesus_form_description_1', 'If you just prayed that prayer or have questions about what it means to follow Jesus, we are happy to hear from you.' );
+				$form_description_2 = tsm_get_theme_mod_cached( 'know_jesus_form_description_2', 'You can also download our free "Next Steps" guide to help you begin your journey of faith.' );
+				$form_benefit = tsm_get_theme_mod_cached( 'know_jesus_form_benefit', 'Download Free digital "Next Steps" guide' );
+				$form_download_file_id = tsm_get_theme_mod_cached( 'know_jesus_form_download_file', '' );
 				$form_download_file = ! empty( $form_download_file_id ) ? wp_get_attachment_url( $form_download_file_id ) : '';
 				?>
 				<h2 class="text-primary dark:text-white text-4xl font-black mb-6"><?php echo esc_html( $form_title ); ?></h2>
@@ -241,9 +241,9 @@ get_header();
 			</div>
 			<div class="bg-white dark:bg-[#0a140d] p-8 md:p-12 rounded-3xl border border-gray-100 dark:border-[#1d3a24] shadow-xl">
 				<?php
-				$form_download_file_id = get_theme_mod( 'know_jesus_form_download_file', '' );
+				$form_download_file_id = tsm_get_theme_mod_cached( 'know_jesus_form_download_file', '' );
 				$form_download_file = ! empty( $form_download_file_id ) ? wp_get_attachment_url( $form_download_file_id ) : '';
-				$form_benefit = get_theme_mod( 'know_jesus_form_benefit', 'Download Free digital "Next Steps" guide' );
+				$form_benefit = tsm_get_theme_mod_cached( 'know_jesus_form_benefit', 'Download Free digital "Next Steps" guide' );
 				?>
 				
 				<!-- Success/Error Message Container (initially hidden) -->

@@ -130,6 +130,7 @@ add_action( 'admin_init', function() {
  * Load theme functionality from modular files
  */
 require_once get_template_directory() . '/functions/setup.php';
+require_once get_template_directory() . '/functions/cache.php'; // Database optimization and caching
 require_once get_template_directory() . '/functions/enqueue.php';
 require_once get_template_directory() . '/functions/navigation.php';
 require_once get_template_directory() . '/functions/mobile-menu-walker.php';
