@@ -19,6 +19,49 @@ function tsm_theme_fonts_preconnect() {
 add_action( 'wp_head', 'tsm_theme_fonts_preconnect', 1 );
 
 /**
+ * Prevent scroll to top on form submission returns
+ * This runs immediately in the head to prevent any scroll before other scripts
+ */
+function tsm_prevent_scroll_to_top() {
+	?>
+	<script>
+	(function() {
+		'use strict';
+		// Prevent browser's automatic scroll restoration
+		if ('scrollRestoration' in history) {
+			history.scrollRestoration = 'manual';
+		}
+		
+		// Check for form submission parameters and restore scroll immediately
+		const urlParams = new URLSearchParams(window.location.search);
+		const formTypes = ['newsletter', 'contact', 'prayer', 'partner'];
+		
+		formTypes.forEach(function(formType) {
+			if (urlParams.has(formType)) {
+				const savedScroll = sessionStorage.getItem(formType + 'ScrollPosition');
+				if (savedScroll) {
+					const scrollPos = parseInt(savedScroll, 10);
+					if (scrollPos > 0) {
+						// Prevent scroll to top immediately
+						window.scrollTo(0, scrollPos);
+						
+						// Also prevent scroll on load event
+						window.addEventListener('load', function() {
+							setTimeout(function() {
+								window.scrollTo(0, scrollPos);
+							}, 0);
+						}, { once: true });
+					}
+				}
+			}
+		});
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_head', 'tsm_prevent_scroll_to_top', 2 );
+
+/**
  * Enqueue scripts and styles
  */
 function tsm_theme_scripts() {
@@ -55,6 +98,36 @@ function tsm_theme_scripts() {
 	$main_js_path = get_template_directory() . '/assets/js/main.js';
 	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : $theme_version;
 	wp_enqueue_script( 'tsm-theme-script', get_template_directory_uri() . '/assets/js/main.js', array(), $main_js_version, true );
+
+	// Localize script for newsletter AJAX
+	wp_localize_script( 'tsm-theme-script', 'tsmNewsletter', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'tsm_newsletter_signup' ),
+	) );
+
+	// Localize script for partner form AJAX
+	wp_localize_script( 'tsm-theme-script', 'tsmPartner', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'tsm_partner_form' ),
+	) );
+
+	// Localize script for contact form AJAX
+	wp_localize_script( 'tsm-theme-script', 'tsmContact', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'tsm_contact_form' ),
+	) );
+
+	// Localize script for prayer form AJAX
+	wp_localize_script( 'tsm-theme-script', 'tsmPrayer', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'tsm_prayer_request' ),
+	) );
+
+	// Localize script for decision form AJAX
+	wp_localize_script( 'tsm-theme-script', 'tsmDecision', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'tsm_decision_form' ),
+	) );
 
 	// Localize script for AJAX
 	if ( is_post_type_archive( 'mission' ) || is_page_template( 'archive-mission.php' ) ) {

@@ -244,29 +244,13 @@ get_header();
 				$form_download_file_id = get_theme_mod( 'know_jesus_form_download_file', '' );
 				$form_download_file = ! empty( $form_download_file_id ) ? wp_get_attachment_url( $form_download_file_id ) : '';
 				$form_benefit = get_theme_mod( 'know_jesus_form_benefit', 'Download Free digital "Next Steps" guide' );
-				$show_success = isset( $_GET['decision'] ) && $_GET['decision'] === 'success';
-				$show_error = isset( $_GET['decision'] ) && $_GET['decision'] === 'error';
 				?>
-				<?php if ( $show_success ) : ?>
-					<div class="mb-6 p-6 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-xl">
-						<p class="text-green-800 dark:text-green-200 mb-4 text-lg font-medium">
-							<?php echo esc_html__( 'Thank you! We\'ve received your message and will be in touch soon.', 'tsm-theme' ); ?>
-						</p>
-						<?php if ( ! empty( $form_download_file ) ) : ?>
-							<a href="<?php echo esc_url( $form_download_file ); ?>" download class="inline-flex items-center gap-2 bg-primary text-white hover:text-white font-bold px-6 py-3 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
-								<span class="material-symbols-outlined">download</span>
-								<?php echo esc_html( $form_benefit ); ?>
-							</a>
-						<?php endif; ?>
-					</div>
-				<?php elseif ( $show_error ) : ?>
-					<div class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl text-red-800 dark:text-red-200">
-						<?php echo esc_html__( 'There was an error submitting your form. Please try again.', 'tsm-theme' ); ?>
-					</div>
-				<?php endif; ?>
-				<form id="decision-form" class="space-y-6 <?php echo $show_success ? 'hidden' : ''; ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<?php wp_nonce_field( 'tsm_decision_form', 'tsm_decision_nonce' ); ?>
-					<input type="hidden" name="action" value="tsm_decision_form">
+				
+				<!-- Success/Error Message Container (initially hidden) -->
+				<div id="decision-message-container" class="hidden mb-6"></div>
+				
+				<form id="decision-form" class="space-y-6" method="post" data-download-file="<?php echo esc_attr( $form_download_file ); ?>" data-download-benefit="<?php echo esc_attr( $form_benefit ); ?>">
+					<?php wp_nonce_field( 'tsm_decision_form', 'tsm_decision_nonce', false ); ?>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div>
 							<label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300" for="first_name"><?php echo esc_html__( 'First Name', 'tsm-theme' ); ?></label>

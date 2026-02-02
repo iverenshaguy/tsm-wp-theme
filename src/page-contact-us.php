@@ -72,9 +72,11 @@ get_header();
 				}
 				?>
 				
-				<form id="contact-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="space-y-6" method="POST">
-					<?php wp_nonce_field( 'tsm_contact_form', 'tsm_contact_nonce' ); ?>
-					<input type="hidden" name="action" value="tsm_contact_form">
+				<!-- Success/Error Message Container (initially hidden) -->
+				<div id="contact-message-container" class="hidden mb-6"></div>
+				
+				<form id="contact-form" class="space-y-6" method="post">
+					<?php wp_nonce_field( 'tsm_contact_form', 'tsm_contact_nonce', false ); ?>
 					
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div class="space-y-2">

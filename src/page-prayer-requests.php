@@ -62,9 +62,11 @@ get_header();
 			<p class="text-gray-500 dark:text-gray-400">Our ministry team intercedes daily for these requests.</p>
 		</div>
 
-		<form id="prayer-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="space-y-8" method="POST">
-			<?php wp_nonce_field( 'tsm_prayer_request', 'tsm_prayer_nonce' ); ?>
-			<input type="hidden" name="action" value="tsm_prayer_request">
+		<!-- Success/Error Message Container (initially hidden) -->
+		<div id="prayer-message-container" class="hidden mb-6"></div>
+
+		<form id="prayer-form" class="space-y-8" method="post">
+			<?php wp_nonce_field( 'tsm_prayer_request', 'tsm_prayer_nonce', false ); ?>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<div class="space-y-2">

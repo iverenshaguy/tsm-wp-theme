@@ -5,18 +5,132 @@
 (function () {
   'use strict';
 
-  // Restore scroll position immediately if returning from form submission
+  // Prevent browser's automatic scroll restoration
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // Helper function to scroll to element with responsive offset for sticky header
+  function scrollToElementWithOffset(element) {
+    if (!element) return;
+
+    // Wait for next frame to ensure element is rendered
+    requestAnimationFrame(function () {
+      // Calculate offset based on screen size: 86px mobile, 124px large (lg breakpoint)
+      const isLargeScreen = window.matchMedia('(min-width: 1024px)').matches;
+      const offset = isLargeScreen ? 124 : 86;
+
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    });
+  }
+
+  // Immediately prevent scroll to top if we have a form parameter
   const urlParams = new URLSearchParams(window.location.search);
   const formTypes = ['newsletter', 'contact', 'prayer', 'partner'];
 
+  // Lock scroll position immediately if we detect a form submission return
+  let scrollLocked = false;
   formTypes.forEach(function (formType) {
     if (urlParams.has(formType)) {
-      const savedScrollPosition = sessionStorage.getItem(formType + 'ScrollPosition');
-      if (savedScrollPosition) {
-        window.scrollTo(0, parseInt(savedScrollPosition, 10));
-        sessionStorage.removeItem(formType + 'ScrollPosition');
+      scrollLocked = true;
+      // Prevent any scroll to top
+      const savedScroll = sessionStorage.getItem(formType + 'ScrollPosition');
+      if (savedScroll) {
+        const scrollPos = parseInt(savedScroll, 10);
+        if (scrollPos > 0) {
+          // Lock scroll immediately
+          window.scrollTo(0, scrollPos);
+        }
       }
     }
+  });
+
+  function restoreScrollPosition() {
+    formTypes.forEach(function (formType) {
+      if (urlParams.has(formType)) {
+        const savedScrollPosition = sessionStorage.getItem(formType + 'ScrollPosition');
+        if (savedScrollPosition) {
+          // For partner form, scroll to form section instead of exact position
+          if (formType === 'partner') {
+            const formSection = document.getElementById('inquiry-form');
+            if (formSection) {
+              window.scrollTo({
+                top: formSection.offsetTop - 20,
+                behavior: 'instant',
+              });
+            } else {
+              window.scrollTo(0, parseInt(savedScrollPosition, 10));
+            }
+          } else if (formType === 'newsletter') {
+            // For newsletter form, scroll to form section
+            const newsletterForm = document.getElementById('newsletter-form');
+            if (newsletterForm) {
+              // Calculate form position
+              const rect = newsletterForm.getBoundingClientRect();
+              const formTop = rect.top + window.pageYOffset;
+              const targetScroll = Math.max(0, formTop - 100); // 100px offset from top
+
+              // Use requestAnimationFrame to ensure smooth scroll
+              requestAnimationFrame(function () {
+                window.scrollTo({
+                  top: targetScroll,
+                  behavior: 'instant',
+                });
+                // Also try again after a frame to ensure it sticks
+                requestAnimationFrame(function () {
+                  if (window.pageYOffset !== targetScroll) {
+                    window.scrollTo({
+                      top: targetScroll,
+                      behavior: 'instant',
+                    });
+                  }
+                });
+              });
+            } else {
+              // Fallback to saved scroll position
+              const scrollPos = parseInt(savedScrollPosition, 10);
+              if (scrollPos > 0) {
+                requestAnimationFrame(function () {
+                  window.scrollTo(0, scrollPos);
+                });
+              }
+            }
+          } else {
+            const scrollPos = parseInt(savedScrollPosition, 10);
+            if (scrollPos > 0) {
+              window.scrollTo(0, scrollPos);
+            }
+          }
+          sessionStorage.removeItem(formType + 'ScrollPosition');
+        }
+      }
+    });
+  }
+
+  // Try to restore immediately (before any other scripts can scroll)
+  restoreScrollPosition();
+
+  // Also try after DOM is ready (in case elements aren't available yet)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      restoreScrollPosition();
+      // Try again after a short delay
+      setTimeout(restoreScrollPosition, 50);
+    });
+  } else {
+    // DOM already ready, try after a short delay
+    setTimeout(restoreScrollPosition, 50);
+  }
+
+  // Final attempt after page fully loads (including images)
+  window.addEventListener('load', function () {
+    setTimeout(restoreScrollPosition, 100);
   });
 
   // Initialize lazy loading fallback for older browsers
@@ -76,7 +190,7 @@
     }
 
     const elementsWithBgImages = document.querySelectorAll('[data-bg-image]');
-    
+
     if (elementsWithBgImages.length === 0) {
       return;
     }
@@ -87,12 +201,12 @@
           if (entry.isIntersecting) {
             const element = entry.target;
             const bgImageUrl = element.dataset.bgImage;
-            
+
             if (bgImageUrl) {
               // Check if element already has a background-image style (e.g., with gradient overlay)
               const existingBg = element.style.backgroundImage;
               const hasGradient = existingBg && existingBg.includes('linear-gradient');
-              
+
               // Preload the image
               const img = new Image();
               img.onload = function () {
@@ -106,7 +220,10 @@
                     element.style.backgroundImage = gradientMatch[1] + 'url(' + bgImageUrl + ')';
                   } else {
                     // Fallback: use existing style if we can't parse it
-                    element.style.backgroundImage = existingBg.replace(/url\([^)]+\)/, 'url(' + bgImageUrl + ')');
+                    element.style.backgroundImage = existingBg.replace(
+                      /url\([^)]+\)/,
+                      'url(' + bgImageUrl + ')'
+                    );
                   }
                 } else {
                   // No gradient, just set the image
@@ -117,7 +234,7 @@
               };
               img.src = bgImageUrl;
             }
-            
+
             observer.unobserve(element);
           }
         });
@@ -178,6 +295,108 @@
           newsletterMessage.remove();
         }, 300);
       }
+    }
+
+    function showNewsletterMessage(type, message) {
+      // Remove existing message if any
+      const existingMessage = document.getElementById('newsletter-message');
+      if (existingMessage) {
+        hideMessage(existingMessage);
+      }
+
+      // Create new message element
+      const messageDiv = document.createElement('div');
+      messageDiv.id = 'newsletter-message';
+      messageDiv.className =
+        'newsletter-message newsletter-' +
+        type +
+        ' mb-6 p-6 rounded-2xl text-center max-w-lg mx-auto shadow-lg flex items-center justify-center gap-3';
+
+      if (type === 'success') {
+        messageDiv.classList.add(
+          'bg-gradient-to-r',
+          'from-green-50',
+          'to-emerald-50',
+          'dark:from-green-900/30',
+          'dark:to-emerald-900/30',
+          'border-2',
+          'border-green-300',
+          'dark:border-green-700',
+          'text-green-800',
+          'dark:text-green-200'
+        );
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined text-3xl';
+        icon.textContent = 'check_circle';
+        const contentDiv = document.createElement('div');
+        const title = document.createElement('p');
+        title.className = 'font-bold text-lg mb-1';
+        title.textContent = 'Thank you for subscribing!';
+        const msg = document.createElement('p');
+        msg.className = 'text-sm opacity-90';
+        msg.textContent = message;
+        contentDiv.appendChild(title);
+        contentDiv.appendChild(msg);
+        messageDiv.appendChild(icon);
+        messageDiv.appendChild(contentDiv);
+      } else {
+        messageDiv.classList.add(
+          'bg-gradient-to-r',
+          'from-red-50',
+          'to-rose-50',
+          'dark:from-red-900/30',
+          'dark:to-rose-900/30',
+          'border-2',
+          'border-red-300',
+          'dark:border-red-700',
+          'text-red-800',
+          'dark:text-red-200'
+        );
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined text-3xl';
+        icon.textContent = 'error';
+        const contentDiv = document.createElement('div');
+        const title = document.createElement('p');
+        title.className = 'font-bold text-lg mb-1';
+        title.textContent = 'Oops!';
+        const msg = document.createElement('p');
+        msg.className = 'text-sm opacity-90';
+        msg.textContent = message;
+        contentDiv.appendChild(title);
+        contentDiv.appendChild(msg);
+        messageDiv.appendChild(icon);
+        messageDiv.appendChild(contentDiv);
+      }
+
+      // Insert message before form
+      newsletterForm.parentNode.insertBefore(messageDiv, newsletterForm);
+
+      // Scroll to message with offset for sticky header
+      scrollToElementWithOffset(messageDiv);
+
+      // Animate in
+      requestAnimationFrame(function () {
+        messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+        messageDiv.style.opacity = '1';
+        messageDiv.style.transform = 'translateY(0)';
+      });
+
+      // Auto-hide success message after 30 seconds
+      if (type === 'success') {
+        setTimeout(function () {
+          hideMessage(messageDiv);
+        }, 30000);
+      }
+
+      // Make message clickable to dismiss
+      messageDiv.addEventListener('click', function () {
+        hideMessage(messageDiv);
+        if (type === 'success') {
+          newsletterForm.reset();
+          formSubmitted = false;
+          updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
+        }
+      });
     }
 
     // Mobile menu toggle - only active below lg breakpoint
@@ -494,24 +713,83 @@
       // Initial validation
       updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
 
-      // Prevent form submission if email is invalid
+      // Handle form submission via AJAX
       newsletterForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const emailValue = newsletterEmail.value.trim();
         const isValid = validateEmail(emailValue, emailRegex);
 
         formSubmitted = true;
 
         if (!isValid) {
-          e.preventDefault();
-          e.stopPropagation();
           // Show error feedback
           newsletterEmail.focus();
           newsletterEmail.classList.add('border-red-500');
+          showNewsletterMessage('error', 'Please enter a valid email address.');
           return false;
         }
 
-        // Store scroll position in sessionStorage only if valid
-        sessionStorage.setItem('newsletterScrollPosition', window.scrollY.toString());
+        // Disable button and show loading state
+        newsletterSubmit.disabled = true;
+        const originalText = newsletterSubmit.innerHTML;
+        newsletterSubmit.innerHTML =
+          '<span class="material-symbols-outlined animate-spin !text-base mr-2">sync</span> Submitting...';
+        newsletterSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+
+        // Hide any existing messages
+        hideMessage(newsletterMessage);
+
+        // Submit via AJAX
+        if (window.tsmNewsletter && window.tsmNewsletter.ajaxUrl && window.tsmNewsletter.nonce) {
+          const formData = new FormData();
+          formData.append('action', 'tsm_newsletter_signup');
+          formData.append('nonce', window.tsmNewsletter.nonce);
+          formData.append('email', emailValue);
+
+          fetch(window.tsmNewsletter.ajaxUrl, {
+            method: 'POST',
+            body: formData,
+          })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (data) {
+              // Reset button
+              newsletterSubmit.disabled = false;
+              newsletterSubmit.innerHTML = originalText;
+              newsletterSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+
+              if (data.success) {
+                // Show success message
+                showNewsletterMessage('success', data.data.message || 'Thank you for subscribing!');
+                // Reset form
+                newsletterForm.reset();
+                formSubmitted = false;
+                updateButtonState(newsletterEmail, newsletterSubmit, emailRegex, false);
+              } else {
+                // Show error message
+                showNewsletterMessage(
+                  'error',
+                  data.data.message || 'Something went wrong. Please try again.'
+                );
+                newsletterEmail.focus();
+              }
+            })
+            .catch(function (error) {
+              // Reset button
+              newsletterSubmit.disabled = false;
+              newsletterSubmit.innerHTML = originalText;
+              newsletterSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+              // Show error message
+              showNewsletterMessage('error', 'Something went wrong. Please try again.');
+              console.error('Newsletter submission error:', error);
+            });
+        } else {
+          // Fallback: submit normally if AJAX not available
+          newsletterForm.submit();
+        }
       });
 
       // Clean up URL parameter without reloading
@@ -557,6 +835,58 @@
           }, 500);
         });
       }
+    }
+
+    // Contact form helper functions
+    function showContactSuccessMessage(message) {
+      const messageContainer = document.getElementById('contact-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-6 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-300 dark:border-green-700 text-green-800 dark:text-green-200 text-center flex items-center justify-center gap-3';
+
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined text-3xl';
+      icon.textContent = 'check_circle';
+      const contentDiv = document.createElement('div');
+      const title = document.createElement('p');
+      title.className = 'font-bold text-lg mb-1';
+      title.textContent = 'Message Sent!';
+      const msg = document.createElement('p');
+      msg.className = 'text-sm opacity-90';
+      msg.textContent = message;
+      contentDiv.appendChild(title);
+      contentDiv.appendChild(msg);
+      messageDiv.appendChild(icon);
+      messageDiv.appendChild(contentDiv);
+      messageContainer.appendChild(messageDiv);
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
+
+      // Auto-hide after 30 seconds
+      setTimeout(function () {
+        messageContainer.classList.add('hidden');
+        messageContainer.innerHTML = '';
+      }, 30000);
+    }
+
+    function showContactErrorMessage(message) {
+      const messageContainer = document.getElementById('contact-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-4 rounded-xl bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-800 dark:text-red-200';
+      messageDiv.textContent = message;
+      messageContainer.innerHTML = '';
+      messageContainer.appendChild(messageDiv);
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
     }
 
     // Contact form validation and handling
@@ -642,14 +972,14 @@
         // Initial validation
         validateContactForm(false);
 
-        // Prevent form submission if form is invalid
+        // Handle form submission via AJAX
         contactForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           formSubmitted = true;
 
           if (!validateContactForm(true)) {
-            e.preventDefault();
-            e.stopPropagation();
-
             // Focus first invalid field
             if (!contactName.value.trim()) {
               contactName.focus();
@@ -662,8 +992,73 @@
             return false;
           }
 
-          // Store scroll position before submission
-          sessionStorage.setItem('contactScrollPosition', window.scrollY.toString());
+          // Disable button and show loading state
+          contactSubmit.disabled = true;
+          const originalText = contactSubmit.innerHTML;
+          contactSubmit.innerHTML =
+            '<span class="material-symbols-outlined animate-spin !text-base mr-2">sync</span> Sending...';
+          contactSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+
+          // Hide any existing messages
+          const messageContainer = document.getElementById('contact-message-container');
+          if (messageContainer) {
+            messageContainer.classList.add('hidden');
+            messageContainer.innerHTML = '';
+          }
+
+          // Submit via AJAX
+          if (window.tsmContact && window.tsmContact.ajaxUrl && window.tsmContact.nonce) {
+            const contactSubject = contactForm.querySelector('#subject');
+            const formData = new FormData();
+            formData.append('action', 'tsm_contact_form');
+            formData.append('nonce', window.tsmContact.nonce);
+            formData.append('name', contactName.value.trim());
+            formData.append('email', contactEmail.value.trim());
+            formData.append('subject', contactSubject ? contactSubject.value : 'general');
+            formData.append('message', contactMessage.value.trim());
+
+            fetch(window.tsmContact.ajaxUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(function (response) {
+                return response.json();
+              })
+              .then(function (data) {
+                // Reset button
+                contactSubmit.disabled = false;
+                contactSubmit.innerHTML = originalText;
+                contactSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                if (data.success) {
+                  // Show success message
+                  showContactSuccessMessage(
+                    data.data.message || "Thank you for contacting us! We'll get back to you soon."
+                  );
+                  // Reset form
+                  contactForm.reset();
+                  formSubmitted = false;
+                  validateContactForm(false);
+                } else {
+                  // Show error message
+                  showContactErrorMessage(
+                    data.data.message || 'Something went wrong. Please try again.'
+                  );
+                }
+              })
+              .catch(function (error) {
+                // Reset button
+                contactSubmit.disabled = false;
+                contactSubmit.innerHTML = originalText;
+                contactSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+                // Show error message
+                showContactErrorMessage('Something went wrong. Please try again.');
+                console.error('Contact form submission error:', error);
+              });
+          } else {
+            // Fallback: submit normally if AJAX not available
+            contactForm.submit();
+          }
         });
 
         // Clean up URL parameter without reloading
@@ -673,6 +1068,58 @@
           window.history.replaceState({}, '', url);
         }
       }
+    }
+
+    // Prayer form helper functions
+    function showPrayerSuccessMessage(message) {
+      const messageContainer = document.getElementById('prayer-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-6 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-300 dark:border-green-700 text-green-800 dark:text-green-200 text-center flex items-center justify-center gap-3';
+
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined text-3xl';
+      icon.textContent = 'check_circle';
+      const contentDiv = document.createElement('div');
+      const title = document.createElement('p');
+      title.className = 'font-bold text-lg mb-1';
+      title.textContent = 'Prayer Request Received!';
+      const msg = document.createElement('p');
+      msg.className = 'text-sm opacity-90';
+      msg.textContent = message;
+      contentDiv.appendChild(title);
+      contentDiv.appendChild(msg);
+      messageDiv.appendChild(icon);
+      messageDiv.appendChild(contentDiv);
+      messageContainer.appendChild(messageDiv);
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
+
+      // Auto-hide after 30 seconds
+      setTimeout(function () {
+        messageContainer.classList.add('hidden');
+        messageContainer.innerHTML = '';
+      }, 30000);
+    }
+
+    function showPrayerErrorMessage(message) {
+      const messageContainer = document.getElementById('prayer-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-4 rounded-xl bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-800 dark:text-red-200';
+      messageDiv.textContent = message;
+      messageContainer.innerHTML = '';
+      messageContainer.appendChild(messageDiv);
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
     }
 
     // Prayer request form validation and handling
@@ -758,14 +1205,14 @@
         // Initial validation
         validatePrayerForm(false);
 
-        // Prevent form submission if form is invalid
+        // Handle form submission via AJAX
         prayerForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           formSubmitted = true;
 
           if (!validatePrayerForm(true)) {
-            e.preventDefault();
-            e.stopPropagation();
-
             // Focus first invalid field
             if (!prayerName.value.trim()) {
               prayerName.focus();
@@ -778,8 +1225,76 @@
             return false;
           }
 
-          // Store scroll position before submission
-          sessionStorage.setItem('prayerScrollPosition', window.scrollY.toString());
+          // Disable button and show loading state
+          prayerSubmit.disabled = true;
+          const originalText = prayerSubmit.innerHTML;
+          prayerSubmit.innerHTML =
+            '<span class="material-symbols-outlined animate-spin !text-base mr-2">sync</span> Submitting...';
+          prayerSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+
+          // Hide any existing messages
+          const messageContainer = document.getElementById('prayer-message-container');
+          if (messageContainer) {
+            messageContainer.classList.add('hidden');
+            messageContainer.innerHTML = '';
+          }
+
+          // Submit via AJAX
+          if (window.tsmPrayer && window.tsmPrayer.ajaxUrl && window.tsmPrayer.nonce) {
+            const requestType = prayerForm.querySelector('#request-type');
+            const confidential = prayerForm.querySelector('#confidential');
+            const formData = new FormData();
+            formData.append('action', 'tsm_prayer_request');
+            formData.append('nonce', window.tsmPrayer.nonce);
+            formData.append('name', prayerName.value.trim());
+            formData.append('email', prayerEmail.value.trim());
+            formData.append('request-type', requestType ? requestType.value : '');
+            formData.append('message', prayerMessage.value.trim());
+            formData.append('confidential', confidential && confidential.checked ? '1' : '0');
+
+            fetch(window.tsmPrayer.ajaxUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(function (response) {
+                return response.json();
+              })
+              .then(function (data) {
+                // Reset button
+                prayerSubmit.disabled = false;
+                prayerSubmit.innerHTML = originalText;
+                prayerSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                if (data.success) {
+                  // Show success message
+                  showPrayerSuccessMessage(
+                    data.data.message ||
+                      "Thank you for sharing your prayer request. We'll be praying for you!"
+                  );
+                  // Reset form
+                  prayerForm.reset();
+                  formSubmitted = false;
+                  validatePrayerForm(false);
+                } else {
+                  // Show error message
+                  showPrayerErrorMessage(
+                    data.data.message || 'Something went wrong. Please try again.'
+                  );
+                }
+              })
+              .catch(function (error) {
+                // Reset button
+                prayerSubmit.disabled = false;
+                prayerSubmit.innerHTML = originalText;
+                prayerSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+                // Show error message
+                showPrayerErrorMessage('Something went wrong. Please try again.');
+                console.error('Prayer form submission error:', error);
+              });
+          } else {
+            // Fallback: submit normally if AJAX not available
+            prayerForm.submit();
+          }
         });
 
         // Clean up URL parameter without reloading
@@ -789,6 +1304,58 @@
           window.history.replaceState({}, '', url);
         }
       }
+    }
+
+    // Decision form helper functions
+    function showDecisionSuccessMessage(message, downloadFile, downloadBenefit) {
+      const messageContainer = document.getElementById('decision-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-6 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-xl';
+
+      const text = document.createElement('p');
+      text.className = 'text-green-800 dark:text-green-200 mb-4 text-lg font-medium';
+      text.textContent = message;
+      messageDiv.appendChild(text);
+
+      if (downloadFile && downloadBenefit) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadFile;
+        downloadLink.download = '';
+        downloadLink.className =
+          'inline-flex items-center gap-2 bg-primary text-white hover:text-white font-bold px-6 py-3 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all';
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined';
+        icon.textContent = 'download';
+        downloadLink.appendChild(icon);
+        downloadLink.appendChild(document.createTextNode(downloadBenefit));
+        messageDiv.appendChild(downloadLink);
+      }
+
+      messageContainer.appendChild(messageDiv);
+      decisionForm.classList.add('hidden');
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
+    }
+
+    function showDecisionErrorMessage(message) {
+      const messageContainer = document.getElementById('decision-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      const messageDiv = document.createElement('div');
+      messageDiv.className =
+        'p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl text-red-800 dark:text-red-200';
+      messageDiv.textContent = message;
+      messageContainer.innerHTML = '';
+      messageContainer.appendChild(messageDiv);
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
     }
 
     // Decision form validation and handling (How to Know Jesus page)
@@ -900,14 +1467,14 @@
         // Initial validation
         validateDecisionForm(false);
 
-        // Prevent form submission if form is invalid
+        // Handle form submission via AJAX
         decisionForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           formSubmitted = true;
 
           if (!validateDecisionForm(true)) {
-            e.preventDefault();
-            e.stopPropagation();
-
             // Focus first invalid field
             if (!decisionFirstName.value.trim()) {
               decisionFirstName.focus();
@@ -925,37 +1492,175 @@
             return false;
           }
 
-          // Store scroll position before form submission so we can restore it after redirect
-          sessionStorage.setItem('decisionScrollPosition', window.scrollY.toString());
+          // Disable button and show loading state
+          decisionSubmit.disabled = true;
+          const originalText = decisionSubmit.innerHTML;
+          decisionSubmit.innerHTML =
+            '<span class="material-symbols-outlined animate-spin !text-base mr-2">sync</span> Submitting...';
+          decisionSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+
+          // Hide any existing messages
+          const messageContainer = document.getElementById('decision-message-container');
+          if (messageContainer) {
+            messageContainer.classList.add('hidden');
+            messageContainer.innerHTML = '';
+          }
+
+          // Get download file info from form data attributes
+          const downloadFile = decisionForm.dataset.downloadFile || '';
+          const downloadBenefit = decisionForm.dataset.downloadBenefit || '';
+
+          // Submit via AJAX
+          if (window.tsmDecision && window.tsmDecision.ajaxUrl && window.tsmDecision.nonce) {
+            const decisionMessage = decisionForm.querySelector('#message');
+            const formData = new FormData();
+            formData.append('action', 'tsm_decision_form');
+            formData.append('nonce', window.tsmDecision.nonce);
+            formData.append('first_name', decisionFirstName.value.trim());
+            formData.append('last_name', decisionLastName.value.trim());
+            formData.append('email', decisionEmail.value.trim());
+            formData.append('decision', decisionSelect.value);
+            if (decisionMessage && decisionMessage.value.trim()) {
+              formData.append('message', decisionMessage.value.trim());
+            }
+
+            fetch(window.tsmDecision.ajaxUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(function (response) {
+                return response.json();
+              })
+              .then(function (data) {
+                // Reset button
+                decisionSubmit.disabled = false;
+                decisionSubmit.innerHTML = originalText;
+                decisionSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                if (data.success) {
+                  // Show success message with download link
+                  showDecisionSuccessMessage(
+                    data.data.message ||
+                      "Thank you! We've received your decision and will be in touch soon.",
+                    downloadFile,
+                    downloadBenefit
+                  );
+                  // Reset form
+                  decisionForm.reset();
+                  formSubmitted = false;
+                  validateDecisionForm(false);
+                } else {
+                  // Show error message
+                  showDecisionErrorMessage(
+                    data.data.message || 'Something went wrong. Please try again.'
+                  );
+                }
+              })
+              .catch(function (error) {
+                // Reset button
+                decisionSubmit.disabled = false;
+                decisionSubmit.innerHTML = originalText;
+                decisionSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+                // Show error message
+                showDecisionErrorMessage('Something went wrong. Please try again.');
+                console.error('Decision form submission error:', error);
+              });
+          } else {
+            // Fallback: submit normally if AJAX not available
+            decisionForm.submit();
+          }
         });
 
-        // Handle success state - hide form, restore scroll position, and show download button
-        if (window.location.search.includes('decision=success')) {
-          // Restore scroll position immediately
-          const savedScrollPosition = sessionStorage.getItem('decisionScrollPosition');
-          if (savedScrollPosition) {
-            // Use requestAnimationFrame to ensure DOM is ready
-            requestAnimationFrame(function () {
-              window.scrollTo(0, parseInt(savedScrollPosition, 10));
-              sessionStorage.removeItem('decisionScrollPosition');
-            });
-          }
-
-          const form = document.getElementById('decision-form');
-          if (form) {
-            form.classList.add('hidden');
-          }
-          // Clean up URL parameter without reloading
-          const url = new URL(window.location);
-          url.searchParams.delete('decision');
-          window.history.replaceState({}, '', url);
-        } else if (window.location.search.includes('decision=')) {
-          // Clean up URL parameter for error case too
+        // Clean up URL parameter without reloading (for legacy redirects)
+        if (window.location.search.includes('decision=')) {
           const url = new URL(window.location);
           url.searchParams.delete('decision');
           window.history.replaceState({}, '', url);
         }
       }
+    }
+
+    // Partner form helper functions
+    function showPartnerSuccessMessage(message, hasAccountDetails) {
+      const messageContainer = document.getElementById('partner-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+
+      let html =
+        '<div class="space-y-6 md:col-span-2">' +
+        '<div class="p-6 text-center text-green-800 bg-green-100 rounded-xl border border-green-300 dark:bg-green-900/30 dark:border-green-700 dark:text-green-200">' +
+        '<span class="block mb-4 text-5xl material-symbols-outlined">check_circle</span>' +
+        '<h4 class="mb-2 text-xl font-bold">Thank You!</h4>' +
+        '<p>' +
+        message +
+        '</p>' +
+        '</div>';
+
+      if (hasAccountDetails) {
+        html +=
+          '<div class="flex justify-center">' +
+          '<button type="button" id="open-account-modal" class="inline-flex gap-2 justify-center items-center px-6 py-3 text-base font-bold text-white rounded-lg shadow-lg transition-all bg-primary hover:text-white shadow-primary/20 hover:shadow-primary/40">' +
+          '<span class="material-symbols-outlined">account_balance</span>' +
+          'View Account Details' +
+          '</button>' +
+          '</div>';
+      }
+
+      html += '</div>';
+      messageContainer.innerHTML = html;
+
+      // Re-attach modal button handler if it exists
+      const openButton = document.getElementById('open-account-modal');
+      if (openButton) {
+        if (typeof window.openAccountModal === 'function') {
+          openButton.addEventListener('click', window.openAccountModal);
+        } else {
+          // Try to find modal and open it directly
+          const modal = document.getElementById('account-details-modal');
+          if (modal) {
+            openButton.addEventListener('click', function () {
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+              document.body.style.overflow = 'hidden';
+            });
+          }
+        }
+      }
+
+      // Auto-open modal if account details exist
+      if (hasAccountDetails) {
+        setTimeout(function () {
+          if (typeof window.openAccountModal === 'function') {
+            window.openAccountModal();
+          } else {
+            // Fallback: open modal directly
+            const modal = document.getElementById('account-details-modal');
+            if (modal) {
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+              document.body.style.overflow = 'hidden';
+            }
+          }
+        }, 300);
+      }
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
+    }
+
+    function showPartnerErrorMessage(message) {
+      const messageContainer = document.getElementById('partner-message-container');
+      if (!messageContainer) return;
+
+      messageContainer.classList.remove('hidden');
+      messageContainer.innerHTML =
+        '<div class="p-4 mb-6 text-red-800 bg-red-100 rounded-xl border border-red-300 md:col-span-2 dark:bg-red-900/30 dark:border-red-700 dark:text-red-200">' +
+        message +
+        '</div>';
+
+      // Scroll to message container with offset for sticky header
+      scrollToElementWithOffset(messageContainer);
     }
 
     // Partner form validation and handling
@@ -1080,14 +1785,14 @@
         // Initial validation
         validatePartnerForm(false);
 
-        // Prevent form submission if form is invalid
+        // Handle form submission via AJAX
         partnerForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           formSubmitted = true;
 
           if (!validatePartnerForm(true)) {
-            e.preventDefault();
-            e.stopPropagation();
-
             // Focus first invalid field
             if (!partnerFullname.value.trim()) {
               partnerFullname.focus();
@@ -1104,16 +1809,79 @@
             return false;
           }
 
-          // Store scroll position before submission
-          sessionStorage.setItem('partnerScrollPosition', window.scrollY.toString());
-        });
+          // Disable button and show loading state
+          partnerSubmit.disabled = true;
+          const originalText = partnerSubmit.innerHTML;
+          partnerSubmit.innerHTML =
+            '<span class="material-symbols-outlined animate-spin !text-base mr-2">sync</span> Submitting...';
+          partnerSubmit.classList.add('opacity-75', 'cursor-not-allowed');
 
-        // Clean up URL parameter without reloading
-        if (window.location.search.includes('partner=')) {
-          const url = new URL(window.location);
-          url.searchParams.delete('partner');
-          window.history.replaceState({}, '', url);
-        }
+          // Hide any existing messages
+          const messageContainer = document.getElementById('partner-message-container');
+          if (messageContainer) {
+            messageContainer.classList.add('hidden');
+            messageContainer.innerHTML = '';
+          }
+
+          // Submit via AJAX
+          if (window.tsmPartner && window.tsmPartner.ajaxUrl && window.tsmPartner.nonce) {
+            const formData = new FormData();
+            formData.append('action', 'tsm_partner_form');
+            formData.append('nonce', window.tsmPartner.nonce);
+            formData.append('fullname', partnerFullname.value.trim());
+            formData.append('email', partnerEmail.value.trim());
+            formData.append('phone', partnerPhone.value.trim());
+            formData.append('location', partnerLocation.value.trim());
+            formData.append('interest', partnerInterest.value);
+            formData.append('message', partnerForm.querySelector('#message').value.trim());
+
+            fetch(window.tsmPartner.ajaxUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(function (response) {
+                return response.json();
+              })
+              .then(function (data) {
+                // Reset button
+                partnerSubmit.disabled = false;
+                partnerSubmit.innerHTML = originalText;
+                partnerSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                if (data.success) {
+                  // Show success message
+                  if (typeof showPartnerSuccessMessage === 'function') {
+                    showPartnerSuccessMessage(
+                      data.data.message ||
+                        "We've received your partnership inquiry and will be in touch soon.",
+                      data.data.has_account_details || false
+                    );
+                  }
+                  // Hide form
+                  partnerForm.classList.add('hidden');
+                } else {
+                  // Show error message
+                  if (typeof showPartnerErrorMessage === 'function') {
+                    showPartnerErrorMessage(
+                      data.data.message || 'Something went wrong. Please try again.'
+                    );
+                  }
+                }
+              })
+              .catch(function (error) {
+                // Reset button
+                partnerSubmit.disabled = false;
+                partnerSubmit.innerHTML = originalText;
+                partnerSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+                // Show error message
+                showPartnerErrorMessage('Something went wrong. Please try again.');
+                console.error('Partner form submission error:', error);
+              });
+          } else {
+            // Fallback: submit normally if AJAX not available
+            partnerForm.submit();
+          }
+        });
       }
     }
 
@@ -1227,14 +1995,14 @@
             'opacity-100'
           );
           thumb.classList.remove('opacity-40');
-          
+
           // Scroll the active thumbnail into view if container exists
           if (thumbnailContainer) {
             // Use scrollIntoView with smooth behavior to center the active thumbnail
             thumb.scrollIntoView({
               behavior: 'smooth',
               block: 'nearest',
-              inline: 'center'
+              inline: 'center',
             });
           }
         } else {
@@ -1256,13 +2024,13 @@
       if (window.tsmLightboxClosing) {
         return;
       }
-      
+
       // Don't open if another lightbox is already open
       const openLightbox = document.querySelector('.tsm-lightbox:not(.hidden)');
       if (openLightbox && openLightbox !== lightbox) {
         return;
       }
-      
+
       currentIndex = index;
       updateLightbox(index);
       lightbox.classList.remove('hidden');
@@ -1270,14 +2038,14 @@
       lightbox.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       window.tsmLightboxClosing = false; // Reset flag
-      
+
       // Disable pointer events on gallery items to prevent clicks through lightbox
       const galleryItems = document.querySelectorAll('.gallery-item');
-      galleryItems.forEach(function(item) {
+      galleryItems.forEach(function (item) {
         item.style.pointerEvents = 'none';
       });
     }
-    
+
     // Store the openLightbox function on the lightbox element so it can be called from outside
     lightbox._openLightbox = openLightbox;
 
@@ -1286,27 +2054,27 @@
       if (lightbox._isClosing) {
         return;
       }
-      
+
       // Only prevent if another lightbox is closing (not this one)
       if (window.tsmLightboxClosing && window.tsmClosingLightboxId !== lightbox.id) {
         return;
       }
-      
+
       lightbox._isClosing = true;
       window.tsmLightboxClosing = true;
-      
+
       // Store reference to this specific lightbox being closed
       window.tsmClosingLightboxId = lightbox.id;
-      
+
       lightbox.classList.add('hidden');
       lightbox.classList.remove('flex');
       lightbox.style.display = 'none';
       document.body.style.overflow = '';
-      
+
       // Re-enable pointer events on gallery items after a delay
-      setTimeout(function() {
+      setTimeout(function () {
         const galleryItems = document.querySelectorAll('.gallery-item');
-        galleryItems.forEach(function(item) {
+        galleryItems.forEach(function (item) {
           item.style.pointerEvents = '';
         });
         lightbox._isClosing = false;
@@ -1314,7 +2082,7 @@
         window.tsmClosingLightboxId = null;
       }, 500);
     }
-    
+
     // Store the closeLightbox function on the lightbox element
     lightbox._closeLightbox = closeLightbox;
 
@@ -1333,47 +2101,58 @@
     galleryImages.forEach(function (img) {
       // Mark this image as having a direct handler to prevent gallery-item from interfering
       img.setAttribute('data-has-direct-handler', 'true');
-      
-      img.addEventListener('click', function (e) {
-        // If this click came from a gallery-item card (not a direct click on the image),
-        // let the gallery-item handler manage it
-        const galleryItem = img.closest('.gallery-item');
-        if (galleryItem && e.target !== img && !img.contains(e.target) && e.target.closest('.gallery-item') === galleryItem) {
-          // The click originated from the gallery-item card, not directly on the image
-          // Let the gallery-item handler take care of it
-          return;
-        }
-        
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Don't open if clicking on lightbox controls
-        if (e.target.closest('.tsm-lightbox-close') ||
+
+      img.addEventListener(
+        'click',
+        function (e) {
+          // If this click came from a gallery-item card (not a direct click on the image),
+          // let the gallery-item handler manage it
+          const galleryItem = img.closest('.gallery-item');
+          if (
+            galleryItem &&
+            e.target !== img &&
+            !img.contains(e.target) &&
+            e.target.closest('.gallery-item') === galleryItem
+          ) {
+            // The click originated from the gallery-item card, not directly on the image
+            // Let the gallery-item handler take care of it
+            return;
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Don't open if clicking on lightbox controls
+          if (
+            e.target.closest('.tsm-lightbox-close') ||
             e.target.closest('.tsm-lightbox-prev') ||
             e.target.closest('.tsm-lightbox-next') ||
-            e.target.closest('.tsm-lightbox-download')) {
-          return;
-        }
-        
-        // Don't open if we're in the middle of closing
-        if (window.tsmLightboxClosing) {
-          return;
-        }
-        
-        const imgEl = img.querySelector('img') || img;
-        const fullUrl = imgEl.getAttribute('data-full') || imgEl.src;
-
-        // Find the index of this image in the full imageData array
-        let clickedIndex = 0;
-        for (let i = 0; i < imageData.length; i++) {
-          if (imageData[i].full === fullUrl) {
-            clickedIndex = i;
-            break;
+            e.target.closest('.tsm-lightbox-download')
+          ) {
+            return;
           }
-        }
 
-        openLightbox(clickedIndex);
-      }, false); // Use bubble phase
+          // Don't open if we're in the middle of closing
+          if (window.tsmLightboxClosing) {
+            return;
+          }
+
+          const imgEl = img.querySelector('img') || img;
+          const fullUrl = imgEl.getAttribute('data-full') || imgEl.src;
+
+          // Find the index of this image in the full imageData array
+          let clickedIndex = 0;
+          for (let i = 0; i < imageData.length; i++) {
+            if (imageData[i].full === fullUrl) {
+              clickedIndex = i;
+              break;
+            }
+          }
+
+          openLightbox(clickedIndex);
+        },
+        false
+      ); // Use bubble phase
     });
 
     // Thumbnail click
@@ -1388,26 +2167,30 @@
       // Remove any existing listeners by cloning
       const newCloseBtn = lightboxClose.cloneNode(true);
       lightboxClose.parentNode.replaceChild(newCloseBtn, lightboxClose);
-      
-      newCloseBtn.addEventListener('click', function (e) {
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-        e.preventDefault();
-        // Don't set the flag here - let closeLightbox() handle it
-        // This ensures closeLightbox() can execute properly
-        closeLightbox();
-        return false;
-      }, true); // Capture phase - catches before bubble phase
+
+      newCloseBtn.addEventListener(
+        'click',
+        function (e) {
+          e.stopImmediatePropagation();
+          e.stopPropagation();
+          e.preventDefault();
+          // Don't set the flag here - let closeLightbox() handle it
+          // This ensures closeLightbox() can execute properly
+          closeLightbox();
+          return false;
+        },
+        true
+      ); // Capture phase - catches before bubble phase
     }
-    
+
     if (lightboxNext) {
-      lightboxNext.addEventListener('click', function(e) {
+      lightboxNext.addEventListener('click', function (e) {
         e.stopPropagation();
         nextImage();
       });
     }
     if (lightboxPrev) {
-      lightboxPrev.addEventListener('click', function(e) {
+      lightboxPrev.addEventListener('click', function (e) {
         e.stopPropagation();
         prevImage();
       });
@@ -1432,13 +2215,22 @@
     document.addEventListener('keydown', handleKeydown);
 
     // Close on background click
-    lightbox.addEventListener('click', function (e) {
-      // Only close if clicking directly on the lightbox background, not on any child elements
-      if (e.target === lightbox && !e.target.closest('.tsm-lightbox-close, .tsm-lightbox-prev, .tsm-lightbox-next, .tsm-lightbox-download, .tsm-lightbox-image, .tsm-lightbox-thumbnail')) {
-        window.tsmLightboxClosing = true;
-        closeLightbox();
-      }
-    }, true); // Use capture phase
+    lightbox.addEventListener(
+      'click',
+      function (e) {
+        // Only close if clicking directly on the lightbox background, not on any child elements
+        if (
+          e.target === lightbox &&
+          !e.target.closest(
+            '.tsm-lightbox-close, .tsm-lightbox-prev, .tsm-lightbox-next, .tsm-lightbox-download, .tsm-lightbox-image, .tsm-lightbox-thumbnail'
+          )
+        ) {
+          window.tsmLightboxClosing = true;
+          closeLightbox();
+        }
+      },
+      true
+    ); // Use capture phase
   }
 
   /**
@@ -1528,7 +2320,7 @@
           if (data.success && data.data.missions) {
             const missions = data.data.missions;
             hasMore = Boolean(data.data.has_more);
-            
+
             // Update total count on first load
             if (reset && data.data.total_count !== undefined) {
               totalMissionsCount = parseInt(data.data.total_count, 10);
@@ -1573,7 +2365,8 @@
 
               // Update status counter
               if (totalMissionsCount > 0) {
-                statusCounter.textContent = 'Viewing ' + totalMissionsLoaded + ' of ' + totalMissionsCount + ' missions';
+                statusCounter.textContent =
+                  'Viewing ' + totalMissionsLoaded + ' of ' + totalMissionsCount + ' missions';
               }
 
               // Show/hide load more button
@@ -1735,7 +2528,7 @@
             'border-emerald-50',
             'dark:border-emerald-900/30'
           );
-          
+
           // Update text inside <p> tag
           const pTag = p.querySelector('p');
           if (pTag) {
@@ -1755,7 +2548,7 @@
           'border-emerald-50',
           'dark:border-emerald-900/30'
         );
-        
+
         // Update text inside <p> tag
         const activePTag = this.querySelector('p');
         if (activePTag) {

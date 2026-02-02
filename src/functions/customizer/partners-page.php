@@ -78,14 +78,15 @@ function tsm_partners_page_customizer( $wp_customize ) {
 	$wp_customize->add_setting(
 		'partners_success_description',
 		array(
-			'default'           => 'Your interest has been received. A partnership coordinator will be in touch with you shortly to discuss our global mission.',
+			'default'           => '',
 			'sanitize_callback' => 'sanitize_textarea_field',
 		)
 	);
 	$wp_customize->add_control(
 		'partners_success_description',
 		array(
-			'label'   => __( 'Success Message Description', 'tsm-theme' ),
+			'label'       => __( 'Success Message Description', 'tsm-theme' ),
+			'description' => __( 'Optional. Leave empty to hide this text.', 'tsm-theme' ),
 			'section' => 'tsm_partners_page',
 			'type'    => 'textarea',
 		)

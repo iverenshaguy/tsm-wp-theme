@@ -549,9 +549,8 @@ endif;
 			}
 		}
 		?>
-		<form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 w-full max-w-lg" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="tsm_newsletter_signup">
-			<?php wp_nonce_field( 'tsm_newsletter_signup', 'tsm_newsletter_nonce' ); ?>
+		<form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 w-full max-w-lg" method="post">
+			<?php wp_nonce_field( 'tsm_newsletter_signup', 'tsm_newsletter_nonce', false ); ?>
 			<input id="newsletter-email" class="newsletter-email flex-grow rounded-lg border-gray-200 dark:border-[#1d3a24] dark:bg-background-dark px-6 py-5 focus:ring-accent focus:border-accent transition-all" placeholder="Enter your email address" type="email" name="email" required autocomplete="email"/>
 			<button id="newsletter-submit" type="submit" disabled class="bg-primary text-white hover:text-white text-base font-bold px-6 py-5 rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed">Subscribe</button>
 		</form>
